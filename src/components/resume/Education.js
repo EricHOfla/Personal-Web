@@ -22,7 +22,7 @@ const Education = () => {
           des="web development & software development"
         />
         <ResumeCard
-          badge="2022- Present"
+          badge="2022- 2024"
           title="Full Stack Developer"
           subTitle="EROH Tech"
           des="Software Development, Database Development, Security Development, Web Application and Moble Application"
@@ -34,7 +34,7 @@ const Education = () => {
       <div className="col-span-9 md:col-span-4">
         <ResumeTitle title="Education" icon={<GiGraduateCap />} />
         <ResumeCard
-          badge="2021- Present"
+          badge="2022- 2025"
           title="Software Engineering"
           subTitle="UNILAK, Kigali"
           des="we worked on Software Development, Database Development, Security Development, Web Application and Moble Application"
