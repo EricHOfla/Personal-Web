@@ -1,7 +1,7 @@
 // api.js
 
 // Base API host
-const API_HOST = process.env.REACT_APP_API_URL || 'https://personal-web-srv9.onrender.com/api/';
+const API_HOST = process.env.REACT_APP_API_URL || 'https://personal-web-srv9.onrender.com';
 
 // Build full endpoint URL with trailing slash
 const buildUrl = (endpoint) => {
