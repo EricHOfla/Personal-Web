@@ -3,10 +3,17 @@
 // Base API host
 const API_HOST = process.env.REACT_APP_API_URL || 'https://personal-web-srv9.onrender.com/api/';
 
-// Build full endpoint URL
+// Build full endpoint URL with trailing slash
 const buildUrl = (endpoint) => {
   if (!endpoint) return API_HOST;
-  return `${API_HOST}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+  
+  // Ensure no double slashes
+  let cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
+  
+  // Ensure trailing slash
+  if (!cleanEndpoint.endsWith('/')) cleanEndpoint += '/';
+
+  return `${API_HOST}${cleanEndpoint}`;
 };
 
 // API call function (for GET, POST, PUT, DELETE, etc.)
@@ -45,44 +52,19 @@ export const buildMediaUrl = (path) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
 
-  // Remove leading slash if present for consistent handling
   let cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  
-  // Remove 'media/' prefix if already present to avoid duplication
+
+  // Remove 'media/' prefix if already present
   if (cleanPath.startsWith('media/')) {
     cleanPath = cleanPath.slice(6);
   }
-  
-  return `${API_HOST}/media/${cleanPath}`;
+
+  // Ensure trailing slash is **not added here**, only in API endpoints
+  return `${API_HOST}media/${cleanPath}`;
 };
 
-// Example helper for GET requests
-export const apiGet = (endpoint, headers = {}) => {
-  return apiCall(endpoint, { method: 'GET', headers });
-};
-
-// Example helper for POST requests
-export const apiPost = (endpoint, data, headers = {}) => {
-  return apiCall(endpoint, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(data),
-  });
-};
-
-// Example helper for PUT requests
-export const apiPut = (endpoint, data, headers = {}) => {
-  return apiCall(endpoint, {
-    method: 'PUT',
-    headers,
-    body: JSON.stringify(data),
-  });
-};
-
-// Example helper for DELETE requests
-export const apiDelete = (endpoint, headers = {}) => {
-  return apiCall(endpoint, {
-    method: 'DELETE',
-    headers,
-  });
-};
+// Helpers for each HTTP method
+export const apiGet = (endpoint, headers = {}) => apiCall(endpoint, { method: 'GET', headers });
+export const apiPost = (endpoint, data, headers = {}) => apiCall(endpoint, { method: 'POST', headers, body: JSON.stringify(data) });
+export const apiPut = (endpoint, data, headers = {}) => apiCall(endpoint, { method: 'PUT', headers, body: JSON.stringify(data) });
+export const apiDelete = (endpoint, headers = {}) => apiCall(endpoint, { method: 'DELETE', headers });
