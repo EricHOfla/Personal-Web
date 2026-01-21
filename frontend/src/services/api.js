@@ -1,7 +1,7 @@
 // api.js
 
 // Base API host
-const API_HOST = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_HOST = process.env.REACT_APP_API_URL || 'https://personal-web-srv9.onrender.com/api/';
 
 // Build full endpoint URL
 const buildUrl = (endpoint) => {
