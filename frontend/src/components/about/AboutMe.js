@@ -1,6 +1,6 @@
 import React from "react";
 import { FaMapMarkerAlt, FaEnvelope, FaPhone, FaCalendar } from "react-icons/fa";
-import { buildMediaUrl } from "../../services/api";
+
 
 function AboutMe({ profile }) {
   const stats = [

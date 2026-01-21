@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion} from 'framer-motion';
 import { 
   FaHome, FaUser, FaBriefcase, FaEnvelope, FaCode, 
   FaGraduationCap, FaBlog, FaServicestack, FaCertificate,
@@ -206,9 +206,9 @@ function Sidenav({ onNavigate }) {
   };
 
   // Get display name from profile
-  const displayName = profile?.full_name || profile?.first_name && profile?.last_name 
-    ? `${profile.first_name} ${profile.last_name}` 
-    : profile?.first_name || 'HABUMUGISHA Eric';
+  const displayName = profile?.full_name || ((profile?.first_name && profile?.last_name) 
+  ? `${profile.first_name} ${profile.last_name}` 
+  : profile?.first_name || 'HABUMUGISHA Eric');
 
   // Get title from profile
   const displayTitle = profile?.title || profile?.job_title || profile?.qualification || 'Software Engineer';
