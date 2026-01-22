@@ -1,4 +1,6 @@
 import io
+from collections import defaultdict
+
 from django.http import HttpResponse  # type: ignore
 from reportlab.lib.pagesizes import letter  # type: ignore
 from reportlab.platypus import (
@@ -194,9 +196,12 @@ def generate_resume_pdf(request):
     l = clickable_label(linkedin_link, "LinkedIn")
     g = clickable_label(github_link, "GitHub")
 
-    if p: social_parts.append(p)
-    if l: social_parts.append(l)
-    if g: social_parts.append(g)
+    if p:
+        social_parts.append(p)
+    if l:
+        social_parts.append(l)
+    if g:
+        social_parts.append(g)
 
     if social_parts:
         elements.append(Paragraph(" | ".join(social_parts), styles["ContactStyle"]))
@@ -225,7 +230,6 @@ def generate_resume_pdf(request):
             date_range = safe_text(exp.time_period)
             company_info = " | ".join([x for x in [safe_text(exp.company), safe_text(exp.location)] if x])
 
-            # Title + date aligned left/right
             header_data = [[
                 Paragraph(safe_text(exp.job_title, "Job Title"), styles["ItemTitle"]),
                 Paragraph(f"<para align=right>{date_range}</para>", styles["ItemMeta"]),
@@ -244,7 +248,6 @@ def generate_resume_pdf(request):
                 elements.append(Paragraph(company_info, styles["ItemMeta"]))
 
             if exp.description:
-                # If your description contains lines, make them bullet points
                 lines = [x.strip() for x in exp.description.split("\n") if x.strip()]
                 if len(lines) > 1:
                     for line in lines:
@@ -286,29 +289,32 @@ def generate_resume_pdf(request):
             elements.append(Spacer(1, 8))
 
     # -----------------------
-    # Skills (Separated)
+    # Skills (Grouped by Category) ✅ UPDATED
     # -----------------------
-    language_skills = [s for s in skills if (s.category or "").lower() == "languages"]
-    tech_skills = [s for s in skills if (s.category or "").lower() != "languages"]
-
-    if tech_skills:
-        elements.append(Paragraph("Technical Skills", styles["SectionHeader"]))
+    if skills.exists():
+        elements.append(Paragraph("Skills", styles["SectionHeader"]))
         elements.append(section_divider())
         elements.append(Spacer(1, 6))
 
-        skill_txt = ", ".join([s.skill_name for s in tech_skills if s.skill_name])
-        if skill_txt:
-            elements.append(Paragraph(skill_txt, styles["BodyTextJustified"]))
-        elements.append(Spacer(1, 8))
+        skills_by_category = defaultdict(list)
 
-    if language_skills:
-        elements.append(Paragraph("Languages", styles["SectionHeader"]))
-        elements.append(section_divider())
-        elements.append(Spacer(1, 6))
+        for s in skills:
+            category = (s.category or "Other Skills").strip()
+            skills_by_category[category].append(s.skill_name)
 
-        lang_txt = ", ".join([s.skill_name for s in language_skills if s.skill_name])
-        if lang_txt:
-            elements.append(Paragraph(lang_txt, styles["BodyTextJustified"]))
+        for category, skill_list in skills_by_category.items():
+            skill_list = [x for x in skill_list if x]
+            if not skill_list:
+                continue
+
+            elements.append(
+                Paragraph(
+                    f"<b>{category}</b>: {', '.join(skill_list)}",
+                    styles["BodyTextJustified"]
+                )
+            )
+            elements.append(Spacer(1, 4))
+
         elements.append(Spacer(1, 8))
 
     # -----------------------
@@ -324,7 +330,12 @@ def generate_resume_pdf(request):
             category = safe_text(getattr(proj, "category", ""))
 
             if category:
-                elements.append(Paragraph(f"<b>{title}</b>  <font color='#6B7280'>({category})</font>", styles["ItemTitle"]))
+                elements.append(
+                    Paragraph(
+                        f"<b>{title}</b>  <font color='#6B7280'>({category})</font>",
+                        styles["ItemTitle"]
+                    )
+                )
             else:
                 elements.append(Paragraph(f"<b>{title}</b>", styles["ItemTitle"]))
 

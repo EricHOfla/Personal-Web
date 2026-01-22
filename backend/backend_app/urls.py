@@ -53,4 +53,8 @@ urlpatterns = [
     # Sidenav Items
     path('sidenav-items/', sidenav_item_list),
     path('sidenav-items/<int:pk>/', sidenav_item_detail),
+    
+    # Testimonials
+    path('testimonials/', testimonial_list),
+    path('testimonials/<int:pk>/', testimonial_detail),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

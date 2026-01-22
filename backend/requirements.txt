@@ -9,7 +9,5 @@ sqlparse==0.5.5
 tzdata==2025.3
 gunicorn
 whitenoise
-cloudinary
-django-cloudinary-storage
 python-dotenv
 reportlab

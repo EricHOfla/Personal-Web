@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import (
     UserProfile, SocialLink, Service, FunFact,
     Experience, Education, Skill, Project,
-    BlogPost, ContactMessage, SidenavItem
+    BlogPost, ContactMessage, SidenavItem, Testimonial
 )
 
 # =========================
@@ -134,3 +134,20 @@ class SidenavItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = SidenavItem
         fields = "__all__"
+
+
+# =========================
+# 12. Testimonials
+# =========================
+class TestimonialSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Testimonial
+        fields = "__all__"
+
+    def get_image(self, obj):
+        request = self.context.get("request")
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
