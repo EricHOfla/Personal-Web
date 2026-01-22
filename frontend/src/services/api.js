@@ -1,15 +1,24 @@
 // api.js
 
 // Base API host
-const API_HOST = process.env.REACT_APP_API_URL || 'https://personal-web-srv9.onrender.com/api/';
+const API_HOST = process.env.REACT_APP_API_URL || 'https://personal-web-srv9.onrender.com';
 
-// Build full endpoint URL
+// Build full endpoint URL with trailing slash
 const buildUrl = (endpoint) => {
   if (!endpoint) return API_HOST;
-  return `${API_HOST}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+
+  // Remove leading slash to avoid double slashes
+  let cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
+
+  // Ensure trailing slash for API endpoints
+  if (!cleanEndpoint.endsWith('/')) cleanEndpoint += '/';
+
+  const fullUrl = `${API_HOST}/${cleanEndpoint}`;
+  console.log('[API] Built URL:', fullUrl); // ✅ Debug: show full URL
+  return fullUrl;
 };
 
-// API call function (for GET, POST, PUT, DELETE, etc.)
+// API call function
 export const apiCall = async (endpoint, options = {}) => {
   const url = buildUrl(endpoint);
   const { headers, ...rest } = options;
@@ -24,10 +33,9 @@ export const apiCall = async (endpoint, options = {}) => {
     });
 
     if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
+      throw new Error(`API Error: ${response.status} at ${url}`);
     }
 
-    // Try to parse JSON; return raw response if not JSON
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
       return await response.json();
@@ -35,54 +43,29 @@ export const apiCall = async (endpoint, options = {}) => {
       return response;
     }
   } catch (error) {
-    console.error('API call failed:', error);
+    console.error('[API] Call failed:', error);
+    console.error('[API] Endpoint tried:', url);
     throw error;
   }
 };
 
-// Build absolute URL for media files served by Django
+// Build media URL
 export const buildMediaUrl = (path) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
 
-  // Remove leading slash if present for consistent handling
   let cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  
-  // Remove 'media/' prefix if already present to avoid duplication
-  if (cleanPath.startsWith('media/')) {
-    cleanPath = cleanPath.slice(6);
-  }
-  
-  return `${API_HOST}/media/${cleanPath}`;
+
+  // Remove 'media/' prefix if already present
+  if (cleanPath.startsWith('media/')) cleanPath = cleanPath.slice(6);
+
+  const mediaUrl = `${API_HOST}/media/${cleanPath}`;
+  console.log('[API] Media URL:', mediaUrl);
+  return mediaUrl;
 };
 
-// Example helper for GET requests
-export const apiGet = (endpoint, headers = {}) => {
-  return apiCall(endpoint, { method: 'GET', headers });
-};
-
-// Example helper for POST requests
-export const apiPost = (endpoint, data, headers = {}) => {
-  return apiCall(endpoint, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(data),
-  });
-};
-
-// Example helper for PUT requests
-export const apiPut = (endpoint, data, headers = {}) => {
-  return apiCall(endpoint, {
-    method: 'PUT',
-    headers,
-    body: JSON.stringify(data),
-  });
-};
-
-// Example helper for DELETE requests
-export const apiDelete = (endpoint, headers = {}) => {
-  return apiCall(endpoint, {
-    method: 'DELETE',
-    headers,
-  });
-};
+// Helpers for HTTP methods
+export const apiGet = (endpoint, headers = {}) => apiCall(endpoint, { method: 'GET', headers });
+export const apiPost = (endpoint, data, headers = {}) => apiCall(endpoint, { method: 'POST', headers, body: JSON.stringify(data) });
+export const apiPut = (endpoint, data, headers = {}) => apiCall(endpoint, { method: 'PUT', headers, body: JSON.stringify(data) });
+export const apiDelete = (endpoint, headers = {}) => apiCall(endpoint, { method: 'DELETE', headers });
