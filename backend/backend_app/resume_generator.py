@@ -164,7 +164,7 @@ def generate_resume_pdf(request):
         elements.append(Spacer(1, 20))
 
     # 2. About Me / Summary
-    if profile and profile.about_me:
+    if profile and profile.bio:
         elements.append(Paragraph("Professional Summary", styles['SectionHeader']))
         # Draw a line
         line_data = [['']]
@@ -175,7 +175,7 @@ def generate_resume_pdf(request):
         elements.append(t)
         elements.append(Spacer(1, 5))
         
-        elements.append(Paragraph(profile.about_me, styles['JustifiedText']))
+        elements.append(Paragraph(profile.bio, styles['JustifiedText']))
         elements.append(Spacer(1, 10))
 
     # 3. Experience Section
