@@ -23,8 +23,8 @@ def generate_resume_pdf(request):
     # Create the Fetching logic
     try:
         profile = UserProfile.objects.first()
-        experiences = Experience.objects.order_by('-start_year')
-        education = Education.objects.order_by('-year')
+        experiences = Experience.objects.order_by('-id') # Ordered by newest added
+        education = Education.objects.order_by('-id')
         skills = Skill.objects.order_by('-proficiency_level')
         projects = Project.objects.filter(is_featured=True)[:5] # Top 5 featured projects
         social_links = SocialLink.objects.all()
@@ -189,12 +189,13 @@ def generate_resume_pdf(request):
         
         for exp in experiences:
             # Title row: Job Title left, Date right
-            date_range = f"{exp.start_year or ''} - {exp.end_year if not exp.is_current else 'Present'}"
-            company_info = f"{exp.company_name or ''} | {exp.location or ''}"
+            # Use 'time_period' instead of start_year/end_year
+            date_range = exp.time_period or ""
+            company_info = f"{exp.company or ''} | {exp.location or ''}"
             
             # Using a table for the header line to justify left/right
             header_data = [[
-                Paragraph(f"<b>{exp.title}</b>", styles['Normal']),
+                Paragraph(f"<b>{exp.job_title}</b>", styles['Normal']),
                 Paragraph(f"<para align=right><b>{date_range}</b></para>", styles['Normal'])
             ]]
             t_head = Table(header_data, colWidths=[350, 180])
@@ -224,9 +225,12 @@ def generate_resume_pdf(request):
         elements.append(Spacer(1, 5))
         
         for edu in education:
+            # Use 'time_period' instead of 'year'
+            date_range = edu.time_period or ""
+            
             header_data = [[
                 Paragraph(f"<b>{edu.institution}</b>", styles['Normal']),
-                Paragraph(f"<para align=right><b>{edu.year or ''}</b></para>", styles['Normal'])
+                Paragraph(f"<para align=right><b>{date_range}</b></para>", styles['Normal'])
             ]]
             t_head = Table(header_data, colWidths=[400, 130])
             t_head.setStyle(TableStyle([
@@ -236,10 +240,8 @@ def generate_resume_pdf(request):
             ]))
             elements.append(t_head)
             
-            # Degree
-            degree_text = edu.level
-            if edu.level and edu.title: degree_text += f", {edu.title}"
-            elif edu.title: degree_text = edu.title
+            # Degree - adjusted for model fields
+            degree_text = edu.degree or ""
             
             elements.append(Paragraph(degree_text, styles['JustifiedText']))
             elements.append(Spacer(1, 8))
@@ -253,7 +255,7 @@ def generate_resume_pdf(request):
         elements.append(t)
         elements.append(Spacer(1, 5))
         
-        # Group skills by category if possible, otherwise simple list
+        # Group skills by category if needed, here just listing names
         skill_txt = ", ".join([s.skill_name for s in skills])
         elements.append(Paragraph(skill_txt, styles['JustifiedText']))
         elements.append(Spacer(1, 10))
@@ -274,8 +276,8 @@ def generate_resume_pdf(request):
             
             elements.append(Paragraph(proj_header, styles['Normal']))
             
-            if proj.des:
-                elements.append(Paragraph(proj.des, styles['JustifiedText']))
+            if proj.description:
+                elements.append(Paragraph(proj.description, styles['JustifiedText']))
             elements.append(Spacer(1, 6))
 
     # Build PDF
