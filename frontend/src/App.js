@@ -25,7 +25,11 @@ function App() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-black">
+        <div className="w-10 h-10 border-4 border-gray-600 border-t-designColor rounded-full animate-spin"></div>
+      </div>
+    );
   }
   if (error) return <div>Error: {error}</div>;
 

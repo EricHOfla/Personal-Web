@@ -34,7 +34,6 @@ function About({ profile: profileProp }) {
       <div className="flex items-center justify-center min-h-[50vh] sm:min-h-screen">
         <div className="flex flex-col items-center gap-2 sm:gap-3">
           <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-designColor border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-400 text-xs sm:text-sm">Loading profile...</p>
         </div>
       </div>
     );

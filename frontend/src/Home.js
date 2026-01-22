@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion"; // Removed for performance
 import { FaUser, FaEnvelope, FaBars } from "react-icons/fa";
 import { IoIosPaper } from "react-icons/io";
 import { MdWork, MdOutlineClose } from "react-icons/md";
@@ -43,24 +43,22 @@ const Home = ({ profile }) => {
       {/* ================= Left Icons End here ======================== */}
       <div className="w-16 h-96 bg-transparent hidden lgl:flex flex-col gap-4">
         {/* ======= Home Icon start */}
-        <motion.div
+        <div
           onClick={() => setSidenav(true)}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
           className="w-full h-20 bg-gradient-to-b from-bodyColor to-[#1a1a1a] rounded-3xl flex justify-center items-center cursor-pointer group border border-white/5 hover:border-designColor/30 transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-designColor/10"
         >
           <div className="flex flex-col gap-1.5 overflow-hidden">
-            <motion.span 
+            <span
               className="w-8 h-[2px] bg-gradient-to-r from-textColor to-gray-500 inline-block -translate-x-2 group-hover:translate-x-0 transition-all duration-300 group-hover:from-designColor group-hover:to-purple-500 rounded-full"
-            ></motion.span>
-            <motion.span 
+            ></span>
+            <span
               className="w-8 h-[2px] bg-gradient-to-r from-gray-500 to-textColor inline-block group-hover:from-purple-500 group-hover:to-designColor transition-all duration-300 rounded-full"
-            ></motion.span>
-            <motion.span 
+            ></span>
+            <span
               className="w-8 h-[2px] bg-gradient-to-r from-textColor to-gray-500 inline-block -translate-x-3.5 group-hover:translate-x-0 transition-all duration-300 group-hover:from-designColor group-hover:to-purple-500 rounded-full"
-            ></motion.span>
+            ></span>
           </div>
-        </motion.div>
+        </div>
         {/* ======= Home Icon End */}
 
         {/* ============= Sidenav End here =============== */}
@@ -75,12 +73,11 @@ const Home = ({ profile }) => {
               setBlog(false) &
               setContact(false)
             }
-            className={`${
-              about
-                ? "text-designColor"
-                : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
-            } w-full h-6 text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group`}
-            // className="w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
+            className={`${about
+              ? "text-designColor"
+              : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
+              } w-full h-6 text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group`}
+          // className="w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
           >
             <FaUser />
             <span className="text-black font-medium text-xs uppercase bg-designColor px-4 py-[1px] rounded-xl absolute left-0 translate-x-8 group-hover:translate-x-12 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
@@ -96,11 +93,10 @@ const Home = ({ profile }) => {
               setBlog(false) &
               setContact(false)
             }
-            className={`${
-              resume
-                ? "text-designColor"
-                : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
-            } w-full h-6 text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group`}
+            className={`${resume
+              ? "text-designColor"
+              : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
+              } w-full h-6 text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group`}
           >
             <IoIosPaper />
             <span className="text-black font-medium text-xs uppercase bg-designColor px-4 py-[1px] rounded-xl absolute left-0 translate-x-8 group-hover:translate-x-12 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
@@ -116,11 +112,10 @@ const Home = ({ profile }) => {
               setBlog(false) &
               setContact(false)
             }
-            className={`${
-              projects
-                ? "text-designColor"
-                : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
-            } w-full h-6 text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group`}
+            className={`${projects
+              ? "text-designColor"
+              : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
+              } w-full h-6 text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group`}
           >
             <MdWork />
             <span className="text-black font-medium text-xs uppercase bg-designColor px-4 py-[1px] rounded-xl absolute left-0 translate-x-8 group-hover:translate-x-12 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
@@ -137,11 +132,10 @@ const Home = ({ profile }) => {
               setContact(false);
               setSelectedBlogSlug(null);
             }}
-            className={`${
-              blog
-                ? "text-designColor"
-                : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
-            } w-full h-6 text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group`}
+            className={`${blog
+              ? "text-designColor"
+              : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
+              } w-full h-6 text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group`}
           >
             <SiGooglechat />
             <span className="text-black font-medium text-xs uppercase bg-designColor px-4 py-[1px] rounded-xl absolute left-0 translate-x-8 group-hover:translate-x-12 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
@@ -157,11 +151,10 @@ const Home = ({ profile }) => {
               setBlog(false) &
               setContact(true)
             }
-            className={`${
-              contact
-                ? "text-designColor"
-                : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
-            } w-full h-6 text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group`}
+            className={`${contact
+              ? "text-designColor"
+              : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
+              } w-full h-6 text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group`}
           >
             <FaEnvelope />
             <span className="text-black font-medium text-xs uppercase bg-designColor px-4 py-[1px] rounded-xl absolute left-0 translate-x-8 group-hover:translate-x-12 opacity-0 group-hover:opacity-100 transition-all duration-300 z-20">
@@ -180,7 +173,7 @@ const Home = ({ profile }) => {
               </span>
             </a>
           ) : (
-            <span 
+            <span
               onClick={() => {
                 setAbout(false);
                 setResume(false);
@@ -210,7 +203,7 @@ const Home = ({ profile }) => {
       {/* ================= Left Icons Start here ====================== */}
       <div className="w-full lgl:w-[94%] h-full flex flex-col gap-4 sm:gap-6 lgl:gap-0 lgl:flex-row items-center">
         {/* ======================== Home Left Start here ============================ */}
-        <Left 
+        <Left
           profile={profile}
           setAbout={setAbout}
           setResume={setResume}
@@ -245,59 +238,34 @@ const Home = ({ profile }) => {
           {/* ======================== Smaller device content End ========================== */}
           <div className="w-full h-[96%] hidden lgl:flex justify-center overflow-y-scroll scrollbar-thin scrollbar-thumb-[#646464]">
             {about && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="w-full"
-              >
+              <div className="w-full">
                 <About profile={profile} />
-              </motion.div>
+              </div>
             )}
 
             {resume && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="w-full"
-              >
+              <div className="w-full">
                 <Resume />
-              </motion.div>
+              </div>
             )}
             {projects && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="w-full"
-              >
+              <div className="w-full">
                 <Projects />
-              </motion.div>
+              </div>
             )}
             {blog && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="w-full"
-              >
+              <div className="w-full">
                 {selectedBlogSlug ? (
                   <BlogDetail slug={selectedBlogSlug} onBack={() => setSelectedBlogSlug(null)} />
                 ) : (
                   <Blog onReadMore={(slug) => setSelectedBlogSlug(slug)} />
                 )}
-              </motion.div>
+              </div>
             )}
             {contact && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="w-full"
-              >
+              <div className="w-full">
                 <Contact profile={profile} />
-              </motion.div>
+              </div>
             )}
           </div>
         </div>
@@ -305,7 +273,7 @@ const Home = ({ profile }) => {
 
       {/* ============= Sidenav - Accessible on all devices ============= */}
       {sidenav && (
-        <motion.div 
+        <div
           ref={backdropRef}
           onClick={(e) => {
             // Close menu when clicking on backdrop (not on sidenav content)
@@ -313,35 +281,23 @@ const Home = ({ profile }) => {
               setSidenav(false);
             }
           }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
           className="w-full h-screen fixed top-0 left-0 bg-black/70 backdrop-blur-sm z-[110]"
         >
           <div className="w-full max-w-[85vw] sm:max-w-[380px] h-full relative">
-            <motion.div
+            <div
               ref={sidenavRef}
               onClick={(e) => e.stopPropagation()}
-              initial={{ x: '-100%', opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: '-100%', opacity: 0 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               className="w-full h-full bg-gradient-to-b from-bodyColor via-bodyColor to-[#0d0d0d] overflow-y-auto scrollbar-thin scrollbar-thumb-designColor/30 scrollbar-track-transparent hover:scrollbar-thumb-designColor/50 border-r border-white/5 relative"
             >
               {/* Close Button - Inside sidenav */}
-              <motion.button
+              <button
                 onClick={() => setSidenav(false)}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 }}
-                whileHover={{ scale: 1.1, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
                 className="absolute top-4 right-4 w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-bodyColor to-[#1a1a1a] text-xl sm:text-2xl text-gray-400 hover:text-designColor duration-300 cursor-pointer flex items-center justify-center z-50 rounded-xl border border-white/10 hover:border-designColor/30 shadow-lg shadow-black/50 hover:shadow-designColor/10"
                 aria-label="Close menu"
               >
                 <MdOutlineClose />
-              </motion.button>
-              <Sidenav 
+              </button>
+              <Sidenav
                 onNavigate={(page) => {
                   // Set page state for desktop view
                   setAbout(page === 'about');
@@ -352,10 +308,10 @@ const Home = ({ profile }) => {
                   if (page !== 'blog') {
                     setSelectedBlogSlug(null);
                   }
-                  
+
                   // Close the menu
                   setSidenav(false);
-                  
+
                   // On mobile, scroll to the section after a short delay
                   setTimeout(() => {
                     const sectionId = `${page}-section`;
@@ -366,15 +322,15 @@ const Home = ({ profile }) => {
                   }, 100);
                 }}
               />
-            </motion.div>
+            </div>
           </div>
-        </motion.div>
+        </div>
       )}
       {/* ============= Sidenav End ============= */}
 
       {/* ============= Mobile Navigation Bar ============= */}
       <nav className={`mobile-nav lgl:hidden ${sidenav ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-        <div 
+        <div
           onClick={() => setSidenav(true)}
           className={`mobile-nav-item`}
         >
