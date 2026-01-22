@@ -14,7 +14,6 @@ const buildUrl = (endpoint) => {
   if (!cleanEndpoint.endsWith('/')) cleanEndpoint += '/';
 
   const fullUrl = `${API_HOST}/${cleanEndpoint}`;
-  console.log('[API] Built URL:', fullUrl); // ✅ Debug: show full URL
   return fullUrl;
 };
 
@@ -54,13 +53,7 @@ export const buildMediaUrl = (path) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
 
-  let cleanPath = path.startsWith('/') ? path.slice(1) : path;
-
-  // Remove 'media/' prefix if already present
-  if (cleanPath.startsWith('media/')) cleanPath = cleanPath.slice(6);
-
-  const mediaUrl = `${API_HOST}/media/${cleanPath}`;
-  console.log('[API] Media URL:', mediaUrl);
+  const mediaUrl = `${API_HOST}${path}`;
   return mediaUrl;
 };
 

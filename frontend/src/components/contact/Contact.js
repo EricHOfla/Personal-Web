@@ -1,26 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { submitContactForm, getContactInfo } from "../../services/contactService";
+import React, { useState } from "react";
+import { submitContactForm } from "../../services/contactService";
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaPaperPlane } from "react-icons/fa";
 
 function Contact({ profile }) {
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(false);
-  const [contactInfo, setContactInfo] = useState(null);
-
-  useEffect(() => {
-    const loadInfo = async () => {
-      try {
-        const data = await getContactInfo();
-        setContactInfo(data);
-      } catch (error) {
-        // fall back to profile
-        setContactInfo(null);
-      }
-    };
-
-    loadInfo();
-  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -60,8 +45,8 @@ function Contact({ profile }) {
             </div>
             <div className="min-w-0">
               <h3 className="font-semibold text-ink mb-0.5 sm:mb-1 text-sm sm:text-base">Email</h3>
-              <a href={`mailto:${contactInfo?.email || profile?.email || ""}`} className="text-gray-300 hover:text-designColor transition text-xs sm:text-sm break-all">
-                {contactInfo?.email || profile?.email || "Not provided"}
+              <a href={`mailto:${profile?.email || ""}`} className="text-gray-300 hover:text-designColor transition text-xs sm:text-sm break-all">
+                {profile?.email || "Not provided"}
               </a>
             </div>
           </div>
@@ -72,8 +57,8 @@ function Contact({ profile }) {
             </div>
             <div className="min-w-0">
               <h3 className="font-semibold text-ink mb-0.5 sm:mb-1 text-sm sm:text-base">Phone</h3>
-              <a href={`tel:${contactInfo?.phone || profile?.phone || ""}`} className="text-gray-300 hover:text-designColor transition text-xs sm:text-sm">
-                {contactInfo?.phone || profile?.phone || "Not provided"}
+              <a href={`tel:${profile?.phone || ""}`} className="text-gray-300 hover:text-designColor transition text-xs sm:text-sm">
+                {profile?.phone || "Not provided"}
               </a>
             </div>
           </div>
@@ -85,7 +70,7 @@ function Contact({ profile }) {
             <div className="min-w-0">
               <h3 className="font-semibold text-ink mb-0.5 sm:mb-1 text-sm sm:text-base">Location</h3>
               <p className="text-gray-300 text-xs sm:text-sm">
-                {contactInfo?.address || profile?.residence || profile?.address || "Not provided"}
+                {profile?.residence || profile?.address || "Not provided"}
               </p>
             </div>
           </div>
