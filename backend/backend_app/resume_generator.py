@@ -138,25 +138,30 @@ def generate_resume_pdf(request):
         
         # Contact Line
         contact_parts = []
-        if profile.email: contact_parts.append(profile.email)
+        if profile.email: 
+            contact_parts.append(f'<a href="mailto:{profile.email}" color="blue"><u>{profile.email}</u></a>')
         if profile.phone: contact_parts.append(profile.phone)
         if profile.residence or profile.address: 
              contact_parts.append(f"{profile.residence or ''} {profile.address or ''}".strip())
         
         # Add social links to contact line if space permits, or new line
+        # Helper to format link
+        def format_link(url, label):
+            return f'<a href="{url}" color="blue"><u>{label}</u></a>'
+
         website_link = next((link.url for link in social_links if 'web' in (link.platform or '').lower() or 'portfol' in (link.platform or '').lower()), None)
         linkedin_link = next((link.url for link in social_links if 'linkedin' in (link.platform or '').lower()), None)
         github_link = next((link.url for link in social_links if 'github' in (link.platform or '').lower()), None)
         
-        if website_link: contact_parts.append(website_link)
+        if website_link: contact_parts.append(format_link(website_link, "Portfolio"))
         
         contact_text = " | ".join(contact_parts)
         elements.append(Paragraph(contact_text, styles['ResumeContact']))
         
         # Second line of links if they exist
         social_parts = []
-        if linkedin_link: social_parts.append(f"LinkedIn: {linkedin_link}")
-        if github_link: social_parts.append(f"GitHub: {github_link}")
+        if linkedin_link: social_parts.append(f"LinkedIn: {format_link(linkedin_link, linkedin_link)}")
+        if github_link: social_parts.append(f"GitHub: {format_link(github_link, github_link)}")
         
         if social_parts:
             elements.append(Paragraph(" | ".join(social_parts), styles['ResumeContact']))
@@ -247,7 +252,11 @@ def generate_resume_pdf(request):
             elements.append(Spacer(1, 8))
 
     # 5. Skills
-    if skills.count() > 0:
+    # Separate languages from other skills
+    language_skills = [s for s in skills if s.category == 'Languages']
+    tech_skills = [s for s in skills if s.category != 'Languages']
+
+    if tech_skills:
         elements.append(Paragraph("Technical Skills", styles['SectionHeader']))
         line_data = [['']]
         t = Table(line_data, colWidths=[530], rowHeights=[1])
@@ -256,8 +265,21 @@ def generate_resume_pdf(request):
         elements.append(Spacer(1, 5))
         
         # Group skills by category if needed, here just listing names
-        skill_txt = ", ".join([s.skill_name for s in skills])
+        skill_txt = ", ".join([s.skill_name for s in tech_skills])
         elements.append(Paragraph(skill_txt, styles['JustifiedText']))
+        elements.append(Spacer(1, 10))
+
+    if language_skills:
+        elements.append(Paragraph("Languages", styles['SectionHeader']))
+        line_data = [['']]
+        t = Table(line_data, colWidths=[530], rowHeights=[1])
+        t.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#e5e7eb'))]))
+        elements.append(t)
+        elements.append(Spacer(1, 5))
+        
+        # List languages
+        lang_txt = ", ".join([s.skill_name for s in language_skills])
+        elements.append(Paragraph(lang_txt, styles['JustifiedText']))
         elements.append(Spacer(1, 10))
 
     # 6. Selected Projects (Optional)
