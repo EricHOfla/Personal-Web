@@ -95,9 +95,9 @@ const getServiceIcon = (serviceName) => {
   return serviceIconMap.default;
 };
 
-function Sidenav({ onNavigate }) {
+function Sidenav({ onNavigate, profile: profileProp }) {
   const [items, setItems] = useState([]);
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState(profileProp || null);
   const [skills, setSkills] = useState([]);
   const [projects, setProjects] = useState([]);
   const [experiences, setExperiences] = useState([]);
@@ -107,31 +107,35 @@ function Sidenav({ onNavigate }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (profileProp) {
+      setProfile(profileProp);
+    }
     const fetchAllData = async () => {
       try {
         // Fetch all data in parallel for better performance
         const [
           sidenavData,
-          profileData,
           skillsData,
           projectsData,
           experiencesData,
           socialData,
           funFactsData,
-          servicesData
+          servicesData,
+          fetchedProfile
         ] = await Promise.all([
           getSidenavItems().catch(() => []),
-          getProfile().catch(() => null),
           getSkills().catch(() => []),
           getProjects().catch(() => []),
           getExperiences().catch(() => []),
           getSocialLinks().catch(() => []),
           getFunFacts().catch(() => []),
-          getServices().catch(() => [])
+          getServices().catch(() => []),
+          // Only fetch profile if not provided in props
+          !profileProp ? getProfile().catch(() => null) : Promise.resolve(null)
         ]);
 
         setItems(Array.isArray(sidenavData) ? sidenavData : sidenavData?.results || []);
-        setProfile(profileData);
+        if (fetchedProfile) setProfile(fetchedProfile);
         setSkills(Array.isArray(skillsData) ? skillsData : skillsData?.results || []);
         setProjects(Array.isArray(projectsData) ? projectsData : projectsData?.results || []);
         setExperiences(Array.isArray(experiencesData) ? experiencesData : experiencesData?.results || []);
@@ -146,7 +150,7 @@ function Sidenav({ onNavigate }) {
     };
 
     fetchAllData();
-  }, []);
+  }, [profileProp]);
 
   // Calculate dynamic stats
   const yearsOfExperience = calculateYearsOfExperience(experiences);

@@ -31,8 +31,19 @@ const Education = ({ mode = "all" }) => {
   }, []);
 
   if (loading) return (
-    <div className="flex justify-center py-8 sm:py-12">
-      <div className="w-8 h-8 sm:w-10 sm:h-10 border-4 border-designColor border-t-transparent rounded-full animate-spin"></div>
+    <div className="education-section space-y-6 sm:space-y-8">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="skeleton h-8 w-1/3 mb-4"></div>
+        <div className="education-list space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="glass-card p-6 space-y-3">
+              <div className="skeleton h-6 w-1/2"></div>
+              <div className="skeleton h-4 w-1/3"></div>
+              <div className="skeleton h-4 w-full"></div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 

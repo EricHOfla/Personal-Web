@@ -25,19 +25,17 @@ const Home = ({ profile }) => {
   const sidenavRef = useRef();
   const backdropRef = useRef();
 
-  useEffect(() => {
-    // Prevent body scroll when sidenav is open on mobile
-    if (sidenav) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [sidenav]);
+  // Body scroll lock removed to prevent freezing on mobile
+  // useEffect(() => {
+  //   if (sidenav) {
+  //     document.body.style.overflow = 'hidden';
+  //   } else {
+  //     document.body.style.overflow = 'unset';
+  //   }
+  //   return () => {
+  //     document.body.style.overflow = 'unset';
+  //   };
+  // }, [sidenav]);
   return (
     <div className="w-full lgl:w-[95%] h-full lgl:h-[85%] bg-transparent text-white z-50 flex flex-col lgl:flex-row items-start justify-between p-2 sm:p-4 lgl:p-0 pb-20 lgl:pb-0">
       {/* ================= Left Icons End here ======================== */}
@@ -237,95 +235,89 @@ const Home = ({ profile }) => {
           </div>
           {/* ======================== Smaller device content End ========================== */}
           <div className="w-full h-[96%] hidden lgl:flex justify-center overflow-y-scroll scrollbar-thin scrollbar-thumb-[#646464]">
-            {about && (
-              <div className="w-full">
-                <About profile={profile} />
-              </div>
-            )}
+            <div className={`w-full ${about ? "block" : "hidden"}`}>
+              <About profile={profile} />
+            </div>
 
-            {resume && (
-              <div className="w-full">
-                <Resume />
-              </div>
-            )}
-            {projects && (
-              <div className="w-full">
-                <Projects />
-              </div>
-            )}
-            {blog && (
-              <div className="w-full">
-                {selectedBlogSlug ? (
-                  <BlogDetail slug={selectedBlogSlug} onBack={() => setSelectedBlogSlug(null)} />
-                ) : (
-                  <Blog onReadMore={(slug) => setSelectedBlogSlug(slug)} />
-                )}
-              </div>
-            )}
-            {contact && (
-              <div className="w-full">
-                <Contact profile={profile} />
-              </div>
-            )}
+            <div className={`w-full ${resume ? "block" : "hidden"}`}>
+              <Resume />
+            </div>
+
+            <div className={`w-full ${projects ? "block" : "hidden"}`}>
+              <Projects />
+            </div>
+
+            <div className={`w-full ${blog ? "block" : "hidden"}`}>
+              {selectedBlogSlug ? (
+                <BlogDetail slug={selectedBlogSlug} onBack={() => setSelectedBlogSlug(null)} />
+              ) : (
+                <Blog onReadMore={(slug) => setSelectedBlogSlug(slug)} />
+              )}
+            </div>
+
+            <div className={`w-full ${contact ? "block" : "hidden"}`}>
+              <Contact profile={profile} />
+            </div>
           </div>
         </div>
       </div>
 
       {/* ============= Sidenav - Accessible on all devices ============= */}
-      {sidenav && (
-        <div
-          ref={backdropRef}
-          onClick={(e) => {
-            // Close menu when clicking on backdrop (not on sidenav content)
-            if (sidenavRef.current && !sidenavRef.current.contains(e.target)) {
-              setSidenav(false);
-            }
-          }}
-          className="w-full h-screen fixed top-0 left-0 bg-black/70 backdrop-blur-sm z-[110]"
-        >
-          <div className="w-full max-w-[85vw] sm:max-w-[380px] h-full relative">
-            <div
-              ref={sidenavRef}
-              onClick={(e) => e.stopPropagation()}
-              className="w-full h-full bg-gradient-to-b from-bodyColor via-bodyColor to-[#0d0d0d] overflow-y-auto scrollbar-thin scrollbar-thumb-designColor/30 scrollbar-track-transparent hover:scrollbar-thumb-designColor/50 border-r border-white/5 relative"
+      {/* ============= Sidenav - Accessible on all devices ============= */}
+      <div
+        ref={backdropRef}
+        onClick={(e) => {
+          // Close menu when clicking on backdrop (not on sidenav content)
+          if (sidenavRef.current && !sidenavRef.current.contains(e.target)) {
+            setSidenav(false);
+          }
+        }}
+        className={`w-full h-[100dvh] fixed top-0 left-0 bg-black/70 backdrop-blur-sm z-[110] transition-opacity duration-300 ${sidenav ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
+      >
+        <div className={`w-full max-w-[85vw] sm:max-w-[380px] h-full relative transition-transform duration-300 ease-in-out ${sidenav ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div
+            ref={sidenavRef}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full h-full bg-gradient-to-b from-bodyColor via-bodyColor to-[#0d0d0d] overflow-y-auto scrollbar-thin scrollbar-thumb-designColor/30 scrollbar-track-transparent hover:scrollbar-thumb-designColor/50 border-r border-white/5 relative"
+          >
+            {/* Close Button - Inside sidenav */}
+            <button
+              onClick={() => setSidenav(false)}
+              className="absolute top-4 right-4 w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-bodyColor to-[#1a1a1a] text-xl sm:text-2xl text-gray-400 hover:text-designColor duration-300 cursor-pointer flex items-center justify-center z-50 rounded-xl border border-white/10 hover:border-designColor/30 shadow-lg shadow-black/50 hover:shadow-designColor/10"
+              aria-label="Close menu"
             >
-              {/* Close Button - Inside sidenav */}
-              <button
-                onClick={() => setSidenav(false)}
-                className="absolute top-4 right-4 w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-bodyColor to-[#1a1a1a] text-xl sm:text-2xl text-gray-400 hover:text-designColor duration-300 cursor-pointer flex items-center justify-center z-50 rounded-xl border border-white/10 hover:border-designColor/30 shadow-lg shadow-black/50 hover:shadow-designColor/10"
-                aria-label="Close menu"
-              >
-                <MdOutlineClose />
-              </button>
-              <Sidenav
-                onNavigate={(page) => {
-                  // Set page state for desktop view
-                  setAbout(page === 'about');
-                  setResume(page === 'resume');
-                  setProjects(page === 'projects');
-                  setBlog(page === 'blog');
-                  setContact(page === 'contact');
-                  if (page !== 'blog') {
-                    setSelectedBlogSlug(null);
+              <MdOutlineClose />
+            </button>
+            <Sidenav
+              profile={profile}
+              onNavigate={(page) => {
+                // Set page state for desktop view
+                setAbout(page === 'about');
+                setResume(page === 'resume');
+                setProjects(page === 'projects');
+                setBlog(page === 'blog');
+                setContact(page === 'contact');
+                if (page !== 'blog') {
+                  setSelectedBlogSlug(null);
+                }
+
+                // Close the menu
+                setSidenav(false);
+
+                // On mobile, scroll to the section after a short delay
+                setTimeout(() => {
+                  const sectionId = `${page}-section`;
+                  const section = document.getElementById(sectionId);
+                  if (section) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
-
-                  // Close the menu
-                  setSidenav(false);
-
-                  // On mobile, scroll to the section after a short delay
-                  setTimeout(() => {
-                    const sectionId = `${page}-section`;
-                    const section = document.getElementById(sectionId);
-                    if (section) {
-                      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                  }, 100);
-                }}
-              />
-            </div>
+                }, 100);
+              }}
+            />
           </div>
         </div>
-      )}
+      </div>
+      {/* ============= Sidenav End ============= */}
       {/* ============= Sidenav End ============= */}
 
       {/* ============= Mobile Navigation Bar ============= */}
