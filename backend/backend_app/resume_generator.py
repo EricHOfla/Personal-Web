@@ -140,8 +140,8 @@ def generate_resume_pdf(request):
         contact_parts = []
         if profile.email: contact_parts.append(profile.email)
         if profile.phone: contact_parts.append(profile.phone)
-        if profile.location or (profile.residence and profile.address): 
-             contact_parts.append(profile.location or f"{profile.residence}, {profile.address}")
+        if profile.residence or profile.address: 
+             contact_parts.append(f"{profile.residence or ''} {profile.address or ''}".strip())
         
         # Add social links to contact line if space permits, or new line
         website_link = next((link.url for link in social_links if 'web' in (link.platform or '').lower() or 'portfol' in (link.platform or '').lower()), None)
