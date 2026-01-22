@@ -562,10 +562,16 @@ function Sidenav({ onNavigate }) {
           />
         </motion.button>
 
-        {/* Copyright - From Database */}
-        <p className="text-center text-[10px] text-gray-500 mt-4">
+        {/* Copyright - From Database (links to Admin) */}
+        <a
+          href="https://personal-web-srv9.onrender.com/admin/"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Admin"
+          className="block text-center text-[10px] text-gray-500 mt-4 hover:text-designColor transition-colors"
+        >
           © {new Date().getFullYear()} {profile?.copyright_name || profile?.full_name || 'Eric H Ofla'}. All rights reserved
-        </p>
+        </a>
       </motion.div>
     </div>
   );
