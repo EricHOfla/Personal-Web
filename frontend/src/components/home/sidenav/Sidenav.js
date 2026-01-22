@@ -459,12 +459,11 @@ function Sidenav({ onNavigate }) {
         </motion.div>
       )}
 
-      {/* ========== Footer Section ========== */}
+      {/* ========== Footer Section (sticky on mobile) ========== */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        // transition={{ delay: 1.1 }}
-        className="mt-auto p-4 sm:p-6 border-t border-white/5 bg-gradient-to-t from-black/20 to-transparent"
+        className="mt-auto sticky bottom-0 p-4 sm:p-6 border-t border-white/5 bg-gradient-to-t from-bodyColor to-transparent backdrop-blur-sm"
       >
         {/* Social Links - From Database */}
         {socialLinks.length > 0 && (
