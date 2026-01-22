@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getProfile } from "./services/profileService";
+import Spinner from "./components/Spinner";
 import RoundOne from "./components/roundDesigns/RoundOne";
 import RoundTwo from "./components/roundDesigns/RoundTwo";
 import RoundThree from "./components/roundDesigns/RoundThree";
@@ -29,7 +30,13 @@ function App() {
     fetchProfile();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner />
+      </div>
+    );
+  }
   if (error) return <div>Error: {error}</div>;
 
   return (
