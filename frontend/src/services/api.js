@@ -57,6 +57,11 @@ export const buildMediaUrl = (path) => {
   return mediaUrl;
 };
 
+// URL for dynamic resume PDF
+export const getResumePdfUrl = () => {
+  return `${API_HOST}/api/generate-resume/`;
+};
+
 // Helpers for HTTP methods
 export const apiGet = (endpoint, headers = {}) => apiCall(endpoint, { method: 'GET', headers });
 export const apiPost = (endpoint, data, headers = {}) => apiCall(endpoint, { method: 'POST', headers, body: JSON.stringify(data) });

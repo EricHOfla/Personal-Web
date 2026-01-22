@@ -2,9 +2,13 @@ from django.urls import path # type: ignore
 from django.conf import settings # type: ignore
 from django.conf.urls.static import static # type: ignore
 from .views import *
+from .resume_generator import generate_resume_pdf
 
 urlpatterns = [
     path('', api_root, name='api-root'),
+    
+    # Dynamic Resume PDF Download
+    path('generate-resume/', generate_resume_pdf, name='generate-resume-pdf'),
 
     # Profile
     path('profile/', user_profile_list, name='user-profile'),
