@@ -17,15 +17,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_profile_image(self, obj):
-        request = self.context.get("request")
-        if obj.profile_image and request:
-            return request.build_absolute_uri(obj.profile_image.url)
+        if obj.profile_image:
+            return obj.profile_image.url
         return None
 
     def get_cv_file(self, obj):
-        request = self.context.get("request")
-        if obj.cv_file and request:
-            return request.build_absolute_uri(obj.cv_file.url)
+        if obj.cv_file:
+            return obj.cv_file.url
         return None
 
 
@@ -94,9 +92,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_image_url(self, obj):
-        request = self.context.get("request")
-        if obj.image_url and request:
-            return request.build_absolute_uri(obj.image_url.url)
+        if obj.image_url:
+            return obj.image_url.url
         return None
 
 
@@ -112,9 +109,8 @@ class BlogPostSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_featured_image(self, obj):
-        request = self.context.get("request")
-        if obj.featured_image and request:
-            return request.build_absolute_uri(obj.featured_image.url)
+        if obj.featured_image:
+            return obj.featured_image.url
         return None
 
 
@@ -152,9 +148,8 @@ class TestimonialSerializer(serializers.ModelSerializer):
         }
 
     def get_image_display(self, obj):
-        request = self.context.get("request")
-        if obj.image and request:
-            return request.build_absolute_uri(obj.image.url)
+        if obj.image:
+            return obj.image.url
         return None
 
     def create(self, validated_data):

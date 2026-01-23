@@ -136,9 +136,9 @@ function BlogDetail({ slug, onBack }) {
               <span>{views_count} views</span>
             </div>
             {postSlug && (
-              <div className="flex items-center gap-2 py-1 px-2 bg-designColor/10 rounded-md border border-designColor/20">
-                <FaLink className="text-designColor" title="Slug" />
-                <span className="font-mono text-sm font-medium text-designColor/90">{postSlug}</span>
+              <div className="flex items-center gap-2 py-1.5 px-3 bg-designColor/20 rounded-lg border border-designColor/30 shadow-inner">
+                <FaLink className="text-designColor text-sm" title="Slug" />
+                <span className="font-mono text-base font-bold text-designColor tracking-tight">{postSlug}</span>
               </div>
             )}
           </div>
