@@ -25,8 +25,8 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
   const [text] = useTypewriter({
     words: [
       profile?.title || "Software Engineer",
-      profile?.qualification || "Full Stack Developer",
-      profile?.freelance_status || "Available for work",
+      "Full Stack Developer",
+      "Available for work",
     ],
     loop: true,
     typeSpeed: 30,
@@ -49,8 +49,7 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
   return (
     <div className="w-full lgl:w-5/12 h-full bg-bodyColor rounded-2xl shadow-testShwdow z-10 overflow-hidden flex flex-col">
       {/* Image section */}
-      <div className="w-full mt-6 h-48 xs:h-56 sm:h-72 md:h-80 lgl:h-80 relative">
-        <img
+      <div className="w-full mt-6 h-48 xs:h-56 sm:h-72 md:h-80 lgl:h-80 relative">    <img
           className="w-5/6 mx-auto h-full object-contain object-top rounded-2xl bg-white"
           src={profile?.profile_image ? buildMediaUrl(profile.profile_image) : bannerImg}
           alt={profile?.full_name || "Profile banner"}
