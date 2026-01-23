@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaCalendar, FaClock, FaArrowLeft, FaUser, FaEye } from "react-icons/fa";
+import { FaCalendar, FaClock, FaArrowLeft, FaUser, FaEye, FaLink } from "react-icons/fa";
 import { getBlogPost } from "../../services/blogService";
 import { buildMediaUrl } from "../../services/api";
 
@@ -62,11 +62,11 @@ function BlogDetail({ slug, onBack }) {
     title = "Untitled Post",
     content,
     excerpt,
-    featured_image,
     published_date,
     category = "General",
     user,
     views_count = 0,
+    slug: postSlug,
   } = post;
 
   const formattedDate = published_date
@@ -77,7 +77,6 @@ function BlogDetail({ slug, onBack }) {
     })
     : "Unknown date";
 
-  const imageSrc = buildMediaUrl(featured_image);
   const authorName = user?.full_name || user?.first_name || "Anonymous";
 
   // Calculate reading time based on content length (~200 words per minute)
@@ -134,19 +133,13 @@ function BlogDetail({ slug, onBack }) {
               <FaEye className="text-designColor" />
               <span>{views_count} views</span>
             </div>
+            {postSlug && (
+              <div className="flex items-center gap-2">
+                <FaLink className="text-designColor" />
+                <span className="font-mono text-[10px] opacity-70">{postSlug}</span>
+              </div>
+            )}
           </div>
-
-          {/* Featured Image */}
-          {imageSrc && (
-            <div className="mb-6 sm:mb-8 rounded-xl overflow-hidden">
-              <img
-                src={imageSrc}
-                alt={title}
-                className="w-full h-auto max-h-[400px] sm:max-h-[500px] md:max-h-[600px] object-cover"
-                loading="eager"
-              />
-            </div>
-          )}
         </div>
 
         {/* Excerpt / Lead Paragraph */}
