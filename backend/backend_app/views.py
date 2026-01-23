@@ -299,6 +299,10 @@ def blog_post_detail(request, slug):
         return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
+        # Increment views count
+        item.views_count += 1
+        item.save(update_fields=['views_count'])
+        
         serializer = BlogPostSerializer(item, context={'request': request})
         return Response(serializer.data)
     elif request.method == 'PUT':
