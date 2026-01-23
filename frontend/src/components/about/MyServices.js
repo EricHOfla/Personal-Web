@@ -44,7 +44,7 @@ function MyServices() {
         <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-designColor mb-1.5 sm:mb-2">
           Services
         </p>
-        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-ink">What I Offer</h2>
+        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-titleColor">What I Offer</h2>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-6">

@@ -30,11 +30,10 @@ const Resume = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-lg sm:rounded-xl font-medium text-xs sm:text-sm md:text-base transition ${
-                activeTab === tab.id
-                  ? "bg-designColor text-black shadow-glow"
-                  : "bg-white/5 text-gray-300 hover:bg-white/10"
-              }`}
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-lg sm:rounded-xl font-medium text-xs sm:text-sm md:text-base transition ${activeTab === tab.id
+                  ? "bg-designColor text-bodyColor shadow-glow"
+                  : "bg-white/5 text-textColor hover:bg-white/10"
+                }`}
             >
               <Icon className="text-sm sm:text-base" />
               <span className="hidden xs:inline">{tab.label}</span>

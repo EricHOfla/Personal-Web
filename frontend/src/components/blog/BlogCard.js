@@ -29,10 +29,10 @@ function BlogCard({ post, onReadMore }) {
 
   const formattedDate = published_date
     ? new Date(published_date).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    })
     : "Unknown date";
 
   const imageSrc = buildMediaUrl(featured_image);
@@ -74,7 +74,7 @@ function BlogCard({ post, onReadMore }) {
           </span>
         </div>
 
-        <h2 className="text-base sm:text-lg md:text-xl font-bold text-ink mb-2 sm:mb-3 line-clamp-2 group-hover:text-designColor transition cursor-pointer">
+        <h2 className="text-base sm:text-lg md:text-xl font-bold text-titleColor mb-2 sm:mb-3 line-clamp-2 group-hover:text-designColor transition cursor-pointer">
           {title}
         </h2>
 

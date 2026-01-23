@@ -11,7 +11,7 @@ function BlogDetail({ slug, onBack }) {
   useEffect(() => {
     const fetchPost = async () => {
       if (!slug) return;
-      
+
       try {
         setLoading(true);
         const data = await getBlogPost(slug);
@@ -71,10 +71,10 @@ function BlogDetail({ slug, onBack }) {
 
   const formattedDate = published_date
     ? new Date(published_date).toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      })
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    })
     : "Unknown date";
 
   const imageSrc = buildMediaUrl(featured_image);
@@ -107,7 +107,7 @@ function BlogDetail({ slug, onBack }) {
           </div>
 
           {/* Title */}
-          <h1 className="text-l sm:text-3xl md:text-xl lg:text-2xl font-bold text-ink mb-4 sm:mb-6 leading-tight">
+          <h1 className="text-l sm:text-3xl md:text-xl lg:text-2xl font-bold text-titleColor mb-4 sm:mb-6 leading-tight">
             {title}
           </h1>
 
@@ -154,7 +154,7 @@ function BlogDetail({ slug, onBack }) {
 
         {/* Footer */}
         <div className="mt-1 sm:mt-6 pt-1 sm:pt-2 border-t border-gray-800">
-            
+
         </div>
       </article>
     </section>

@@ -40,7 +40,7 @@ function ProjectsCard({ project }) {
       </div>
 
       <div className="p-4 sm:p-5 md:p-6 flex flex-col flex-1">
-        <h3 className="text-base sm:text-lg md:text-xl font-bold text-ink mb-2 sm:mb-3 group-hover:text-designColor transition line-clamp-1">
+        <h3 className="text-base sm:text-lg md:text-xl font-bold text-titleColor mb-2 sm:mb-3 group-hover:text-designColor transition line-clamp-1">
           {title}
         </h3>
 
@@ -66,13 +66,13 @@ function ProjectsCard({ project }) {
           </div>
         )}
 
-        <div className="flex gap-1.5 sm:gap-2 md:gap-3 pt-2 sm:pt-3 md:pt-4 border-t border-gray-800">
+        <div className="flex gap-1.5 sm:gap-2 md:gap-3 pt-2 sm:pt-3 md:pt-4 border-t border-surfaceBorder">
           {github_url && (
             <a
               href={github_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium text-gray-300 hover:text-white transition min-w-0"
+              className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium text-textColor hover:text-designColor transition min-w-0"
             >
               <FaGithub className="text-xs sm:text-sm md:text-base flex-shrink-0" /> <span className="hidden xs:inline truncate">Code</span>
             </a>

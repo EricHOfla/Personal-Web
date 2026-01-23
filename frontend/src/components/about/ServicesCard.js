@@ -1,5 +1,5 @@
 import React from "react";
-import { 
+import {
   FaCode, FaMobileAlt, FaPaintBrush, FaServer, FaDatabase,
   FaCloud, FaCogs, FaRocket, FaLaptopCode
 } from "react-icons/fa";
@@ -30,16 +30,16 @@ const iconMap = {
 // Get icon based on icon field or service title
 const getServiceIcon = (service) => {
   if (!service) return iconMap.default;
-  
+
   // First, try to match the icon field from database
   const iconField = (service.icon || "").toLowerCase().trim();
   if (iconField && iconMap[iconField]) {
     return iconMap[iconField];
   }
-  
+
   // If icon field doesn't match, try to match by service title
   const title = (service.title || "").toLowerCase();
-  
+
   // Check for keywords in title
   if (title.includes('web') || title.includes('website')) return iconMap.web;
   if (title.includes('design') || title.includes('ui') || title.includes('ux')) return iconMap.design;
@@ -51,7 +51,7 @@ const getServiceIcon = (service) => {
   if (title.includes('api')) return iconMap.api;
   if (title.includes('devops') || title.includes('dev-ops')) return iconMap.devops;
   if (title.includes('code') || title.includes('development')) return iconMap.code;
-  
+
   // Default fallback
   return iconMap.default;
 };
@@ -65,7 +65,7 @@ function ServicesCard({ service }) {
         <Icon className="text-xl sm:text-2xl md:text-3xl" />
       </div>
       <div className="flex-1 w-full">
-        <h3 className="text-sm sm:text-base md:text-lg font-semibold text-ink mb-1 sm:mb-1.5 md:mb-2 group-hover:text-designColor transition break-words">
+        <h3 className="text-sm sm:text-base md:text-lg font-semibold text-titleColor mb-1 sm:mb-1.5 md:mb-2 group-hover:text-designColor transition break-words">
           {service?.title || "Service"}
         </h3>
         <p className="text-[11px] xs:text-xs sm:text-sm text-gray-300 leading-relaxed break-words">

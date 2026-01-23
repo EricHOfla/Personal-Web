@@ -44,7 +44,7 @@ function Contact({ profile }) {
               <FaEnvelope className="text-lg sm:text-xl" />
             </div>
             <div className="min-w-0">
-              <h3 className="font-semibold text-ink mb-0.5 sm:mb-1 text-sm sm:text-base">Email</h3>
+              <h3 className="font-semibold text-titleColor mb-0.5 sm:mb-1 text-sm sm:text-base">Email</h3>
               <a href={`mailto:${profile?.email || ""}`} className="text-gray-300 hover:text-designColor transition text-xs sm:text-sm break-all">
                 {profile?.email || "Not provided"}
               </a>
@@ -56,7 +56,7 @@ function Contact({ profile }) {
               <FaPhone className="text-lg sm:text-xl" />
             </div>
             <div className="min-w-0">
-              <h3 className="font-semibold text-ink mb-0.5 sm:mb-1 text-sm sm:text-base">Phone</h3>
+              <h3 className="font-semibold text-titleColor mb-0.5 sm:mb-1 text-sm sm:text-base">Phone</h3>
               <a href={`tel:${profile?.phone || ""}`} className="text-gray-300 hover:text-designColor transition text-xs sm:text-sm">
                 {profile?.phone || "Not provided"}
               </a>
@@ -68,7 +68,7 @@ function Contact({ profile }) {
               <FaMapMarkerAlt className="text-lg sm:text-xl" />
             </div>
             <div className="min-w-0">
-              <h3 className="font-semibold text-ink mb-0.5 sm:mb-1 text-sm sm:text-base">Location</h3>
+              <h3 className="font-semibold text-titleColor mb-0.5 sm:mb-1 text-sm sm:text-base">Location</h3>
               <p className="text-gray-300 text-xs sm:text-sm">
                 {profile?.residence || profile?.address || "Not provided"}
               </p>
@@ -87,7 +87,7 @@ function Contact({ profile }) {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-ink focus:border-designColor focus:outline-none transition text-sm sm:text-base"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-titleColor focus:border-designColor focus:outline-none transition text-sm sm:text-base"
                   placeholder="Eric H Oflã"
                 />
               </div>
@@ -99,7 +99,7 @@ function Contact({ profile }) {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-ink focus:border-designColor focus:outline-none transition text-sm sm:text-base"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-titleColor focus:border-designColor focus:outline-none transition text-sm sm:text-base"
                   placeholder="ofla@gmail.com"
                 />
               </div>
@@ -113,7 +113,7 @@ function Contact({ profile }) {
                 value={formData.subject}
                 onChange={handleChange}
                 required
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-ink focus:border-designColor focus:outline-none transition text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-titleColor focus:border-designColor focus:outline-none transition text-sm sm:text-base"
                 placeholder="Project Inquiry"
               />
             </div>
@@ -126,18 +126,17 @@ function Contact({ profile }) {
                 onChange={handleChange}
                 required
                 rows="5"
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-ink focus:border-designColor focus:outline-none transition resize-none text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white/5 border border-white/10 rounded-lg text-titleColor focus:border-designColor focus:outline-none transition resize-none text-sm sm:text-base"
                 placeholder="Tell me about your project..."
               ></textarea>
             </div>
 
             {status.message && (
               <div
-                className={`p-3 sm:p-4 rounded-lg text-xs sm:text-sm ${
-                  status.type === "success"
+                className={`p-3 sm:p-4 rounded-lg text-xs sm:text-sm ${status.type === "success"
                     ? "bg-green-500/10 border border-green-500/30 text-green-400"
                     : "bg-red-500/10 border border-red-500/30 text-red-400"
-                }`}
+                  }`}
               >
                 {status.message}
               </div>

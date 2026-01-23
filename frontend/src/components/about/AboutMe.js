@@ -13,7 +13,7 @@ function AboutMe({ profile }) {
     <section className="space-y-6 sm:space-y-8">
       <div className="text-center px-2">
         <p className="text-xs sm:text-sm uppercase tracking-[0.15em] sm:tracking-[0.2em] text-designColor mb-1.5 sm:mb-2">About Me</p>
-        <h2 className="text-xl sm:text-2xl font-semibold text-ink">Get to Know Me</h2>
+        <h2 className="text-xl sm:text-2xl font-semibold text-titleColor">Get to Know Me</h2>
       </div>
 
       <div className="glass-card p-3 sm:p-4 md:p-6 lg:p-8 xl:p-12 flex flex-col lg:flex-row gap-3 sm:gap-4 md:gap-6 lg:gap-8 items-center">
@@ -28,7 +28,7 @@ function AboutMe({ profile }) {
 
         {/* Bio */}
         <div className="flex-1 space-y-2 sm:space-y-3 md:space-y-4 text-center lg:text-left w-full">
-          <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-ink break-words">{profile?.full_name || "Developer"}</h3>
+          <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-titleColor break-words">{profile?.full_name || "Developer"}</h3>
           <p className="text-xs sm:text-sm md:text-base text-designColor font-medium break-words">{profile?.title || "Full Stack Developer"}</p>
           <p className="text-xs sm:text-sm md:text-base text-gray-300 leading-relaxed break-words">{profile?.bio || "No bio available."}</p>
 

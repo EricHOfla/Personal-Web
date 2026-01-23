@@ -264,14 +264,14 @@ function Sidenav({ onNavigate, profile: profileProp }) {
               <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-bodyColor"></span>
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-xl font-bold text-white truncate mb-0.5">
+              <h2 className="text-xl font-bold text-titleColor truncate mb-0.5">
                 {displayName}
               </h2>
               <p className="text-sm text-designColor font-medium truncate">
                 {displayTitle}
               </p>
               {profile?.location && (
-                <p className="text-xs text-gray-400 flex items-center gap-1 mt-1">
+                <p className="text-xs text-textSecondary flex items-center gap-1 mt-1">
                   <FaMapMarkerAlt className="text-[10px]" />
                   <span className="truncate">{profile.location}</span>
                 </p>
@@ -319,10 +319,10 @@ function Sidenav({ onNavigate, profile: profileProp }) {
             ].map((stat, i) => (
               <div
                 key={i}
-                className={`bg-gradient-to-br ${stat.color} rounded-xl p-3 text-center backdrop-blur-sm border border-white/5 ${stat.borderColor} transition-all cursor-default hover:scale-105`}
+                className={`bg-gradient-to-br ${stat.color} rounded-xl p-3 text-center backdrop-blur-sm border border-surfaceBorder ${stat.borderColor} transition-all cursor-default hover:scale-105`}
               >
                 <span className={`text-xl font-bold ${stat.textColor}`}>{stat.value}</span>
-                <p className="text-[10px] text-gray-400 mt-0.5 font-medium">{stat.label}</p>
+                <p className="text-[10px] text-textSecondary mt-0.5 font-medium">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -332,11 +332,11 @@ function Sidenav({ onNavigate, profile: profileProp }) {
       {/* ========== Services Section - From Database ========== */}
       {topServices.length > 0 && (
         <div
-          className="px-4 sm:px-6 py-4 border-t border-white/5"
+          className="px-4 sm:px-6 py-4 border-t border-surfaceBorder"
         >
           <div className="flex items-center gap-2 mb-4">
             <div className="w-1.5 h-5 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full"></div>
-            <span className="text-xs font-bold text-gray-300 uppercase tracking-widest">Services</span>
+            <span className="text-xs font-bold text-textColor uppercase tracking-widest">Services</span>
             <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent ml-2"></div>
           </div>
 
@@ -348,14 +348,14 @@ function Sidenav({ onNavigate, profile: profileProp }) {
               return (
                 <div
                   key={service.id || i}
-                  className="group p-3 rounded-xl bg-gradient-to-br from-white/5 to-transparent border border-white/5 hover:border-cyan-500/30 transition-all cursor-default hover:scale-105 hover:-translate-y-1"
+                  className="group p-3 rounded-xl bg-gradient-to-br from-white/5 to-transparent border border-surfaceBorder hover:border-cyan-500/30 transition-all cursor-default hover:scale-105 hover:-translate-y-1"
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center group-hover:from-cyan-500/30 group-hover:to-blue-500/30 transition-all">
                       <ServiceIcon className="text-cyan-400 text-sm" />
                     </div>
                   </div>
-                  <p className="text-xs font-medium text-gray-300 group-hover:text-cyan-400 transition-colors truncate">
+                  <p className="text-xs font-medium text-textColor group-hover:text-cyan-400 transition-colors truncate">
                     {serviceName}
                   </p>
                 </div>
@@ -368,15 +368,15 @@ function Sidenav({ onNavigate, profile: profileProp }) {
       {/* ========== Skills Section - From Database (Coding & Design Only) ========== */}
       {topSkills.length > 0 && (
         <div
-          className="px-4 sm:px-6 py-4 border-t border-white/5"
+          className="px-4 sm:px-6 py-4 border-t border-surfaceBorder"
         >
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-5 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full"></div>
-              <span className="text-xs font-bold text-gray-300 uppercase tracking-widest">Tech Stack</span>
+              <span className="text-xs font-bold text-textColor uppercase tracking-widest">Tech Stack</span>
             </div>
             {codingAndDesignSkills.length > 6 && (
-              <span className="text-[10px] text-gray-500 bg-white/5 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] text-textSecondary bg-white/5 px-2 py-0.5 rounded-full">
                 +{codingAndDesignSkills.length - 6} more
               </span>
             )}
@@ -392,7 +392,7 @@ function Sidenav({ onNavigate, profile: profileProp }) {
                   key={skill.id || i}
                   className="group relative hover:scale-105 hover:-translate-y-1 transition-transform"
                 >
-                  <span className="px-3 py-1.5 text-[11px] font-semibold rounded-lg bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-gray-300 border border-purple-500/20 hover:border-purple-400/40 hover:text-purple-300 transition-all cursor-default inline-block">
+                  <span className="px-3 py-1.5 text-[11px] font-semibold rounded-lg bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-textColor border border-purple-500/20 hover:border-purple-400/40 hover:text-purple-300 transition-all cursor-default inline-block">
                     {skillName}
                   </span>
                   {/* Proficiency indicator */}
@@ -413,7 +413,8 @@ function Sidenav({ onNavigate, profile: profileProp }) {
 
       {/* ========== Footer Section (sticky on mobile) ========== */}
       <div
-        className="mt-auto sticky bottom-0 p-4 sm:p-6 border-t border-white/5 bg-gradient-to-t from-bodyColor to-transparent backdrop-blur-sm"
+        className="mt-auto sticky bottom-0 p-4 sm:p-6 border-t border-surfaceBorder bg-gradient-to-t from-bodyColor to-transparent backdrop-blur-sm"
+        style={{ background: 'var(--navBg)' }}
       >
         {/* Social Links - From Database */}
         {socialLinks.length > 0 && (
@@ -429,7 +430,7 @@ function Sidenav({ onNavigate, profile: profileProp }) {
                   target="_blank"
                   rel="noreferrer"
                   title={link.platform || link.name || 'Social Link'}
-                  className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 ${color} transition-all hover:shadow-lg border border-white/5 hover:border-white/20 hover:scale-110 hover:-translate-y-1`}
+                  className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-textSecondary ${color} transition-all hover:shadow-lg border border-surfaceBorder hover:border-white/20 hover:scale-110 hover:-translate-y-1`}
                 >
                   <Icon className="text-lg" />
                 </a>
@@ -443,7 +444,7 @@ function Sidenav({ onNavigate, profile: profileProp }) {
           {profile?.email && (
             <a
               href={`mailto:${profile.email}`}
-              className="flex items-center justify-center gap-2 text-xs text-gray-400 hover:text-designColor transition-colors group"
+              className="flex items-center justify-center gap-2 text-xs text-textSecondary hover:text-designColor transition-colors group"
             >
               <FaEnvelope className="text-sm group-hover:scale-110 transition-transform" />
               <span className="truncate">{profile.email}</span>
@@ -453,7 +454,7 @@ function Sidenav({ onNavigate, profile: profileProp }) {
           {profile?.phone && (
             <a
               href={`tel:${profile.phone.replace(/\s+/g, '')}`}
-              className="flex items-center justify-center gap-2 text-xs text-gray-400 hover:text-green-400 transition-colors group"
+              className="flex items-center justify-center gap-2 text-xs text-textSecondary hover:text-green-400 transition-colors group"
               title={`Call ${profile.phone}`}
             >
               <FaPhone className="text-sm group-hover:scale-110 transition-transform" />
@@ -481,7 +482,7 @@ function Sidenav({ onNavigate, profile: profileProp }) {
         {/* CTA Button */}
         <button
           onClick={() => onNavigate && onNavigate('contact')}
-          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-designColor via-purple-500 to-pink-500 text-black font-bold text-sm hover:shadow-xl hover:shadow-designColor/30 transition-all group cursor-pointer relative overflow-hidden hover:scale-105"
+          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-designColor via-purple-500 to-pink-500 text-bodyColor font-bold text-sm hover:shadow-xl hover:shadow-designColor/30 transition-all group cursor-pointer relative overflow-hidden hover:scale-105"
         >
           <span className="relative z-10">Let's Work Together</span>
           <FaArrowRight className="text-xs relative z-10 group-hover:translate-x-1 transition-transform" />
@@ -497,7 +498,7 @@ function Sidenav({ onNavigate, profile: profileProp }) {
           target="_blank"
           rel="noopener noreferrer"
           title="Admin"
-          className="block text-center text-[10px] text-gray-500 mt-4 hover:text-designColor transition-colors"
+          className="block text-center text-[10px] text-textSecondary mt-4 hover:text-designColor transition-colors"
         >
           © {new Date().getFullYear()} {profile?.copyright_name || profile?.full_name || 'Eric H Ofla'}. All rights reserved
         </a>

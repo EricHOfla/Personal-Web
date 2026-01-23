@@ -49,7 +49,7 @@ function Skills() {
             {categorySkills.map((skill) => (
               <div key={skill.id}>
                 <div className="flex justify-between items-center mb-1.5 sm:mb-2">
-                  <span className="text-ink font-medium text-sm sm:text-base">{skill.skill_name}</span>
+                  <span className="text-titleColor font-medium text-sm sm:text-base">{skill.skill_name}</span>
                   <span className="text-xs sm:text-sm text-designColor font-semibold">
                     {skill.proficiency_level || 0}%
                   </span>

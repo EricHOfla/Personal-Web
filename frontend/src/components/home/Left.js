@@ -95,10 +95,11 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
           <a
             href={getResumePdfUrl()}
             target="_blank"
-            className="flex-1 border-t-[1px] xs:border-r-[1px] border-t-zinc-800 xs:border-r-zinc-800 text-xs sm:text-sm tracking-wide uppercase gap-1.5 sm:gap-2 group bg-gradient-to-r from-black to-yellow-500 hover:from-yellow-500 hover:to-black transition-all duration-300"
+            className="flex-1 border-t-[1px] xs:border-r-[1px] border-surfaceBorder text-xs sm:text-sm tracking-wide uppercase gap-1.5 sm:gap-2 group transition-all duration-300"
             rel="noreferrer"
+            style={{ background: 'var(--btnGradient)' }}
           >
-            <button className="w-full h-full py-3 xs:py-0 flex justify-center items-center gap-1.5 sm:gap-2 text-white font-medium relative overflow-hidden">
+            <button className="w-full h-full py-3 xs:py-0 flex justify-center items-center gap-1.5 sm:gap-2 font-medium relative overflow-hidden dark:text-white text-bodyColor">
               <span className="relative z-10 text-xs sm:text-sm">Download CV</span>
               <BsCloudLightningFill className="relative z-10 group-hover:animate-pulse text-sm sm:text-base" />
             </button>
@@ -111,7 +112,7 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
               setBlog(false);
               setContact(true);
             }}
-            className="flex-1 border-t-[1px] border-t-zinc-800 text-xs sm:text-sm tracking-wide uppercase flex justify-center items-center gap-1.5 sm:gap-2 text-textColor hover:text-designColor font-medium transition-all duration-300 group py-3 xs:py-0"
+            className="flex-1 border-t-[1px] border-surfaceBorder text-xs sm:text-sm tracking-wide uppercase flex justify-center items-center gap-1.5 sm:gap-2 text-textColor hover:text-designColor font-medium transition-all duration-300 group py-3 xs:py-0"
           >
             <span className="text-xs sm:text-sm">Contact me</span>
             <FiSend className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-sm sm:text-base" />

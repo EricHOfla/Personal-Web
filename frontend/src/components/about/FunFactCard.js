@@ -38,7 +38,7 @@ const FunFactCard = ({ fact }) => {
       <div className="inline-flex p-2 sm:p-3 md:p-4 rounded-full bg-designColor/10 text-designColor">
         <Icon className="text-xl sm:text-2xl md:text-3xl" />
       </div>
-      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-ink">{count}+</p>
+      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-titleColor">{count}+</p>
       <p className="text-xs sm:text-sm text-gray-400 uppercase tracking-wide leading-tight">
         {fact?.description || "Fun Fact"}
       </p>
