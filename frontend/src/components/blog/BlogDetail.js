@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaCalendar, FaClock, FaArrowLeft, FaUser } from "react-icons/fa";
-import { getBlogPost, trackBlogView } from "../../services/blogService";
+import { getBlogPost } from "../../services/blogService";
 import { buildMediaUrl } from "../../services/api";
 
 function BlogDetail({ slug, onBack }) {
@@ -28,30 +28,6 @@ function BlogDetail({ slug, onBack }) {
     fetchPost();
   }, [slug]);
 
-  // Track view once per session (separate from fetching)
-  // Uses a global synchronous lock to prevent race conditions
-  useEffect(() => {
-    if (!slug) return;
-
-    const sessionKey = `blog_viewed_${slug}`;
-    const globalLockKey = `_viewLock_${slug}`;
-
-    // Check synchronously with both sessionStorage AND global lock
-    if (sessionStorage.getItem(sessionKey)) return; // Already tracked in session
-    if (window[globalLockKey]) return; // Another instance is tracking right now
-
-    // Set lock SYNCHRONOUSLY before any async operation
-    window[globalLockKey] = true;
-    sessionStorage.setItem(sessionKey, 'true');
-
-    trackBlogView(slug)
-      .catch(err => {
-        console.error("Failed to track view:", err);
-      })
-      .finally(() => {
-        delete window[globalLockKey];
-      });
-  }, [slug]);
 
 
 
@@ -171,12 +147,6 @@ function BlogDetail({ slug, onBack }) {
               <FaUser className="text-designColor" />
               <span>By {authorName}</span>
             </div>
-            {post.views_count !== undefined && (
-              <div className="flex items-center gap-2 px-3 py-1 bg-surface rounded-full border border-surfaceBorder">
-                <span className="text-designColor font-bold">{post.views_count}</span>
-                <span className="text-textTertiary">views</span>
-              </div>
-            )}
           </div>
 
           {/* Featured Image */}

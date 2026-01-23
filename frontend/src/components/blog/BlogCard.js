@@ -72,12 +72,6 @@ function BlogCard({ post, onReadMore }) {
             <FaClock className="text-designColor text-[9px] xs:text-[10px] sm:text-xs flex-shrink-0" />
             <span className="whitespace-nowrap">{post.reading_time ? `${post.reading_time} min` : "5 min"}</span>
           </span>
-          {post.views_count !== undefined && (
-            <span className="flex items-center gap-1 text-textTertiary">
-              <span className="opacity-50 text-[10px]">•</span>
-              <span className="whitespace-nowrap">{post.views_count} views</span>
-            </span>
-          )}
         </div>
 
         <h2 className="text-base sm:text-lg md:text-xl font-bold text-titleColor mb-2 sm:mb-3 line-clamp-2 group-hover:text-designColor transition cursor-pointer">
