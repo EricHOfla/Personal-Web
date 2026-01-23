@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import { motion } from 'framer-motion'; // Removed for performance
+
 import { FaArrowRight, FaChevronRight } from 'react-icons/fa';
 import { HiOutlineExternalLink } from 'react-icons/hi';
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import { motion} from 'framer-motion'; // Removed for performance
+
 import {
   FaHome, FaUser, FaBriefcase, FaEnvelope, FaCode,
   FaGraduationCap, FaBlog, FaServicestack, FaCertificate,

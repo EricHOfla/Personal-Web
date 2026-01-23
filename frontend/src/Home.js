@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
-// import { motion } from "framer-motion"; // Removed for performance
+
 import { FaUser, FaEnvelope, FaBars, FaSun, FaMoon } from "react-icons/fa";
 import { IoIosPaper } from "react-icons/io";
 import { MdWork, MdOutlineClose } from "react-icons/md";
