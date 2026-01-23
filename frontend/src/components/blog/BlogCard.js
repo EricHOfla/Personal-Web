@@ -72,6 +72,12 @@ function BlogCard({ post, onReadMore }) {
             <FaClock className="text-designColor text-[9px] xs:text-[10px] sm:text-xs flex-shrink-0" />
             <span className="whitespace-nowrap">{post.reading_time ? `${post.reading_time} min` : "5 min"}</span>
           </span>
+          {post.views_count !== undefined && (
+            <span className="flex items-center gap-1 text-textTertiary">
+              <span className="opacity-50 text-[10px]">•</span>
+              <span className="whitespace-nowrap">{post.views_count} views</span>
+            </span>
+          )}
         </div>
 
         <h2 className="text-base sm:text-lg md:text-xl font-bold text-titleColor mb-2 sm:mb-3 line-clamp-2 group-hover:text-designColor transition cursor-pointer">
@@ -84,13 +90,7 @@ function BlogCard({ post, onReadMore }) {
 
         <div className="flex items-center justify-between pt-2 sm:pt-3 md:pt-4 border-t border-surfaceBorder gap-2">
           <div className="flex items-center gap-3 overflow-hidden flex-1">
-            <span className="text-[9px] xs:text-[10px] sm:text-xs text-textSecondary truncate max-w-[45%] sm:max-w-[40%]">By {authorName}</span>
-            {post.views_count !== undefined && (
-              <span className="text-[9px] xs:text-[10px] sm:text-xs text-textTertiary flex items-center gap-1">
-                <span className="opacity-50">•</span>
-                <span>{post.views_count} views</span>
-              </span>
-            )}
+            <span className="text-[9px] xs:text-[10px] sm:text-xs text-textSecondary truncate">By {authorName}</span>
           </div>
           <button
             onClick={handleReadMore}

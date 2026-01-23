@@ -106,9 +106,12 @@ function BlogDetail({ slug, onBack }) {
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-titleColor mb-4 sm:mb-6 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-titleColor mb-2 sm:mb-3 leading-tight">
             {title}
           </h1>
+          <p className="text-xs sm:text-sm text-designColor/60 font-mono mb-4 sm:mb-6">
+            slug: {post.slug}
+          </p>
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm text-textSecondary mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-surfaceBorder">
             <div className="flex items-center gap-2">
