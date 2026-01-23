@@ -140,14 +140,26 @@ class SidenavItemSerializer(serializers.ModelSerializer):
 # 12. Testimonials
 # =========================
 class TestimonialSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
-
+    image_display = serializers.SerializerMethodField(read_only=True)
+    
     class Meta:
         model = Testimonial
-        fields = "__all__"
+        fields = ["id", "user", "name", "role", "company", "message", "image", "image_display", "display_order", "is_active", "created_at"]
+        extra_kwargs = {
+            "user": {"required": False},
+            "image": {"write_only": True, "required": False}
+        }
 
-    def get_image(self, obj):
+    def get_image_display(self, obj):
         request = self.context.get("request")
         if obj.image and request:
             return request.build_absolute_uri(obj.image.url)
         return None
+
+    def create(self, validated_data):
+        # Automatically assign the first UserProfile if not provided
+        if "user" not in validated_data:
+            profile = UserProfile.objects.first()
+            if profile:
+                validated_data["user"] = profile
+        return super().create(validated_data)

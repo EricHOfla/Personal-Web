@@ -20,14 +20,18 @@ const buildUrl = (endpoint) => {
 // API call function
 export const apiCall = async (endpoint, options = {}) => {
   const url = buildUrl(endpoint);
-  const { headers, ...rest } = options;
+  const { headers, body, ...rest } = options;
+
+  const finalHeaders = { ...headers };
+  // If body is not FormData, default to application/json
+  if (!(body instanceof FormData)) {
+    finalHeaders['Content-Type'] = finalHeaders['Content-Type'] || 'application/json';
+  }
 
   try {
     const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
+      headers: finalHeaders,
+      body,
       ...rest,
     });
 
