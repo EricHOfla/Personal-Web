@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaCalendar, FaClock, FaArrowLeft, FaUser } from "react-icons/fa";
 import { getBlogPost } from "../../services/blogService";
 import { buildMediaUrl } from "../../services/api";
@@ -7,10 +7,12 @@ function BlogDetail({ slug, onBack }) {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
     const fetchPost = async () => {
-      if (!slug) return;
+      if (!slug || hasFetched.current) return;
+      hasFetched.current = true;
 
       try {
         setLoading(true);
