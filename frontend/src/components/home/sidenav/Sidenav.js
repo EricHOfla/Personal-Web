@@ -176,8 +176,8 @@ function Sidenav({ onNavigate, profile: profileProp }) {
   // Get top skills (first 6) for display - only coding and design
   const topSkills = codingAndDesignSkills.slice(0, 6);
 
-  // Get top services (first 4)
-  const topServices = services.slice(0, 4);
+  // Get top services (first 2)
+  const topServices = services.slice(0, 2);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -334,10 +334,16 @@ function Sidenav({ onNavigate, profile: profileProp }) {
         <div
           className="px-4 sm:px-6 py-4 border-t border-surfaceBorder"
         >
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-1.5 h-5 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full"></div>
-            <span className="text-xs font-bold text-textColor uppercase tracking-widest">Services</span>
-            <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent ml-2"></div>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-5 bg-gradient-to-b from-cyan-500 to-blue-500 rounded-full"></div>
+              <span className="text-xs font-bold text-textColor uppercase tracking-widest">Services</span>
+            </div>
+            {services.length > 2 && (
+              <span className="text-[10px] text-textSecondary bg-white/5 px-2 py-0.5 rounded-full">
+                +{services.length - 2} more
+              </span>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-2">
