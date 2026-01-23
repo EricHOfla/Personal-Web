@@ -292,7 +292,7 @@ const Home = ({ profile, theme, toggleTheme }) => {
               </button>
               <button
                 onClick={toggleTheme}
-                className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-bodyColor to-[#1a1a1a] text-xl text-textColor hover:text-designColor duration-300 cursor-pointer flex items-center justify-center rounded-xl border border-white/10 hover:border-designColor/30 shadow-lg shadow-black/50 hover:shadow-designColor/10"
+                className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-bodyColor to-[#1a1a1a] text-xl text-textColor hover:text-designColor duration-300 cursor-pointer lgl:hidden flex items-center justify-center rounded-xl border border-white/10 hover:border-designColor/30 shadow-lg shadow-black/50 hover:shadow-designColor/10"
                 title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
               >
                 {theme === 'dark' ? <FaSun /> : <FaMoon />}
