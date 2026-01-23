@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HiQuote } from "react-icons/hi";
+import { FaQuoteLeft } from "react-icons/fa";
 import { buildMediaUrl } from "../../services/api";
 
 const TestimonialCard = ({ testimonial }) => {
@@ -7,7 +7,7 @@ const TestimonialCard = ({ testimonial }) => {
         <div className="w-full h-full glass-card p-6 sm:p-8 flex flex-col justify-between group hover:-translate-y-2 transition-transform duration-300">
             <div>
                 <div className="flex justify-between items-start mb-6">
-                    <HiQuote className="text-4xl sm:text-5xl text-designColor opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
+                    <FaQuoteLeft className="text-4xl sm:text-5xl text-designColor opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="w-20 h-1 bg-gradient-to-r from-designColor to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
                 <p className="text-gray-300 text-sm sm:text-base leading-relaxed italic mb-8 relative z-10">
