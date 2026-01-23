@@ -208,7 +208,7 @@ const Home = ({ profile, theme, toggleTheme }) => {
       </nav>
       {/* ================= Left Icons Start here ====================== */}
 
-      <main className="w-full lgl:w-[94%] h-full flex flex-col gap-4 sm:gap-6 lgl:gap-0 lgl:flex-row items-center">
+      <main className="w-full lgl:w-[94%] h-full flex flex-col gap-4 sm:gap-6 lgl:gap-0 lgl:flex-row items-start">
         <Suspense fallback={<LoadingFallback />}>
           {/* ======================== Home Left Start here ============================ */}
           <aside className="w-full lgl:w-5/12 h-full">
@@ -223,7 +223,7 @@ const Home = ({ profile, theme, toggleTheme }) => {
           </aside>
           {/* ======================== Home Left End here ============================== */}
 
-          <section className="w-full lgl:w-8/12 h-[95%] bg-bodyColor rounded-2xl flex justify-center items-center">
+          <section className="w-full lgl:w-7/12 h-full bg-bodyColor rounded-2xl flex justify-center items-center">
             {/* ======================== Smaller device content Start ======================== */}
             <div className="w-full h-full lgl:hidden bg-transparent rounded-2xl flex flex-col gap-4 sm:gap-6 overflow-y-auto">
               <article id="about-section">
