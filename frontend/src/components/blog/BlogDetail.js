@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaCalendar, FaClock, FaArrowLeft, FaUser } from "react-icons/fa";
+import { FaCalendar, FaClock, FaArrowLeft, FaUser, FaEye } from "react-icons/fa";
 import { getBlogPost } from "../../services/blogService";
 import { buildMediaUrl } from "../../services/api";
 
@@ -65,8 +65,8 @@ function BlogDetail({ slug, onBack }) {
     featured_image,
     published_date,
     category = "General",
-    reading_time,
     user,
+    views_count = 0,
   } = post;
 
   const formattedDate = published_date
@@ -80,10 +80,15 @@ function BlogDetail({ slug, onBack }) {
   const imageSrc = buildMediaUrl(featured_image);
   const authorName = user?.full_name || user?.first_name || "Anonymous";
 
+  // Calculate reading time based on content length (~200 words per minute)
+  const wordsPerMinute = 200;
+  const wordCount = content ? content.split(/\s+/).length : 0;
+  const estimatedReadingTime = Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+
   // Format content with paragraphs
   const formattedContent = content
     ? content.split("\n").filter((para) => para.trim())
-    : [excerpt || "No content available."];
+    : [];
 
   return (
     <section className="app-shell">
@@ -119,11 +124,15 @@ function BlogDetail({ slug, onBack }) {
             </div>
             <div className="flex items-center gap-2">
               <FaClock className="text-designColor" />
-              <span>{reading_time ? `${reading_time} min read` : "5 min read"}</span>
+              <span>{estimatedReadingTime} min read</span>
             </div>
             <div className="flex items-center gap-2">
               <FaUser className="text-designColor" />
               <span>By {authorName}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FaEye className="text-designColor" />
+              <span>{views_count} views</span>
             </div>
           </div>
 
@@ -140,6 +149,15 @@ function BlogDetail({ slug, onBack }) {
           )}
         </div>
 
+        {/* Excerpt / Lead Paragraph */}
+        {excerpt && (
+          <div className="mb-8 p-4 sm:p-6 bg-surfaceBorder/10 border-l-4 border-designColor italic">
+            <p className="text-base sm:text-lg md:text-xl text-textColor/90 leading-relaxed">
+              {excerpt}
+            </p>
+          </div>
+        )}
+
         {/* Content */}
         <div className="prose prose-invert max-w-none">
           {formattedContent.map((paragraph, index) => (
@@ -150,6 +168,9 @@ function BlogDetail({ slug, onBack }) {
               {paragraph}
             </p>
           ))}
+          {formattedContent.length === 0 && !excerpt && (
+            <p className="text-textSecondary italic">No content available.</p>
+          )}
         </div>
 
         {/* Footer */}

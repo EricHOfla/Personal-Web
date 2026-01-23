@@ -105,6 +105,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 # =========================
 class BlogPostSerializer(serializers.ModelSerializer):
     featured_image = serializers.SerializerMethodField()
+    user = UserProfileSerializer(read_only=True)
 
     class Meta:
         model = BlogPost
