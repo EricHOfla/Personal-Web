@@ -29,17 +29,30 @@ function BlogDetail({ slug, onBack }) {
   }, [slug]);
 
   // Track view once per session (separate from fetching)
+  // Uses a global synchronous lock to prevent race conditions
   useEffect(() => {
     if (!slug) return;
 
     const sessionKey = `blog_viewed_${slug}`;
-    if (sessionStorage.getItem(sessionKey)) return; // Already tracked
+    const globalLockKey = `_viewLock_${slug}`;
 
+    // Check synchronously with both sessionStorage AND global lock
+    if (sessionStorage.getItem(sessionKey)) return; // Already tracked in session
+    if (window[globalLockKey]) return; // Another instance is tracking right now
+
+    // Set lock SYNCHRONOUSLY before any async operation
+    window[globalLockKey] = true;
     sessionStorage.setItem(sessionKey, 'true');
-    trackBlogView(slug).catch(err => {
-      console.error("Failed to track view:", err);
-    });
+
+    trackBlogView(slug)
+      .catch(err => {
+        console.error("Failed to track view:", err);
+      })
+      .finally(() => {
+        delete window[globalLockKey];
+      });
   }, [slug]);
+
 
 
 
