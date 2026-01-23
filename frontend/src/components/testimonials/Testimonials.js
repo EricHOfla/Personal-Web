@@ -1,62 +1,116 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { getAllTestimonials } from "../../services/testimonialService";
 import TestimonialCard from "./TestimonialCard";
 import TestimonialForm from "./TestimonialForm";
+import { FaChevronLeft, FaChevronRight, FaPlus, FaTimes } from "react-icons/fa";
 
 const Testimonials = () => {
     const [testimonials, setTestimonials] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
-
-    const fetchTestimonials = async () => {
-        try {
-            const data = await getAllTestimonials();
-            setTestimonials(Array.isArray(data) ? data : data.results || []);
-        } catch (error) {
-            console.error("Failed to fetch testimonials", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [showModal, setShowModal] = useState(false);
+    const sliderRef = useRef(null);
 
     useEffect(() => {
+        const fetchTestimonials = async () => {
+            try {
+                const data = await getAllTestimonials();
+                setTestimonials(Array.isArray(data) ? data : data.results || []);
+            } catch (error) {
+                console.error("Failed to fetch testimonials", error);
+            } finally {
+                setLoading(false);
+            }
+        };
         fetchTestimonials();
     }, [refreshTrigger]);
 
     const handleTestimonialAdded = () => {
-        // Increment trigger to refresh list
         setRefreshTrigger(prev => prev + 1);
+        setShowModal(false);
     };
 
-    if (loading && refreshTrigger === 0) return (
-        <div className="w-full py-16 flex justify-center">
-            <div className="w-8 h-8 border-4 border-designColor border-t-transparent rounded-full animate-spin"></div>
-        </div>
-    );
+    const nextSlide = () => {
+        setCurrentIndex((prev) => (prev + 1 >= testimonials.length ? 0 : prev + 1));
+    };
+
+    const prevSlide = () => {
+        setCurrentIndex((prev) => (prev - 1 < 0 ? testimonials.length - 1 : prev - 1));
+    };
+
+    // Auto-slide every 5 seconds
+    useEffect(() => {
+        if (testimonials.length > 1) {
+            const interval = setInterval(nextSlide, 5000);
+            return () => clearInterval(interval);
+        }
+    }, [testimonials.length]);
+
+    if (loading && refreshTrigger === 0) return null;
 
     return (
-        <div className="w-full py-16 sm:py-24 border-t border-white/5 space-y-16 sm:space-y-24">
-            {/* Header and List Only if there are testimonials */}
-            {testimonials.length > 0 && (
-                <div>
-                    <div className="section-header mb-12 sm:mb-16">
-                        <p className="section-label">Testimonials</p>
-                        <h2 className="section-title">What Clients Say</h2>
-                        <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base px-2">
-                            Feedback from people I've worked with on various projects.
-                        </p>
-                    </div>
+        <div className="w-full py-10 sm:py-16 border-t border-white/5 overflow-hidden">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div className="section-header !mb-0 text-left">
+                    <p className="section-label">Testimonials</p>
+                    <h2 className="section-title !text-2xl sm:!text-3xl">What Clients Say</h2>
+                </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-designColor/10 border border-designColor/30 rounded-lg text-designColor text-sm font-semibold hover:bg-designColor hover:text-black transition-all"
+                    >
+                        <FaPlus className="text-xs" /> Write One
+                    </button>
+
+                    {testimonials.length > 1 && (
+                        <div className="flex gap-2">
+                            <button onClick={prevSlide} className="p-2 bg-white/5 border border-white/10 rounded-lg hover:border-designColor/50 text-gray-400 hover:text-white transition-all">
+                                <FaChevronLeft />
+                            </button>
+                            <button onClick={nextSlide} className="p-2 bg-white/5 border border-white/10 rounded-lg hover:border-designColor/50 text-gray-400 hover:text-white transition-all">
+                                <FaChevronRight />
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {testimonials.length > 0 ? (
+                <div className="relative w-full">
+                    <div
+                        className="flex transition-transform duration-500 ease-in-out"
+                        style={{ transform: `translateX(-${currentIndex * (window.innerWidth < 768 ? 100 : 33.333)}%)` }}
+                    >
                         {testimonials.map((item) => (
-                            <TestimonialCard key={item.id} testimonial={item} />
+                            <div key={item.id} className="w-full md:w-1/3 flex-shrink-0 px-2 sm:px-3">
+                                <TestimonialCard testimonial={item} />
+                            </div>
                         ))}
                     </div>
                 </div>
+            ) : (
+                <div className="glass-card p-8 text-center bg-white/[0.02]">
+                    <p className="text-gray-500 text-sm">No testimonials yet. Be the first to leave one!</p>
+                </div>
             )}
 
-            {/* Always show the Form */}
-            <TestimonialForm onTestimonialAdded={handleTestimonialAdded} />
+            {/* Modal for Submission */}
+            {showModal && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fadeIn">
+                    <div className="relative w-full max-w-xl group">
+                        <button
+                            onClick={() => setShowModal(false)}
+                            className="absolute -top-12 right-0 text-gray-400 hover:text-white transition-all flex items-center gap-1 text-sm font-medium"
+                        >
+                            <FaTimes /> Close
+                        </button>
+                        <TestimonialForm onTestimonialAdded={handleTestimonialAdded} />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

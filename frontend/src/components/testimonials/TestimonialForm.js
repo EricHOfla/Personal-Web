@@ -53,21 +53,18 @@ const TestimonialForm = ({ onTestimonialAdded }) => {
     };
 
     return (
-        <div className="glass-card p-6 sm:p-8 md:p-10 max-w-4xl mx-auto shadow-2xl relative overflow-hidden group">
-            {/* Background Accent */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-designColor/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-
+        <div className="glass-card p-5 sm:p-6 md:p-8 max-w-2xl mx-auto shadow-2xl relative overflow-hidden">
             <div className="relative z-10">
-                <div className="mb-8 text-center lgl:text-left">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">Leave a Testimonial</h3>
-                    <p className="text-gray-400 text-sm sm:text-base">I value your feedback! Share your experience working with me.</p>
+                <div className="mb-6">
+                    <h3 className="text-lg sm:text-xl font-bold text-white mb-1">Share Your Experience</h3>
+                    <p className="text-gray-400 text-xs sm:text-sm">Your feedback helps me grow and improve.</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {/* Name */}
-                        <div className="space-y-2">
-                            <label className="text-xs sm:text-sm font-semibold text-gray-300 flex items-center gap-2">
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
                                 <FaUser className="text-designColor" /> Full Name
                             </label>
                             <input
@@ -76,15 +73,15 @@ const TestimonialForm = ({ onTestimonialAdded }) => {
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                placeholder="e.g. John Doe"
-                                className="w-full bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-sm sm:text-base text-white focus:border-designColor/50 focus:outline-none transition-all placeholder:text-gray-600"
+                                placeholder="Your Name"
+                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-designColor/50 focus:outline-none transition-all"
                             />
                         </div>
 
-                        {/* Image Upload */}
-                        <div className="space-y-2">
-                            <label className="text-xs sm:text-sm font-semibold text-gray-300 flex items-center gap-2">
-                                <FaImage className="text-designColor" /> Profile Image (Optional)
+                        {/* Image */}
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+                                <FaImage className="text-designColor" /> Photo (Optional)
                             </label>
                             <div className="relative">
                                 <input
@@ -96,81 +93,73 @@ const TestimonialForm = ({ onTestimonialAdded }) => {
                                 />
                                 <label
                                     htmlFor="testimonial-image"
-                                    className="w-full flex items-center justify-between bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-sm sm:text-base text-gray-400 cursor-pointer hover:border-designColor/30 transition-all"
+                                    className="w-full flex items-center justify-between bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-gray-400 cursor-pointer hover:border-designColor/30 transition-all"
                                 >
-                                    <span className="truncate">{image ? image.name : "Choose an image..."}</span>
-                                    <div className="bg-white/5 p-1 rounded-md text-designColor">
-                                        Browse
-                                    </div>
+                                    <span className="truncate">{image ? image.name : "Choose..."}</span>
+                                    <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded text-designColor">Browse</span>
                                 </label>
                             </div>
                         </div>
 
                         {/* Role */}
-                        <div className="space-y-2">
-                            <label className="text-xs sm:text-sm font-semibold text-gray-300 flex items-center gap-2">
-                                <FaBriefcase className="text-designColor" /> Your Role
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+                                <FaBriefcase className="text-designColor" /> Role
                             </label>
                             <input
                                 type="text"
                                 name="role"
                                 value={formData.role}
                                 onChange={handleChange}
-                                placeholder="e.g. Project Manager"
-                                className="w-full bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-sm sm:text-base text-white focus:border-designColor/50 focus:outline-none transition-all placeholder:text-gray-600"
+                                placeholder="e.g. CEO"
+                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-designColor/50 focus:outline-none transition-all"
                             />
                         </div>
 
                         {/* Company */}
-                        <div className="space-y-2">
-                            <label className="text-xs sm:text-sm font-semibold text-gray-300 flex items-center gap-2">
-                                <FaBuilding className="text-designColor" /> Company/Organization
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+                                <FaBuilding className="text-designColor" /> Company
                             </label>
                             <input
                                 type="text"
                                 name="company"
                                 value={formData.company}
                                 onChange={handleChange}
-                                placeholder="e.g. Tech Solutions"
-                                className="w-full bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-sm sm:text-base text-white focus:border-designColor/50 focus:outline-none transition-all placeholder:text-gray-600"
+                                placeholder="Organization"
+                                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-designColor/50 focus:outline-none transition-all"
                             />
                         </div>
                     </div>
 
                     {/* Message */}
-                    <div className="space-y-2">
-                        <label className="text-xs sm:text-sm font-semibold text-gray-300">Your Message</label>
+                    <div className="space-y-1.5">
+                        <label className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider">Your Testimonial</label>
                         <textarea
                             required
                             name="message"
                             value={formData.message}
                             onChange={handleChange}
-                            placeholder="Share your experience working with me..."
-                            rows="4"
-                            className="w-full bg-[#121212] border border-white/10 rounded-xl px-4 py-3 text-sm sm:text-base text-white focus:border-designColor/50 focus:outline-none transition-all placeholder:text-gray-600 resize-none"
+                            placeholder="Write your thoughts here..."
+                            rows="3"
+                            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-designColor/50 focus:outline-none transition-all resize-none"
                         ></textarea>
                     </div>
 
-                    {/* Submit Button */}
-                    <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
+                    <div className="flex flex-col gap-3 pt-2">
                         <button
                             disabled={loading}
                             type="submit"
-                            className={`w-full sm:w-auto px-8 py-3.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 ${loading
-                                    ? "bg-gray-700 cursor-not-allowed text-gray-400"
-                                    : "bg-gradient-to-r from-designColor to-cyan-500 text-black hover:shadow-lg hover:shadow-designColor/20 active:scale-95"
+                            className={`w-full py-2.5 rounded-lg font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2 ${loading
+                                    ? "bg-gray-700 text-gray-400"
+                                    : "bg-designColor text-black hover:brightness-110 active:scale-[0.98]"
                                 }`}
                         >
-                            {loading ? (
-                                <>
-                                    <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
-                                    Submitting...
-                                </>
-                            ) : "Post Testimonial"}
+                            {loading ? "Submitting..." : "Submit Testimonial"}
                         </button>
 
                         {message.text && (
-                            <p className={`text-sm font-medium ${message.type === "success" ? "text-green-400" : "text-red-400"}`}>
+                            <p className={`text-[11px] text-center font-medium ${message.type === "success" ? "text-green-400" : "text-red-400"}`}>
                                 {message.text}
                             </p>
                         )}
