@@ -299,10 +299,6 @@ def blog_post_detail(request, slug):
         return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        # Increment views count
-        item.views_count += 1
-        item.save(update_fields=['views_count'])
-        
         serializer = BlogPostSerializer(item, context={'request': request})
         return Response(serializer.data)
     elif request.method == 'PUT':
@@ -314,6 +310,20 @@ def blog_post_detail(request, slug):
     elif request.method == 'DELETE':
         item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+# ===== Blog Post Track View =====
+@api_view(['POST'])
+def blog_post_track_view(request, slug):
+    try:
+        item = BlogPost.objects.get(slug=slug)
+    except BlogPost.DoesNotExist:
+        return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Increment views count
+    item.views_count += 1
+    item.save(update_fields=['views_count'])
+    
+    return Response({'views_count': item.views_count})
 
 # ===== Contact Messages =====
 @api_view(['GET', 'POST'])

@@ -1,18 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { FaCalendar, FaClock, FaArrowLeft, FaUser } from "react-icons/fa";
-import { getBlogPost } from "../../services/blogService";
+import { getBlogPost, trackBlogView } from "../../services/blogService";
 import { buildMediaUrl } from "../../services/api";
 
 function BlogDetail({ slug, onBack }) {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const hasFetched = useRef(false);
 
   useEffect(() => {
     const fetchPost = async () => {
-      if (!slug || hasFetched.current) return;
-      hasFetched.current = true;
+      if (!slug) return;
 
       try {
         setLoading(true);
@@ -29,6 +27,22 @@ function BlogDetail({ slug, onBack }) {
 
     fetchPost();
   }, [slug]);
+
+  // Track view once per session (separate from fetching)
+  useEffect(() => {
+    if (!slug) return;
+
+    const sessionKey = `blog_viewed_${slug}`;
+    if (sessionStorage.getItem(sessionKey)) return; // Already tracked
+
+    sessionStorage.setItem(sessionKey, 'true');
+    trackBlogView(slug).catch(err => {
+      console.error("Failed to track view:", err);
+    });
+  }, [slug]);
+
+
+
 
   if (loading) {
     return (

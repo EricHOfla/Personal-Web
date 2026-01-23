@@ -45,6 +45,7 @@ urlpatterns = [
     # Blog Posts
     path('blog-posts/', blog_post_list),
     path('blog-posts/<slug:slug>/', blog_post_detail),
+    path('blog-posts/<slug:slug>/view/', blog_post_track_view),
 
     # Contact Messages
     path('contact/', contact_list),
