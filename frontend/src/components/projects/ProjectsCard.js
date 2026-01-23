@@ -93,4 +93,4 @@ function ProjectsCard({ project }) {
   );
 }
 
-export default ProjectsCard;
+export default React.memo(ProjectsCard);

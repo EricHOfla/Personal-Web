@@ -8,10 +8,10 @@ function ResumeCard({ item, type }) {
   // Function to render duration with "Now" highlighted
   const renderDuration = () => {
     if (!duration) return null;
-    
+
     // Check if duration contains "now" (case-insensitive)
     const nowMatch = duration.match(/\bnow\b/i);
-    
+
     if (nowMatch) {
       const parts = duration.split(/\b(now)\b/i);
       return parts.map((part, index) => {
@@ -28,18 +28,18 @@ function ResumeCard({ item, type }) {
         return part;
       });
     }
-    
+
     return duration;
   };
 
   return (
-    <div className="resume-card">
+    <article className="resume-card">
       <h3>{title}</h3>
       <p className="organization">{organization}</p>
       <p className="duration">{renderDuration()}</p>
       <p className="description">{item.description}</p>
-    </div>
+    </article>
   );
 }
 
-export default ResumeCard;
+export default React.memo(ResumeCard);

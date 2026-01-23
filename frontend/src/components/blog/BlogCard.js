@@ -98,4 +98,4 @@ function BlogCard({ post, onReadMore }) {
   );
 }
 
-export default BlogCard;
+export default React.memo(BlogCard);
