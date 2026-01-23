@@ -110,7 +110,7 @@ function BlogDetail({ slug, onBack }) {
             {title}
           </h1>
           <p className="text-xs sm:text-sm text-designColor/60 font-mono mb-4 sm:mb-6">
-            slug: {post.slug}
+            Slug: {post.slug}
           </p>
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm text-textSecondary mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-surfaceBorder">
