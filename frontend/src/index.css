@@ -334,7 +334,7 @@ body {
 .resume-card h3 {
   font-size: 1rem;
   font-weight: 600;
-  color: #f1f1f1;
+  color: var(--titleColor);
   margin-bottom: 0.5rem;
 }
 
@@ -353,7 +353,7 @@ body {
 
 .resume-card .duration {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--textSecondary);
   margin-bottom: 0.75rem;
 }
 
