@@ -50,7 +50,7 @@ function ProjectsCard({ project }) {
 
         {technologies?.length > 0 && (
           <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
-            {technologies.slice(0, 3).map((tech, idx) => (
+            {technologies.slice(0, 4).map((tech, idx) => (
               <span
                 key={idx}
                 className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-surface text-designColor text-[10px] sm:text-xs rounded-md border border-designColor/20"
@@ -58,9 +58,9 @@ function ProjectsCard({ project }) {
                 {tech}
               </span>
             ))}
-            {technologies.length > 3 && (
-              <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-gray-400 text-[10px] sm:text-xs">
-                +{technologies.length - 3}
+            {technologies.length > 4 && (
+              <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-textTertiary text-[10px] sm:text-xs">
+                +{technologies.length - 4} more
               </span>
             )}
           </div>

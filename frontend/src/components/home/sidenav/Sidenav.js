@@ -173,8 +173,8 @@ function Sidenav({ onNavigate, profile: profileProp }) {
       categoryName.includes('software');
   });
 
-  // Get top skills (first 6) for display - only coding and design
-  const topSkills = codingAndDesignSkills.slice(0, 6);
+  // Get top skills (first 4) for display - only coding and design
+  const topSkills = codingAndDesignSkills.slice(0, 4);
 
   // Get top services (first 2)
   const topServices = services.slice(0, 2);
@@ -381,9 +381,9 @@ function Sidenav({ onNavigate, profile: profileProp }) {
               <div className="w-1.5 h-5 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full"></div>
               <span className="text-xs font-bold text-textColor uppercase tracking-widest">Tech Stack</span>
             </div>
-            {codingAndDesignSkills.length > 6 && (
+            {codingAndDesignSkills.length > 4 && (
               <span className="text-[10px] text-textSecondary bg-white/5 px-2 py-0.5 rounded-full">
-                +{codingAndDesignSkills.length - 6} more
+                +{codingAndDesignSkills.length - 4} more
               </span>
             )}
           </div>
