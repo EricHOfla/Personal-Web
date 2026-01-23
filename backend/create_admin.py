@@ -10,22 +10,18 @@ from django.contrib.auth import get_user_model
 def create_admin():
     User = get_user_model()
     
-    # Get credentials from environment variables (fallback to defaults if not set)
-    username = os.environ.get('DJANGO_SUPERUSER_USERNAME')
-    email = os.environ.get('DJANGO_SUPERUSER_EMAIL')
-    password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
-
-    # Only run if environment variables are provided to avoid unwanted users
-    if not all([username, email, password]):
-        print("Skipping superuser creation: DJANGO_SUPERUSER variables not fully set.")
-        return
+    # Using hardcoded defaults as requested
+    username = "ofla__"
+    email = "ericofla1@gmail.com"
+    password = "mama@Ofla1"
 
     if not User.objects.filter(username=username).exists():
         print(f"Creating superuser: {username}...")
         User.objects.create_superuser(username=username, email=email, password=password)
         print("Superuser created successfully!")
     else:
-        print(f"Superuser '{username}' already exists. Skipping.")
+        # Check if we should update the password for the existing user
+        print(f"Superuser '{username}' already exists. Skipping creation.")
 
 if __name__ == "__main__":
     create_admin()
