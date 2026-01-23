@@ -341,13 +341,7 @@ const Home = ({ profile, theme, toggleTheme }) => {
           <FaBars />
           <span>Menu</span>
         </div>
-        <div
-          onClick={toggleTheme}
-          className="mobile-nav-item"
-        >
-          {theme === 'dark' ? <FaSun /> : <FaMoon />}
-          <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
-        </div>
+
         <div
           onClick={() => {
             setAbout(true);
