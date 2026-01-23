@@ -62,6 +62,7 @@ function BlogDetail({ slug, onBack }) {
     title = "Untitled Post",
     content,
     excerpt,
+    featured_image,
     published_date,
     category = "General",
     user,
@@ -77,6 +78,7 @@ function BlogDetail({ slug, onBack }) {
     })
     : "Unknown date";
 
+  const imageSrc = buildMediaUrl(featured_image);
   const authorName = user?.full_name || user?.first_name || "Anonymous";
 
   // Calculate reading time based on content length (~200 words per minute)
@@ -134,12 +136,28 @@ function BlogDetail({ slug, onBack }) {
               <span>{views_count} views</span>
             </div>
             {postSlug && (
-              <div className="flex items-center gap-2">
-                <FaLink className="text-designColor" />
-                <span className="font-mono text-[10px] opacity-70">{postSlug}</span>
+              <div className="flex items-center gap-2 py-1 px-2 bg-designColor/10 rounded-md border border-designColor/20">
+                <FaLink className="text-designColor" title="Slug" />
+                <span className="font-mono text-sm font-medium text-designColor/90">{postSlug}</span>
               </div>
             )}
           </div>
+
+          {/* Featured Image - Restored as per user request */}
+          {imageSrc && (
+            <div className="mb-6 sm:mb-8 rounded-xl overflow-hidden border border-surfaceBorder/50 shadow-xl">
+              <img
+                src={imageSrc}
+                alt={title}
+                className="w-full h-auto max-h-[400px] sm:max-h-[500px] md:max-h-[600px] object-cover"
+                loading="eager"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  console.error("Failed to load blog image:", imageSrc);
+                }}
+              />
+            </div>
+          )}
         </div>
 
         {/* Excerpt / Lead Paragraph */}
