@@ -66,10 +66,18 @@ function AboutMe({ profile }) {
       {/* Stats */}
       <div className="grid grid-cols-1 xs:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
         {stats.map((stat, idx) => (
-          <div key={idx} className="glass-card p-3 sm:p-4 md:p-6 text-center space-y-1 sm:space-y-1.5 md:space-y-2 hover:scale-105 transition duration-300">
-            <p className="text-sm sm:text-base md:text-xl font-bold text-designColor break-words">{stat.value}</p>
-            <p className="text-[10px] xs:text-xs sm:text-sm text-textTertiary uppercase tracking-wide leading-tight">{stat.label}</p>
+          <div
+            key={idx}
+            className="glass-card p-3 sm:p-4 md:p-5 text-center space-y-1.5 hover:scale-105 transition duration-300"
+          >
+            <p className="text-sm sm:text-base font-semibold text-designColor break-words">
+              {stat.value}
+            </p>
+            <p className="text-[10px] sm:text-xs text-textTertiary uppercase tracking-wide leading-tight">
+              {stat.label}
+            </p>
           </div>
+
         ))}
       </div>
     </section>
