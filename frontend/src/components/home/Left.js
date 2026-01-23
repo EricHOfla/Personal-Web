@@ -47,15 +47,16 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
     fetchLinks();
   }, []);
   return (
-    <div className="w-full lgl:w-5/12 h-full bg-bodyColor rounded-2xl shadow-testShwdow z-10 overflow-hidden flex flex-col">
+   <div className="w-full lgl:w-5/12 h-full bg-bodyColor rounded-2xl shadow-testShwdow z-10 overflow-hidden flex flex-col">
       {/* Image section */}
-      <div className="w-full mt-6 h-48 xs:h-56 sm:h-72 md:h-80 lgl:h-80 relative">    <img
+      <div className="w-full mt-6 h-48 xs:h-56 sm:h-72 md:h-80 lgl:h-80 relative">
+        <img
           className="w-5/6 mx-auto h-full object-contain object-top rounded-2xl bg-white"
           src={profile?.profile_image ? buildMediaUrl(profile.profile_image) : bannerImg}
           alt={profile?.full_name || "Profile banner"}
         />
       </div>
-
+    
       {/* Info section */}
       <div className="flex-1 flex flex-col justify-between p-4 sm:p-6">
         <div className="flex flex-col items-center gap-1.5 sm:gap-2">
@@ -66,29 +67,28 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
             {text}
             <Cursor cursorBlinking={false} cursorStyle="" />
           </p>
-
+    
           {/* Social icons */}
           <div className="flex justify-center flex-wrap gap-2 sm:gap-3 mt-2">
             {socialLinks.length
               ? socialLinks.map((link) => {
-                const key = (link.platform || link.icon || "").toLowerCase();
-                const Icon = iconMap[key] || FiGlobe;
-                return (
-                  <a
-                    key={link.id || link.url}
-                    href={link.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-designColor duration-300 cursor-pointer text-lg sm:text-xl p-1.5 sm:p-2 rounded-full hover:bg-surface transition-all"
-                  >
-                    <Icon />
-                  </a>
-                );
-              })
-              : <span className="text-xs sm:text-sm text-textSecondary">No social links</span>}
+                  const key = (link.platform || link.icon || "").toLowerCase();
+                  const Icon = iconMap[key] || FiGlobe;
+                  return (
+                    <a
+                      key={link.id || link.url}
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:text-designColor duration-300 cursor-pointer text-lg sm:text-xl p-1.5 sm:p-2 rounded-full hover:bg-white/5 transition-all"
+                    >
+                      <Icon />
+                    </a>
+                  );
+                })
+              : <span className="text-xs sm:text-sm text-gray-400">No social links</span>}
           </div>
         </div>
-
         {/* Buttons */}
         <div className="flex flex-col xs:flex-row mt-4 min-h-[3rem] sm:h-14">
           <a
