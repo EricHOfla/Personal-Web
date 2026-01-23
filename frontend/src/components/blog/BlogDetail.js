@@ -106,12 +106,28 @@ function BlogDetail({ slug, onBack }) {
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-titleColor mb-2 sm:mb-3 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-titleColor mb-3 leading-tight">
             {title}
           </h1>
-          <p className="text-xs sm:text-sm text-designColor/60 font-mono mb-4 sm:mb-6">
-            Slug: {post.slug}
-          </p>
+
+          {/* Styled Slug */}
+          <div className="flex items-center gap-2 mb-6">
+            <span className="text-[10px] uppercase tracking-widest text-textTertiary font-semibold bg-surface px-2 py-0.5 rounded border border-surfaceBorder">
+              Slug
+            </span>
+            <span className="text-xs sm:text-sm text-designColor font-mono opacity-80">
+              {post.slug}
+            </span>
+          </div>
+
+          {/* Excerpt */}
+          {excerpt && (
+            <div className="mb-8 p-4 sm:p-6 bg-designColor/5 border-l-4 border-designColor rounded-r-xl">
+              <p className="text-textColor/90 text-sm sm:text-base md:text-lg italic leading-relaxed">
+                {excerpt}
+              </p>
+            </div>
+          )}
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm text-textSecondary mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-surfaceBorder">
             <div className="flex items-center gap-2">
