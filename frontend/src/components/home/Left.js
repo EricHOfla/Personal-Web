@@ -80,13 +80,13 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
                     href={link.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-designColor duration-300 cursor-pointer text-lg sm:text-xl p-1.5 sm:p-2 rounded-full hover:bg-white/5 transition-all"
+                    className="hover:text-designColor duration-300 cursor-pointer text-lg sm:text-xl p-1.5 sm:p-2 rounded-full hover:bg-surface transition-all"
                   >
                     <Icon />
                   </a>
                 );
               })
-              : <span className="text-xs sm:text-sm text-gray-400">No social links</span>}
+              : <span className="text-xs sm:text-sm text-textSecondary">No social links</span>}
           </div>
         </div>
 
@@ -99,7 +99,7 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
             rel="noreferrer"
             style={{ background: 'var(--btnGradient)' }}
           >
-            <button className="w-full h-full py-3 xs:py-0 flex justify-center items-center gap-1.5 sm:gap-2 font-medium relative overflow-hidden dark:text-white text-bodyColor">
+            <button className="w-full h-full py-3 xs:py-0 flex justify-center items-center gap-1.5 sm:gap-2 font-medium relative overflow-hidden dark:text-white text-textColor">
               <span className="relative z-10 text-xs sm:text-sm">Download CV</span>
               <BsCloudLightningFill className="relative z-10 group-hover:animate-pulse text-sm sm:text-base" />
             </button>

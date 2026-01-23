@@ -33,7 +33,7 @@ function ProjectsCard({ project }) {
           </div>
         )}
         <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
-          <span className="inline-block px-2 sm:px-3 py-0.5 sm:py-1 bg-black/70 backdrop-blur-sm text-designColor text-[10px] sm:text-xs font-semibold rounded-full border border-designColor/30">
+          <span className="inline-block px-2 sm:px-3 py-0.5 sm:py-1 bg-surface backdrop-blur-sm text-designColor text-[10px] sm:text-xs font-semibold rounded-full border border-designColor/30">
             {category || "Other"}
           </span>
         </div>
@@ -44,7 +44,7 @@ function ProjectsCard({ project }) {
           {title}
         </h3>
 
-        <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mb-3 sm:mb-4 flex-1 line-clamp-2 sm:line-clamp-3">
+        <p className="text-xs sm:text-sm text-textSecondary leading-relaxed mb-3 sm:mb-4 flex-1 line-clamp-2 sm:line-clamp-3">
           {description || "No description available for this project."}
         </p>
 
@@ -53,7 +53,7 @@ function ProjectsCard({ project }) {
             {technologies.slice(0, 3).map((tech, idx) => (
               <span
                 key={idx}
-                className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-white/5 text-designColor text-[10px] sm:text-xs rounded-md border border-designColor/20"
+                className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-surface text-designColor text-[10px] sm:text-xs rounded-md border border-designColor/20"
               >
                 {tech}
               </span>
@@ -72,7 +72,7 @@ function ProjectsCard({ project }) {
               href={github_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium text-textColor hover:text-designColor transition min-w-0"
+              className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-surface hover:border-designColor/30 border border-transparent rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium text-textColor hover:text-designColor transition min-w-0"
             >
               <FaGithub className="text-xs sm:text-sm md:text-base flex-shrink-0" /> <span className="hidden xs:inline truncate">Code</span>
             </a>

@@ -18,7 +18,7 @@ const Resume = () => {
       <div className="section-header">
         <p className="section-label">Resume</p>
         <h1 className="section-title">My Background</h1>
-        <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base px-2">
+        <p className="text-textSecondary max-w-2xl mx-auto text-sm sm:text-base px-2">
           Education, technical skills, and professional experience.
         </p>
       </div>
@@ -31,8 +31,8 @@ const Resume = () => {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-lg sm:rounded-xl font-medium text-xs sm:text-sm md:text-base transition ${activeTab === tab.id
-                  ? "bg-designColor text-bodyColor shadow-glow"
-                  : "bg-white/5 text-textColor hover:bg-white/10"
+                ? "bg-designColor text-bodyColor shadow-glow"
+                : "bg-surface text-textColor hover:border-designColor/30 border border-transparent"
                 }`}
             >
               <Icon className="text-sm sm:text-base" />

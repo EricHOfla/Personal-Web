@@ -40,7 +40,7 @@ const Home = ({ profile, theme, toggleTheme }) => {
         {/* ======= Theme Toggle start */}
         <div
           onClick={toggleTheme}
-          className="w-full h-16 bg-gradient-to-b from-bodyColor to-[#1a1a1a] rounded-3xl flex justify-center items-center cursor-pointer group border border-white/5 hover:border-designColor/30 transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-designColor/10"
+          className="w-full h-16 bg-gradient-to-b from-bodyColor to-surface rounded-3xl flex justify-center items-center cursor-pointer group border border-surfaceBorder hover:border-designColor/30 transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-designColor/10"
           title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
         >
           <div className="text-xl text-textColor group-hover:text-designColor transition-colors duration-300">
@@ -52,7 +52,7 @@ const Home = ({ profile, theme, toggleTheme }) => {
         {/* ======= Home Icon start */}
         <div
           onClick={() => setSidenav(true)}
-          className="w-full h-20 bg-gradient-to-b from-bodyColor to-[#1a1a1a] rounded-3xl flex justify-center items-center cursor-pointer group border border-white/5 hover:border-designColor/30 transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-designColor/10"
+          className="w-full h-20 bg-gradient-to-b from-bodyColor to-surface rounded-3xl flex justify-center items-center cursor-pointer group border border-surfaceBorder hover:border-designColor/30 transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-designColor/10"
         >
           <div className="flex flex-col gap-1.5 overflow-hidden">
             <span
@@ -70,7 +70,7 @@ const Home = ({ profile, theme, toggleTheme }) => {
 
         {/* ============= Sidenav End here =============== */}
         {/* ======= Other Icons Start */}
-        <div className="w-full h-80 bg-bodyColor rounded-3xl flex flex-col items-center justify-between py-6">
+        <div className="w-full h-80 bg-bodyColor rounded-3xl flex flex-col items-center justify-between py-6 border border-surfaceBorder">
           {/* About Icon */}
           <span
             onClick={() => {
@@ -298,14 +298,14 @@ const Home = ({ profile, theme, toggleTheme }) => {
             <div className="absolute top-4 right-4 flex flex-col items-center gap-3 z-50">
               <button
                 onClick={() => setSidenav(false)}
-                className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-bodyColor to-[#1a1a1a] text-xl sm:text-2xl text-textSecondary hover:text-designColor duration-300 cursor-pointer flex items-center justify-center rounded-xl border border-white/10 hover:border-designColor/30 shadow-lg shadow-black/50 hover:shadow-designColor/10"
+                className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-bodyColor to-surface text-xl sm:text-2xl text-textSecondary hover:text-designColor duration-300 cursor-pointer flex items-center justify-center rounded-xl border border-white/10 hover:border-designColor/30 shadow-lg shadow-black/50 hover:shadow-designColor/10"
                 aria-label="Close menu"
               >
                 <MdOutlineClose />
               </button>
               <button
                 onClick={toggleTheme}
-                className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-bodyColor to-[#1a1a1a] text-xl text-textColor hover:text-designColor duration-300 cursor-pointer lgl:hidden flex items-center justify-center rounded-xl border border-white/10 hover:border-designColor/30 shadow-lg shadow-black/50 hover:shadow-designColor/10"
+                className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-bodyColor to-surface text-xl text-textColor hover:text-designColor duration-300 cursor-pointer lgl:hidden flex items-center justify-center rounded-xl border border-white/10 hover:border-designColor/30 shadow-lg shadow-black/50 hover:shadow-designColor/10"
                 title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
               >
                 {theme === 'dark' ? <FaSun /> : <FaMoon />}

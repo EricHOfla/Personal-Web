@@ -52,7 +52,7 @@ function Projects() {
       <section className="app-shell">
         <div className="glass-card p-4 sm:p-6 md:p-8 text-center">
           <p className="text-red-400 mb-3 sm:mb-4 text-sm sm:text-base">⚠️ Failed to load projects</p>
-          <p className="text-gray-400 text-xs sm:text-sm">{error}</p>
+          <p className="text-textSecondary text-xs sm:text-sm">{error}</p>
         </div>
       </section>
     );
@@ -63,7 +63,7 @@ function Projects() {
       <div className="section-header">
         <p className="section-label">Projects</p>
         <h1 className="section-title">Featured Work</h1>
-        <p className="text-gray-400 max-w-2xl mx-auto mb-4 sm:mb-6 md:mb-8 text-sm sm:text-base px-2">
+        <p className="text-textSecondary max-w-2xl mx-auto mb-4 sm:mb-6 md:mb-8 text-sm sm:text-base px-2">
           A collection of my recent projects showcasing various technologies and solutions.
         </p>
 
@@ -72,11 +72,10 @@ function Projects() {
             <button
               key={cat}
               onClick={() => setFilter(cat)}
-              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition ${
-                filter === cat
-                  ? "bg-designColor text-black"
-                  : "bg-white/5 text-gray-300 hover:bg-white/10"
-              }`}
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition ${filter === cat
+                  ? "bg-designColor text-bodyColor"
+                  : "bg-surface text-textColor hover:border-designColor/30 border border-transparent"
+                }`}
             >
               {cat.charAt(0).toUpperCase() + cat.slice(1)}
             </button>
@@ -94,7 +93,7 @@ function Projects() {
         <div className="glass-card p-6 sm:p-8 md:p-12 text-center">
           <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">🚀</div>
           <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-2">No projects found</p>
-          <p className="text-gray-400 text-sm sm:text-base">Try selecting a different category</p>
+          <p className="text-textSecondary text-sm sm:text-base">Try selecting a different category</p>
         </div>
       )}
     </section>

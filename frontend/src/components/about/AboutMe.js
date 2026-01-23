@@ -30,9 +30,9 @@ function AboutMe({ profile }) {
         <div className="flex-1 space-y-2 sm:space-y-3 md:space-y-4 text-center lg:text-left w-full">
           <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-titleColor break-words">{profile?.full_name || "Developer"}</h3>
           <p className="text-xs sm:text-sm md:text-base text-designColor font-medium break-words">{profile?.title || "Full Stack Developer"}</p>
-          <p className="text-xs sm:text-sm md:text-base text-gray-300 leading-relaxed break-words">{profile?.bio || "No bio available."}</p>
+          <p className="text-xs sm:text-sm md:text-base text-textColor opacity-80 leading-relaxed break-words">{profile?.bio || "No bio available."}</p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 md:gap-3 text-[10px] xs:text-xs sm:text-sm text-gray-300">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 md:gap-3 text-[10px] xs:text-xs sm:text-sm text-textSecondary">
             {profile?.residence && (
               <div className="flex items-center gap-2 justify-center lg:justify-start">
                 <FaMapMarkerAlt className="text-designColor flex-shrink-0" />
@@ -68,7 +68,7 @@ function AboutMe({ profile }) {
         {stats.map((stat, idx) => (
           <div key={idx} className="glass-card p-3 sm:p-4 md:p-6 text-center space-y-1 sm:space-y-1.5 md:space-y-2 hover:scale-105 transition duration-300">
             <p className="text-sm sm:text-base md:text-xl font-bold text-designColor break-words">{stat.value}</p>
-            <p className="text-[10px] xs:text-xs sm:text-sm text-gray-400 uppercase tracking-wide leading-tight">{stat.label}</p>
+            <p className="text-[10px] xs:text-xs sm:text-sm text-textTertiary uppercase tracking-wide leading-tight">{stat.label}</p>
           </div>
         ))}
       </div>
