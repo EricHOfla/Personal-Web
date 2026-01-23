@@ -151,7 +151,7 @@ const TestimonialForm = ({ onTestimonialAdded }) => {
                             disabled={loading}
                             type="submit"
                             className={`w-full py-2.5 rounded-lg font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2 ${loading
-                                ? "bg-gray-700 text-gray-400"
+                                ? "bg-surface text-textTertiary"
                                 : "bg-designColor text-black hover:brightness-110 active:scale-[0.98]"
                                 }`}
                         >

@@ -86,7 +86,7 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
                   </a>
                 );
               })
-              : <span className="text-xs sm:text-sm text-gray-400">No social links</span>}
+              : <span className="text-xs sm:text-sm text-textSecondary">No social links</span>}
           </div>
         </div>
         {/* Buttons */}

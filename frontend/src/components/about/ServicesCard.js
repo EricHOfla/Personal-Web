@@ -68,7 +68,7 @@ function ServicesCard({ service }) {
         <h3 className="text-sm sm:text-base md:text-lg font-semibold text-titleColor mb-1 sm:mb-1.5 md:mb-2 group-hover:text-designColor transition break-words">
           {service?.title || "Service"}
         </h3>
-        <p className="text-[11px] xs:text-xs sm:text-sm text-gray-300 leading-relaxed break-words">
+        <p className="text-[11px] xs:text-xs sm:text-sm text-textSecondary leading-relaxed break-words">
           {service?.description || "No description available."}
         </p>
       </div>

@@ -148,7 +148,7 @@ function SidenavTitle({ item, index, iconMap, onNavigate }) {
           {Icon && (
             <Icon className={`
               text-base sm:text-lg transition-all duration-300
-              ${isHovered ? colorSet.text : 'text-gray-400'}
+              ${isHovered ? colorSet.text : 'text-textSecondary'}
             `} />
           )}
         </div>
@@ -165,13 +165,13 @@ function SidenavTitle({ item, index, iconMap, onNavigate }) {
           className={`
             block text-sm sm:text-[15px] font-semibold tracking-wide
             transition-colors duration-300 truncate
-            ${isHovered ? colorSet.text : 'text-gray-300'}
+            ${isHovered ? colorSet.text : 'text-textColor'}
           `}
         >
           {item.item_text}
         </span>
         {item.description && (
-          <span className="block text-[11px] text-gray-500 truncate mt-0.5 group-hover:text-gray-400 transition-colors">
+          <span className="block text-[11px] text-textTertiary truncate mt-0.5 group-hover:text-textSecondary transition-colors">
             {item.description}
           </span>
         )}

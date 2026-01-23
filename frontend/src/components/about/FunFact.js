@@ -40,7 +40,7 @@ function FunFact() {
         {funFacts.length ? (
           funFacts.map((fact) => <FunFactCard key={fact.id} fact={fact} />)
         ) : (
-          <div className="glass-card p-4 sm:p-6 text-center text-gray-300 col-span-full text-sm sm:text-base">
+          <div className="glass-card p-4 sm:p-6 text-center text-textSecondary col-span-full text-sm sm:text-base">
             No fun facts available.
           </div>
         )}
