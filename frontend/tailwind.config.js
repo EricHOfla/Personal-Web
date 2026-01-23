@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
       screens: {
@@ -18,13 +19,13 @@ module.exports = {
         titleFont: ["Montserrat", "sans-serif"],
       },
       colors: {
-        bodyColor: "#191919",
-        textColor: "rgba(255, 255, 255, 0.85)",
-        designColor: "#8b5cf6",
+        bodyColor: "var(--bodyColor)",
+        textColor: "var(--textColor)",
+        designColor: "var(--designColor)",
         titleRoundBg:
           "linear-gradient(135deg,rgba(120,204,109,.15) 0%,rgba(120,204,109,1%) 100%)",
-        surface: "rgba(24,24,27,0.7)",
-        ink: "#e5e7eb",
+        surface: "var(--surface)",
+        ink: "var(--ink)",
       },
       animation: {
         "spin-slow": "spin 60s linear infinite",
@@ -49,6 +50,6 @@ module.exports = {
   },
   plugins: [
     require("tailwind-scrollbar"),
-    
+
   ],
 };

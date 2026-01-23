@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 // import { motion } from "framer-motion"; // Removed for performance
-import { FaUser, FaEnvelope, FaBars } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaBars, FaSun, FaMoon } from "react-icons/fa";
 import { IoIosPaper } from "react-icons/io";
 import { MdWork, MdOutlineClose } from "react-icons/md";
 import { SiGooglechat } from "react-icons/si";
@@ -14,7 +14,7 @@ import BlogDetail from "./components/blog/BlogDetail";
 import Contact from "./components/contact/Contact";
 import Sidenav from "./components/home/sidenav/Sidenav";
 
-const Home = ({ profile }) => {
+const Home = ({ profile, theme, toggleTheme }) => {
   const [about, setAbout] = useState(true);
   const [resume, setResume] = useState(false);
   const [projects, setProjects] = useState(false);
@@ -25,21 +25,22 @@ const Home = ({ profile }) => {
   const sidenavRef = useRef();
   const backdropRef = useRef();
 
-  // Body scroll lock removed to prevent freezing on mobile
-  // useEffect(() => {
-  //   if (sidenav) {
-  //     document.body.style.overflow = 'hidden';
-  //   } else {
-  //     document.body.style.overflow = 'unset';
-  //   }
-  //   return () => {
-  //     document.body.style.overflow = 'unset';
-  //   };
-  // }, [sidenav]);
   return (
-    <div className="w-full lgl:w-[95%] h-full lgl:h-[85%] bg-transparent text-white z-50 flex flex-col lgl:flex-row items-start justify-between p-2 sm:p-4 lgl:p-0 pb-20 lgl:pb-0">
+    <div className="w-full lgl:w-[95%] h-full lgl:h-[85%] bg-transparent text-textColor z-50 flex flex-col lgl:flex-row items-start justify-between p-2 sm:p-4 lgl:p-0 pb-20 lgl:pb-0">
       {/* ================= Left Icons End here ======================== */}
       <div className="w-16 h-96 bg-transparent hidden lgl:flex flex-col gap-4">
+        {/* ======= Theme Toggle start */}
+        <div
+          onClick={toggleTheme}
+          className="w-full h-16 bg-gradient-to-b from-bodyColor to-[#1a1a1a] rounded-3xl flex justify-center items-center cursor-pointer group border border-white/5 hover:border-designColor/30 transition-all duration-300 shadow-lg shadow-black/20 hover:shadow-designColor/10"
+          title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        >
+          <div className="text-xl text-textColor group-hover:text-designColor transition-colors duration-300">
+            {theme === 'dark' ? <FaSun /> : <FaMoon />}
+          </div>
+        </div>
+        {/* ======= Theme Toggle End */}
+
         {/* ======= Home Icon start */}
         <div
           onClick={() => setSidenav(true)}
@@ -328,6 +329,13 @@ const Home = ({ profile }) => {
         >
           <FaBars />
           <span>Menu</span>
+        </div>
+        <div
+          onClick={toggleTheme}
+          className="mobile-nav-item"
+        >
+          {theme === 'dark' ? <FaSun /> : <FaMoon />}
+          <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
         </div>
         <div
           onClick={() => {
