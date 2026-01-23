@@ -340,7 +340,7 @@ function Sidenav({ onNavigate, profile: profileProp }) {
               <span className="text-xs font-bold text-textColor uppercase tracking-widest">Services</span>
             </div>
             {services.length > 2 && (
-              <span className="text-[10px] text-textSecondary bg-white/5 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] text-textSecondary bg-surface px-2 py-0.5 rounded-full">
                 +{services.length - 2} more
               </span>
             )}
@@ -354,7 +354,7 @@ function Sidenav({ onNavigate, profile: profileProp }) {
               return (
                 <div
                   key={service.id || i}
-                  className="group p-3 rounded-xl bg-gradient-to-br from-white/5 to-transparent border border-surfaceBorder hover:border-cyan-500/30 transition-all cursor-default hover:scale-105 hover:-translate-y-1"
+                  className="group p-3 rounded-xl bg-gradient-to-br from-surface to-transparent border border-surfaceBorder hover:border-cyan-500/30 transition-all cursor-default hover:scale-105 hover:-translate-y-1"
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center group-hover:from-cyan-500/30 group-hover:to-blue-500/30 transition-all">
@@ -382,7 +382,7 @@ function Sidenav({ onNavigate, profile: profileProp }) {
               <span className="text-xs font-bold text-textColor uppercase tracking-widest">Tech Stack</span>
             </div>
             {codingAndDesignSkills.length > 4 && (
-              <span className="text-[10px] text-textSecondary bg-white/5 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] text-textSecondary bg-surface px-2 py-0.5 rounded-full">
                 +{codingAndDesignSkills.length - 4} more
               </span>
             )}

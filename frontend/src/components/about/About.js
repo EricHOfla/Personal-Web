@@ -42,7 +42,7 @@ function About({ profile: profileProp }) {
   if (!profile) {
     return (
       <div className="glass-card p-4 sm:p-6 md:p-8 text-center max-w-md mx-auto mt-10 sm:mt-20">
-        <p className="text-gray-300 text-sm sm:text-base">No profile data found</p>
+        <p className="text-textSecondary text-sm sm:text-base">No profile data found</p>
       </div>
     );
   }

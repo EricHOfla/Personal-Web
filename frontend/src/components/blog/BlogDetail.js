@@ -34,7 +34,7 @@ function BlogDetail({ slug, onBack }) {
         <div className="flex justify-center items-center min-h-[50vh]">
           <div className="flex flex-col items-center gap-3">
             <div className="w-12 h-12 border-4 border-designColor border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-gray-400 text-sm">Loading post...</p>
+            <p className="text-textSecondary text-sm">Loading post...</p>
           </div>
         </div>
       </section>
@@ -46,7 +46,7 @@ function BlogDetail({ slug, onBack }) {
       <section className="app-shell">
         <div className="glass-card p-6 sm:p-8 md:p-12 text-center">
           <p className="text-red-400 mb-4 text-lg">⚠️ Failed to load blog post</p>
-          <p className="text-gray-400 text-sm mb-6">{error || "Post not found"}</p>
+          <p className="text-textSecondary text-sm mb-6">{error || "Post not found"}</p>
           <button
             onClick={onBack}
             className="px-6 py-2 bg-designColor text-black rounded-lg hover:bg-designColor/90 transition font-medium"
@@ -90,7 +90,7 @@ function BlogDetail({ slug, onBack }) {
       {/* Back Button */}
       <button
         onClick={onBack}
-        className="mb-4 sm:mb-6 flex items-center gap-2 text-gray-400 hover:text-designColor transition text-sm sm:text-base group"
+        className="mb-4 sm:mb-6 flex items-center gap-2 text-textSecondary hover:text-designColor transition text-sm sm:text-base group"
       >
         <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
         <span>Back to Blog</span>
@@ -112,7 +112,7 @@ function BlogDetail({ slug, onBack }) {
           </h1>
 
           {/* Meta Information */}
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm text-gray-400 mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-gray-800">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm text-textSecondary mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-surfaceBorder">
             <div className="flex items-center gap-2">
               <FaCalendar className="text-designColor" />
               <span>{formattedDate}</span>
@@ -145,7 +145,7 @@ function BlogDetail({ slug, onBack }) {
           {formattedContent.map((paragraph, index) => (
             <p
               key={index}
-              className="text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed mb-4 sm:mb-6 whitespace-pre-wrap"
+              className="text-sm sm:text-base md:text-lg text-textColor leading-relaxed mb-4 sm:mb-6 whitespace-pre-wrap"
             >
               {paragraph}
             </p>
@@ -153,7 +153,7 @@ function BlogDetail({ slug, onBack }) {
         </div>
 
         {/* Footer */}
-        <div className="mt-1 sm:mt-6 pt-1 sm:pt-2 border-t border-gray-800">
+        <div className="mt-1 sm:mt-6 pt-1 sm:pt-2 border-t border-surfaceBorder">
 
         </div>
       </article>

@@ -24,6 +24,7 @@ module.exports = {
         textSecondary: "var(--textSecondary)",
         textTertiary: "var(--textTertiary)",
         designColor: "var(--designColor)",
+        titleColor: "var(--titleColor)",
         titleRoundBg:
           "linear-gradient(135deg,rgba(120,204,109,.15) 0%,rgba(120,204,109,1%) 100%)",
         surface: "var(--surface)",

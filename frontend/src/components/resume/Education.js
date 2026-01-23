@@ -58,7 +58,7 @@ const Education = ({ mode = "all" }) => {
                 <ResumeCard key={item.id} item={item} type="education" />
               ))
             ) : (
-              <p className="text-gray-400 text-sm sm:text-base text-center py-4">No education records.</p>
+              <p className="text-textTertiary text-sm sm:text-base text-center py-4">No education records.</p>
             )}
           </div>
         </div>
@@ -73,7 +73,7 @@ const Education = ({ mode = "all" }) => {
                 <ResumeCard key={item.id} item={item} type="experience" />
               ))
             ) : (
-              <p className="text-gray-400 text-sm sm:text-base text-center py-4">No experiences added.</p>
+              <p className="text-textTertiary text-sm sm:text-base text-center py-4">No experiences added.</p>
             )}
           </div>
         </div>

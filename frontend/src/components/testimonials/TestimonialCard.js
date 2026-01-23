@@ -14,7 +14,7 @@ const TestimonialCard = ({ testimonial }) => {
                 </p>
             </div>
 
-            <div className="flex items-center gap-3 border-t border-white/5 pt-4 mt-auto">
+            <div className="flex items-center gap-3 border-t border-surfaceBorder pt-4 mt-auto">
                 <div className="w-10 h-10 rounded-full overflow-hidden border border-designColor/30 shadow-md flex-shrink-0">
                     {testimonial.image || testimonial.image_display ? (
                         <img

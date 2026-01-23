@@ -73,8 +73,8 @@ function Projects() {
               key={cat}
               onClick={() => setFilter(cat)}
               className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition ${filter === cat
-                  ? "bg-designColor text-bodyColor"
-                  : "bg-surface text-textColor hover:border-designColor/30 border border-transparent"
+                ? "bg-designColor text-bodyColor"
+                : "bg-surface text-textColor hover:border-designColor/30 border border-transparent"
                 }`}
             >
               {cat.charAt(0).toUpperCase() + cat.slice(1)}
@@ -92,7 +92,7 @@ function Projects() {
       ) : (
         <div className="glass-card p-6 sm:p-8 md:p-12 text-center">
           <div className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4">🚀</div>
-          <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-2">No projects found</p>
+          <p className="text-base sm:text-lg md:text-xl text-textColor mb-2">No projects found</p>
           <p className="text-textSecondary text-sm sm:text-base">Try selecting a different category</p>
         </div>
       )}

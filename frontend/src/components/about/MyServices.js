@@ -53,7 +53,7 @@ function MyServices() {
             <ServicesCard key={service.id} service={service} />
           ))
         ) : (
-          <div className="glass-card p-3 sm:p-4 md:p-6 text-center text-gray-300 col-span-full text-xs sm:text-sm md:text-base">
+          <div className="glass-card p-3 sm:p-4 md:p-6 text-center text-textSecondary col-span-full text-xs sm:text-sm md:text-base">
             No services available yet.
           </div>
         )}

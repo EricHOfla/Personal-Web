@@ -54,7 +54,7 @@ function Skills() {
                     {skill.proficiency_level || 0}%
                   </span>
                 </div>
-                <div className="h-1.5 sm:h-2 bg-white/5 rounded-full overflow-hidden">
+                <div className="h-1.5 sm:h-2 bg-surface rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-designColor to-cyan-500 rounded-full transition-all duration-1000 ease-out"
                     style={{ width: `${skill.proficiency_level || 0}%` }}
@@ -68,7 +68,7 @@ function Skills() {
 
       {skills.length === 0 && (
         <div className="glass-card p-8 sm:p-12 text-center">
-          <p className="text-gray-300 text-sm sm:text-base">No skills data available</p>
+          <p className="text-textSecondary text-sm sm:text-base">No skills data available</p>
         </div>
       )}
     </div>

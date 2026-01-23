@@ -50,7 +50,7 @@ const Testimonials = () => {
     if (loading && refreshTrigger === 0) return null;
 
     return (
-        <div className="w-full py-10 sm:py-16 border-t border-white/5 overflow-hidden">
+        <div className="w-full py-10 sm:py-16 border-t border-surfaceBorder overflow-hidden">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
                 <div className="section-header !mb-0 text-left">
                     <p className="section-label">Testimonials</p>
@@ -67,10 +67,10 @@ const Testimonials = () => {
 
                     {testimonials.length > 1 && (
                         <div className="flex gap-2">
-                            <button onClick={prevSlide} className="p-2 bg-white/5 border border-white/10 rounded-lg hover:border-designColor/50 text-gray-400 hover:text-white transition-all">
+                            <button onClick={prevSlide} className="p-2 bg-surface border border-surfaceBorder rounded-lg hover:border-designColor/50 text-textSecondary hover:text-white transition-all">
                                 <FaChevronLeft />
                             </button>
-                            <button onClick={nextSlide} className="p-2 bg-white/5 border border-white/10 rounded-lg hover:border-designColor/50 text-gray-400 hover:text-white transition-all">
+                            <button onClick={nextSlide} className="p-2 bg-surface border border-surfaceBorder rounded-lg hover:border-designColor/50 text-textSecondary hover:text-white transition-all">
                                 <FaChevronRight />
                             </button>
                         </div>
@@ -92,8 +92,8 @@ const Testimonials = () => {
                     </div>
                 </div>
             ) : (
-                <div className="glass-card p-8 text-center bg-white/[0.02]">
-                    <p className="text-gray-500 text-sm">No testimonials yet. Be the first to leave one!</p>
+                <div className="glass-card p-8 text-center bg-surface">
+                    <p className="text-textTertiary text-sm">No testimonials yet. Be the first to leave one!</p>
                 </div>
             )}
 
@@ -103,7 +103,7 @@ const Testimonials = () => {
                     <div className="relative w-full max-w-xl group">
                         <button
                             onClick={() => setShowModal(false)}
-                            className="absolute -top-12 right-0 text-gray-400 hover:text-white transition-all flex items-center gap-1 text-sm font-medium"
+                            className="absolute -top-12 right-0 text-textTertiary hover:text-designColor transition-all flex items-center gap-1 text-sm font-medium"
                         >
                             <FaTimes /> Close
                         </button>
