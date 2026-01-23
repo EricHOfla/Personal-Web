@@ -1,5 +1,5 @@
 import React from "react";
-import { FaCalendar, FaClock, FaArrowRight, FaEye } from "react-icons/fa";
+import { FaCalendar, FaClock, FaArrowRight } from "react-icons/fa";
 import { buildMediaUrl } from "../../services/api";
 
 function BlogCard({ post, onReadMore }) {
@@ -14,7 +14,6 @@ function BlogCard({ post, onReadMore }) {
     published_date,
     category = "General",
     user,
-    views_count = 0,
   } = post;
 
   const handleReadMore = (e) => {
@@ -27,11 +26,6 @@ function BlogCard({ post, onReadMore }) {
   const description =
     excerpt ||
     (content ? `${content.substring(0, 120)}...` : "No description available.");
-
-  // Calculate reading time based on content length (~200 words per minute)
-  const wordsPerMinute = 200;
-  const wordCount = content ? content.split(/\s+/).length : 0;
-  const estimatedReadingTime = Math.max(1, Math.ceil(wordCount / wordsPerMinute));
 
   const formattedDate = published_date
     ? new Date(published_date).toLocaleDateString("en-US", {
@@ -76,11 +70,7 @@ function BlogCard({ post, onReadMore }) {
           </span>
           <span className="flex items-center gap-0.5 sm:gap-1">
             <FaClock className="text-designColor text-[9px] xs:text-[10px] sm:text-xs flex-shrink-0" />
-            <span className="whitespace-nowrap">{estimatedReadingTime} min</span>
-          </span>
-          <span className="flex items-center gap-0.5 sm:gap-1">
-            <FaEye className="text-designColor text-[9px] xs:text-[10px] sm:text-xs flex-shrink-0" />
-            <span className="whitespace-nowrap">{views_count} views</span>
+            <span className="whitespace-nowrap">{post.reading_time ? `${post.reading_time} min` : "5 min"}</span>
           </span>
         </div>
 
@@ -93,7 +83,15 @@ function BlogCard({ post, onReadMore }) {
         </p>
 
         <div className="flex items-center justify-between pt-2 sm:pt-3 md:pt-4 border-t border-surfaceBorder gap-2">
-          <span className="text-[9px] xs:text-[10px] sm:text-xs text-textSecondary truncate max-w-[45%] sm:max-w-[40%]">By {authorName}</span>
+          <div className="flex items-center gap-3 overflow-hidden flex-1">
+            <span className="text-[9px] xs:text-[10px] sm:text-xs text-textSecondary truncate max-w-[45%] sm:max-w-[40%]">By {authorName}</span>
+            {post.views_count !== undefined && (
+              <span className="text-[9px] xs:text-[10px] sm:text-xs text-textTertiary flex items-center gap-1">
+                <span className="opacity-50">•</span>
+                <span>{post.views_count} views</span>
+              </span>
+            )}
+          </div>
           <button
             onClick={handleReadMore}
             className="text-[10px] xs:text-xs sm:text-sm font-medium text-designColor hover:gap-1.5 sm:hover:gap-2 flex items-center gap-0.5 sm:gap-1 transition-all flex-shrink-0"

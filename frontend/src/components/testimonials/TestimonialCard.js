@@ -19,7 +19,7 @@ const TestimonialCard = ({ testimonial }) => {
                     {testimonial.image || testimonial.image_display ? (
                         <img
                             className="w-full h-full object-cover"
-                            src={testimonial.image_display || buildMediaUrl(testimonial.image)}
+                            src={buildMediaUrl(testimonial.image_display || testimonial.image)}
                             alt={testimonial.name}
                         />
                     ) : (

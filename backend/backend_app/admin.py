@@ -33,5 +33,11 @@ admin.site.register(Experience)
 admin.site.register(Education)
 admin.site.register(Skill)
 admin.site.register(Project)
-admin.site.register(BlogPost)
+@admin.register(BlogPost)
+class BlogPostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'published_date', 'is_published', 'views_count')
+    list_filter = ('is_published', 'category', 'published_date')
+    search_fields = ('title', 'excerpt', 'content')
+    prepopulated_fields = {'slug': ('title',)}
+    list_editable = ('is_published', 'category')
 admin.site.register(SidenavItem)

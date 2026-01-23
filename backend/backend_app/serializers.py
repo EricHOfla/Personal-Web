@@ -22,8 +22,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return None
 
     def get_cv_file(self, obj):
-        if obj.cv_file:
-            return obj.cv_file.url
+        request = self.context.get("request")
+        if obj.cv_file and request:
+            return request.build_absolute_uri(obj.cv_file.url)
         return None
 
 
@@ -103,6 +104,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 class BlogPostSerializer(serializers.ModelSerializer):
     featured_image = serializers.SerializerMethodField()
     user = UserProfileSerializer(read_only=True)
+    reading_time = serializers.SerializerMethodField()
 
     class Meta:
         model = BlogPost
@@ -112,6 +114,12 @@ class BlogPostSerializer(serializers.ModelSerializer):
         if obj.featured_image:
             return obj.featured_image.url
         return None
+
+    def get_reading_time(self, obj):
+        # Rough estimate: 200 words per minute
+        word_count = len(obj.content.split())
+        reading_time = max(1, round(word_count / 200))
+        return reading_time
 
 
 # =========================
@@ -144,7 +152,6 @@ class TestimonialSerializer(serializers.ModelSerializer):
         fields = ["id", "user", "name", "role", "company", "message", "image", "image_display", "display_order", "is_active", "created_at"]
         extra_kwargs = {
             "user": {"required": False},
-            "image": {"write_only": True, "required": False}
         }
 
     def get_image_display(self, obj):

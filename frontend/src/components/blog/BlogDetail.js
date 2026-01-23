@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaCalendar, FaClock, FaArrowLeft, FaUser, FaEye, FaLink } from "react-icons/fa";
+import { FaCalendar, FaClock, FaArrowLeft, FaUser } from "react-icons/fa";
 import { getBlogPost } from "../../services/blogService";
 import { buildMediaUrl } from "../../services/api";
 
@@ -65,9 +65,8 @@ function BlogDetail({ slug, onBack }) {
     featured_image,
     published_date,
     category = "General",
+    reading_time,
     user,
-    views_count = 0,
-    slug: postSlug,
   } = post;
 
   const formattedDate = published_date
@@ -81,15 +80,10 @@ function BlogDetail({ slug, onBack }) {
   const imageSrc = buildMediaUrl(featured_image);
   const authorName = user?.full_name || user?.first_name || "Anonymous";
 
-  // Calculate reading time based on content length (~200 words per minute)
-  const wordsPerMinute = 200;
-  const wordCount = content ? content.split(/\s+/).length : 0;
-  const estimatedReadingTime = Math.max(1, Math.ceil(wordCount / wordsPerMinute));
-
   // Format content with paragraphs
   const formattedContent = content
     ? content.split("\n").filter((para) => para.trim())
-    : [];
+    : [excerpt || "No content available."];
 
   return (
     <section className="app-shell">
@@ -112,12 +106,10 @@ function BlogDetail({ slug, onBack }) {
             </span>
           </div>
 
-          {/* Title */}
-          <h1 className="text-l sm:text-3xl md:text-xl lg:text-2xl font-bold text-titleColor mb-4 sm:mb-6 leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-titleColor mb-4 sm:mb-6 leading-tight">
             {title}
           </h1>
 
-          {/* Meta Information */}
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-xs sm:text-sm text-textSecondary mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-surfaceBorder">
             <div className="flex items-center gap-2">
               <FaCalendar className="text-designColor" />
@@ -125,49 +117,32 @@ function BlogDetail({ slug, onBack }) {
             </div>
             <div className="flex items-center gap-2">
               <FaClock className="text-designColor" />
-              <span>{estimatedReadingTime} min read</span>
+              <span>{reading_time ? `${reading_time} min read` : "5 min read"}</span>
             </div>
             <div className="flex items-center gap-2">
               <FaUser className="text-designColor" />
               <span>By {authorName}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <FaEye className="text-designColor" />
-              <span>{views_count} views</span>
-            </div>
-            {postSlug && (
-              <div className="flex items-center gap-2 py-1.5 px-3 bg-designColor/20 rounded-lg border border-designColor/30 shadow-inner">
-                <FaLink className="text-designColor text-sm" title="Slug" />
-                <span className="font-mono text-base font-bold text-designColor tracking-tight">{postSlug}</span>
+            {post.views_count !== undefined && (
+              <div className="flex items-center gap-2 px-3 py-1 bg-surface rounded-full border border-surfaceBorder">
+                <span className="text-designColor font-bold">{post.views_count}</span>
+                <span className="text-textTertiary">views</span>
               </div>
             )}
           </div>
 
-          {/* Featured Image - Restored as per user request */}
+          {/* Featured Image */}
           {imageSrc && (
-            <div className="mb-6 sm:mb-8 rounded-xl overflow-hidden border border-surfaceBorder/50 shadow-xl">
+            <div className="mb-6 sm:mb-8 rounded-xl overflow-hidden">
               <img
                 src={imageSrc}
                 alt={title}
                 className="w-full h-auto max-h-[400px] sm:max-h-[500px] md:max-h-[600px] object-cover"
                 loading="eager"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  console.error("Failed to load blog image:", imageSrc);
-                }}
               />
             </div>
           )}
         </div>
-
-        {/* Excerpt / Lead Paragraph */}
-        {excerpt && (
-          <div className="mb-8 p-4 sm:p-6 bg-surfaceBorder/10 border-l-4 border-designColor italic">
-            <p className="text-base sm:text-lg md:text-xl text-textColor/90 leading-relaxed">
-              {excerpt}
-            </p>
-          </div>
-        )}
 
         {/* Content */}
         <div className="prose prose-invert max-w-none">
@@ -179,9 +154,6 @@ function BlogDetail({ slug, onBack }) {
               {paragraph}
             </p>
           ))}
-          {formattedContent.length === 0 && !excerpt && (
-            <p className="text-textSecondary italic">No content available.</p>
-          )}
         </div>
 
         {/* Footer */}

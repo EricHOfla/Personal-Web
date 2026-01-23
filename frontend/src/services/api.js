@@ -57,12 +57,11 @@ export const buildMediaUrl = (path) => {
   if (!path) return '';
   if (path.startsWith('http')) return path;
 
-  // Ensure path starts with /
+  // Ensure path starts with / but API_HOST doesn't end with /
+  const host = API_HOST.endsWith('/') ? API_HOST.slice(0, -1) : API_HOST;
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
-  // Ensure API_HOST doesn't end with /
-  const cleanHost = API_HOST.endsWith('/') ? API_HOST.slice(0, -1) : API_HOST;
 
-  const mediaUrl = `${cleanHost}${cleanPath}`;
+  const mediaUrl = `${host}${cleanPath}`;
   return mediaUrl;
 };
 
