@@ -281,21 +281,21 @@ const Home = ({ profile, theme, toggleTheme }) => {
             onClick={(e) => e.stopPropagation()}
             className="w-full h-full bg-gradient-to-b from-bodyColor via-bodyColor to-[#0d0d0d] overflow-y-auto scrollbar-thin scrollbar-thumb-designColor/30 scrollbar-track-transparent hover:scrollbar-thumb-designColor/50 border-r border-white/5 relative"
           >
-            {/* Theme Toggle & Close Button - Inside sidenav */}
-            <div className="absolute top-4 right-4 flex items-center gap-2 z-50">
-              <button
-                onClick={toggleTheme}
-                className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-bodyColor to-[#1a1a1a] text-xl text-textColor hover:text-designColor duration-300 cursor-pointer flex items-center justify-center rounded-xl border border-white/10 hover:border-designColor/30 shadow-lg shadow-black/50 hover:shadow-designColor/10"
-                title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              >
-                {theme === 'dark' ? <FaSun /> : <FaMoon />}
-              </button>
+            {/* Close Button & Theme Toggle - Inside sidenav */}
+            <div className="absolute top-4 right-4 flex flex-col items-center gap-3 z-50">
               <button
                 onClick={() => setSidenav(false)}
                 className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-bodyColor to-[#1a1a1a] text-xl sm:text-2xl text-textSecondary hover:text-designColor duration-300 cursor-pointer flex items-center justify-center rounded-xl border border-white/10 hover:border-designColor/30 shadow-lg shadow-black/50 hover:shadow-designColor/10"
                 aria-label="Close menu"
               >
                 <MdOutlineClose />
+              </button>
+              <button
+                onClick={toggleTheme}
+                className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-bodyColor to-[#1a1a1a] text-xl text-textColor hover:text-designColor duration-300 cursor-pointer flex items-center justify-center rounded-xl border border-white/10 hover:border-designColor/30 shadow-lg shadow-black/50 hover:shadow-designColor/10"
+                title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                {theme === 'dark' ? <FaSun /> : <FaMoon />}
               </button>
             </div>
             <Sidenav
