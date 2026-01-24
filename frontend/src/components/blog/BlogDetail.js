@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaCalendar, FaClock, FaArrowLeft, FaUser, FaEye } from "react-icons/fa";
 import { getBlogPost, trackBlogPostView } from "../../services/blogService";
 import { buildMediaUrl } from "../../services/api";
@@ -7,6 +7,12 @@ function BlogDetail({ slug, onBack }) {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const hasTrackedView = useRef(false);
+
+  useEffect(() => {
+    // Reset the tracking ref when the slug changes
+    hasTrackedView.current = false;
+  }, [slug]);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -18,11 +24,14 @@ function BlogDetail({ slug, onBack }) {
         setPost(data);
         setError(null);
 
-        // Track the view count
-        try {
-          await trackBlogPostView(slug);
-        } catch (trackErr) {
-          console.error("Failed to track view:", trackErr);
+        // Track the view count only once per single view
+        if (!hasTrackedView.current) {
+          try {
+            await trackBlogPostView(slug);
+            hasTrackedView.current = true;
+          } catch (trackErr) {
+            console.error("Failed to track view:", trackErr);
+          }
         }
       } catch (err) {
         setError(err.message);
