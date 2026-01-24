@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { FaCalendar, FaClock, FaArrowLeft, FaUser } from "react-icons/fa";
-import { getBlogPost } from "../../services/blogService";
+import { FaCalendar, FaClock, FaArrowLeft, FaUser, FaEye } from "react-icons/fa";
+import { getBlogPost, trackBlogPostView } from "../../services/blogService";
 import { buildMediaUrl } from "../../services/api";
 
 function BlogDetail({ slug, onBack }) {
@@ -17,6 +17,13 @@ function BlogDetail({ slug, onBack }) {
         const data = await getBlogPost(slug);
         setPost(data);
         setError(null);
+
+        // Track the view count
+        try {
+          await trackBlogPostView(slug);
+        } catch (trackErr) {
+          console.error("Failed to track view:", trackErr);
+        }
       } catch (err) {
         setError(err.message);
         console.error("Failed to fetch blog post:", err);
@@ -146,6 +153,10 @@ function BlogDetail({ slug, onBack }) {
             <div className="flex items-center gap-2">
               <FaUser className="text-designColor" />
               <span>By {authorName}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FaEye className="text-designColor" />
+              <span>{post.views_count || 0} views</span>
             </div>
           </div>
 

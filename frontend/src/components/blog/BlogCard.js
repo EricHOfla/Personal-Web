@@ -1,5 +1,5 @@
 import React from "react";
-import { FaCalendar, FaClock, FaArrowRight } from "react-icons/fa";
+import { FaCalendar, FaClock, FaArrowRight, FaEye } from "react-icons/fa";
 import { buildMediaUrl } from "../../services/api";
 
 function BlogCard({ post, onReadMore }) {
@@ -71,6 +71,10 @@ function BlogCard({ post, onReadMore }) {
           <span className="flex items-center gap-0.5 sm:gap-1">
             <FaClock className="text-designColor text-[9px] xs:text-[10px] sm:text-xs flex-shrink-0" />
             <span className="whitespace-nowrap">{post.reading_time ? `${post.reading_time} min` : "5 min"}</span>
+          </span>
+          <span className="flex items-center gap-0.5 sm:gap-1">
+            <FaEye className="text-designColor text-[9px] xs:text-[10px] sm:text-xs flex-shrink-0" />
+            <span className="whitespace-nowrap">{post.views_count || 0} views</span>
           </span>
         </div>
 
