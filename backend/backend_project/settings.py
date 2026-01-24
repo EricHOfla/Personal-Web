@@ -138,23 +138,23 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # Cloudinary settings for persistent media storage on Render
-# Supports both CLOUDINARY_URL format and individual env vars
-import cloudinary
+CLOUDINARY_STORAGE = {}
 
-CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL', '')
-
-if CLOUDINARY_URL:
-    # Parse CLOUDINARY_URL format: cloudinary://API_KEY:API_SECRET@CLOUD_NAME
-    cloudinary.config(cloudinary_url=CLOUDINARY_URL)
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# Priority 1: CLOUDINARY_URL (Used by Render Env Groups)
+if os.environ.get('CLOUDINARY_URL'):
+    CLOUDINARY_STORAGE['CLOUDINARY_URL'] = os.environ.get('CLOUDINARY_URL')
+# Priority 2: Individual variables
 elif os.environ.get('CLOUDINARY_CLOUD_NAME'):
-    # Fallback to individual env vars
     CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
-        'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
-        'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+        'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+        'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+        'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
     }
+
+# Enable Cloudinary if we have credentials
+if CLOUDINARY_STORAGE:
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
