@@ -132,7 +132,9 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Use WhiteNoise for static files (CSS, JS)
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# We set STRICT to False so it doesn't crash if an icon is missing
+STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
+WHITENOISE_MANIFEST_STRICT = False
 
 # Media files (User uploads)
 MEDIA_URL = "/media/"
