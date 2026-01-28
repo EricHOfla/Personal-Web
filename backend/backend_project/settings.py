@@ -99,15 +99,28 @@ DATABASES = {
 }
 
 # 6. Add Caching (Redis Recommended)
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ.get('REDIS_URL', "redis://127.0.0.1:6379/1"),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+# 6. Add Caching (Redis Recommended with Fallback)
+# If REDIS_URL is set, use it. Otherwise, fallback to local memory
+if os.environ.get('REDIS_URL'):
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": os.environ.get('REDIS_URL'),
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                # Add timeout to avoid hanging if Redis is slow/down
+                "SOCKET_CONNECT_TIMEOUT": 5, 
+                "SOCKET_TIMEOUT": 5,
+            }
         }
     }
-}
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "unique-snowflake",
+        }
+    }
 
 # 7. Optimize Django Settings
 # 7. Optimize Django Settings
