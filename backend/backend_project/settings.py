@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
+from django.templatetags.static import static
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -39,7 +40,9 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',  # Professional Admin UI (Moved to top to guarantee override)
+    'unfold',  # Tailwind CSS Admin Theme
+    'unfold.contrib.filters',
+    'unfold.contrib.forms',
     'cloudinary_storage',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -124,25 +127,30 @@ else:
     }
 
 # 7. Optimize Django Settings
-# JAZZMIN SETTINGS (Professional UI)
-JAZZMIN_SETTINGS = {
-    "site_title": "Habumugisha Eric",
-    "site_header": "Eric's Portal",
-    "site_brand": "Eric Admin",
-    "welcome_sign": "Welcome back, Eric!",
-    "copyright": "Habumugisha Eric",
-    "search_model": ["backend_app.UserProfile", "backend_app.BlogPost"],
-    "topmenu_links": [
-        {"name": "Home",  "url": "admin:index", "permissions": ["auth.view_user"]},
-        {"name": "API", "url": "/api/"},
-        {"name": "View Site", "url": "https://oflah.vercel.app"},
-    ],
-    "show_ui_builder": False,
-}
-
-JAZZMIN_UI_TWEAKS = {
-    "theme": "flatly",
-    "dark_mode_theme": "darkly",
+# UNFOLD SETTINGS (Tailwind UI)
+UNFOLD = {
+    "SITE_TITLE": "Eric's Portal",
+    "SITE_HEADER": "Eric Admin",
+    "SITE_URL": "https://oflah.vercel.app",
+    "SITE_ICON": {
+        "light": lambda request: static("admin/img/icon-auth.svg"),  # fallback
+        "dark": lambda request: static("admin/img/icon-auth.svg"),   # fallback
+    },
+    "DASHBOARD_CALLBACK": "backend_app.dashboard_callback",  # Optional: For custom dashboard
+    "COLORS": {
+        "primary": {
+            "50": "239 246 255",
+            "100": "219 234 254",
+            "200": "191 219 254",
+            "300": "146 197 253",
+            "400": "96 165 250",
+            "500": "59 130 246",
+            "600": "37 99 235",
+            "700": "29 78 216",
+            "800": "30 64 175",
+            "900": "30 58 138",
+        },
+    },
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'False') == 'True'

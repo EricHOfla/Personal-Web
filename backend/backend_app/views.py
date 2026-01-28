@@ -423,3 +423,13 @@ def testimonial_detail(request, pk):
     elif request.method == 'DELETE':
         item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+# ===== Dashboard Callback for Unfold =====
+def dashboard_callback(request, context):
+    """
+    Callback to customize Unfold dashboard context.
+    """
+    context.update({
+        "sample_statistic": "Statistics", # Example stat
+    })
+    return context
