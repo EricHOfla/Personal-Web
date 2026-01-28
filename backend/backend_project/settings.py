@@ -170,7 +170,7 @@ USE_TZ = True
 APPEND_SLASH = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Use WhiteNoise for static files (CSS, JS)
