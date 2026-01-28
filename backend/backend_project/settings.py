@@ -55,9 +55,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Must be here to serve static files
     'django.middleware.gzip.GZipMiddleware',  # 8. Compress Responses
     'silk.middleware.SilkyMiddleware',       # 11. Monitor Performance
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -175,7 +175,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Use WhiteNoise for static files (CSS, JS)
 # We set STRICT to False so it doesn't crash if an icon is missing
-STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_MANIFEST_STRICT = False
 
 # Media files (User uploads)
