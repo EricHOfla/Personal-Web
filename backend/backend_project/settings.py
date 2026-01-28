@@ -175,7 +175,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Use WhiteNoise for static files (CSS, JS)
 # We set STRICT to False so it doesn't crash if an icon is missing
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Use WhiteNoise for static files (CSS, JS)
+# We set STRICT to False so it doesn't crash if an icon is missing or Silk has bad references
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'  # Changed from Manifest to avoid Silk crash
 WHITENOISE_MANIFEST_STRICT = False
 
 # Media files (User uploads)
