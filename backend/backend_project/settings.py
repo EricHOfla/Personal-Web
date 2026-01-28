@@ -39,8 +39,8 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',  # Professional Admin UI (Moved to top to guarantee override)
     'cloudinary_storage',
-    'jazzmin',  # Professional Admin UI (Must be before django.contrib.admin)
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
