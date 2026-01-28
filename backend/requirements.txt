@@ -17,3 +17,4 @@ cloudinary
 django-cloudinary-storage
 django-redis
 django-silk
+django-jazzmin

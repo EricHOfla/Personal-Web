@@ -40,6 +40,7 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 INSTALLED_APPS = [
     'cloudinary_storage',
+    'jazzmin',  # Professional Admin UI (Must be before django.contrib.admin)
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -123,7 +124,26 @@ else:
     }
 
 # 7. Optimize Django Settings
-# 7. Optimize Django Settings
+# JAZZMIN SETTINGS (Professional UI)
+JAZZMIN_SETTINGS = {
+    "site_title": "Habumugisha Eric",
+    "site_header": "Eric's Portal",
+    "site_brand": "Eric Admin",
+    "welcome_sign": "Welcome back, Eric!",
+    "copyright": "Habumugisha Eric",
+    "search_model": ["backend_app.UserProfile", "backend_app.BlogPost"],
+    "topmenu_links": [
+        {"name": "Home",  "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "API", "url": "/api/"},
+        {"name": "View Site", "url": "https://oflah.vercel.app"},
+    ],
+    "show_ui_builder": False,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "flatly",
+    "dark_mode_theme": "darkly",
+}
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'False') == 'True'
 
