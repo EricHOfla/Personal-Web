@@ -155,14 +155,14 @@ class Project(models.Model):
 class BlogPost(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="blog_posts")
     title = models.CharField(max_length=200)
-    category = models.CharField(max_length=100, blank=True)
+    category = models.CharField(max_length=100, blank=True, db_index=True)
     excerpt = models.TextField(blank=True)
     content = models.TextField()
     featured_image = models.ImageField(upload_to="blogs/", blank=True, null=True)
     published_date = models.DateField()
     slug = models.SlugField(unique=True, blank=True)
     views_count = models.IntegerField(default=0)
-    is_published = models.BooleanField(default=True)
+    is_published = models.BooleanField(default=True, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -214,7 +214,7 @@ class Testimonial(models.Model):
     company = models.CharField(max_length=100, blank=True)
     message = models.TextField()
     image = models.ImageField(upload_to="testimonials/", blank=True, null=True)
-    display_order = models.IntegerField(default=0)
+    display_order = models.IntegerField(default=0, db_index=True)
     is_active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

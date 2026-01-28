@@ -1,6 +1,8 @@
 from rest_framework.decorators import api_view # type: ignore
 from rest_framework.response import Response # type: ignore
 from rest_framework import status # type: ignore
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 from .models import *
 from .serializers import *
 
@@ -279,10 +281,12 @@ def project_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Blog Posts =====
+@cache_page(60 * 15)
 @api_view(['GET', 'POST'])
 def blog_post_list(request):
     if request.method == 'GET':
-        items = BlogPost.objects.filter(is_published=True)
+        # Optimize N+1 query: fetch user profile in the same query
+        items = BlogPost.objects.filter(is_published=True).select_related('user')
         serializer = BlogPostSerializer(items, many=True, context={'request': request})
         return Response(serializer.data)
     serializer = BlogPostSerializer(data=request.data, context={'request': request})
@@ -294,7 +298,8 @@ def blog_post_list(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 def blog_post_detail(request, slug):
     try:
-        item = BlogPost.objects.get(slug=slug)
+        # Optimize: fetch user profile along with blog post
+        item = BlogPost.objects.select_related('user').get(slug=slug)
     except BlogPost.DoesNotExist:
         return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -388,6 +393,7 @@ def sidenav_item_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Testimonials =====
+@cache_page(60 * 15)
 @api_view(['GET', 'POST'])
 def testimonial_list(request):
     if request.method == 'GET':
