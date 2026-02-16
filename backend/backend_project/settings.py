@@ -61,7 +61,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', # Must be here to serve static files
     'django.middleware.gzip.GZipMiddleware',  # 8. Compress Responses
-    'silk.middleware.SilkyMiddleware',       # 11. Monitor Performance
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -69,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'silk.middleware.SilkyMiddleware',       # 11. Monitor Performance - moved to end
 ]
 
 ROOT_URLCONF = 'backend_project.urls'
@@ -243,6 +243,13 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+# CSRF Trusted Origins - Required for admin panel on Render
+CSRF_TRUSTED_ORIGINS = [
+    "https://personal-web-srv9.onrender.com",
+    "https://oflah.vercel.app",
+    "https://oflah.com",
+]
 
 # Security settings for HTTPS proxies (Render, Heroku, etc.)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
