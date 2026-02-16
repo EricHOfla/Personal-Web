@@ -39,9 +39,6 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 # Application definition
 
 INSTALLED_APPS = [
-    'unfold',  # Tailwind CSS Admin Theme
-    'unfold.contrib.filters',
-    'unfold.contrib.forms',
     'cloudinary_storage',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -130,12 +127,6 @@ else:
 # Session backend - use database for reliability on Render free tier
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
-UNFOLD = {
-    "SITE_TITLE": "Eric's Portal",
-    "SITE_HEADER": "Eric Admin",
-    "SITE_URL": "https://oflah.vercel.app",
-}
-
 if not DEBUG:
     # Security settings for production
     SECURE_HSTS_SECONDS = 31536000  # 1 year
@@ -181,9 +172,6 @@ APPEND_SLASH = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Use WhiteNoise for static files - simplified for Render
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Media files (User uploads)
 MEDIA_URL = "/media/"
