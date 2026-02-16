@@ -174,7 +174,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Required by cloudinary_storage during collectstatic
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATICFILES_STORAGE = 'django.core.files.storage.StaticFilesStorage'
 
 # Media files (User uploads)
 MEDIA_URL = "/media/"
@@ -197,7 +197,7 @@ STORAGES = {
         "BACKEND": DEFAULT_FILE_STORAGE if 'DEFAULT_FILE_STORAGE' in locals() else "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        "BACKEND": "django.core.files.storage.StaticFilesStorage",
     },
 }
 
