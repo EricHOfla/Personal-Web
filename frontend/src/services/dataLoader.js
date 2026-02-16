@@ -8,7 +8,7 @@ import { getExperiences } from './experiencesService';
 import { getEducation } from './educationService';
 import { getSkills } from './skillsService';
 import { getProjects } from './projectsService';
-import { getBlogPosts } from './blogService';
+import { getAllBlogPosts } from './blogService';
 import { getSidenavItems } from './sidenavService';
 import { getTestimonials } from './testimonialService';
 
@@ -44,7 +44,7 @@ export const prefetchAllData = async () => {
       getEducation(),
       getSkills(),
       getProjects(),
-      getBlogPosts(),
+      getAllBlogPosts(),
       getSidenavItems(),
       getTestimonials(),
     ]);
@@ -131,7 +131,7 @@ export const prefetchSectionData = async (section) => {
       return { projects };
     },
     blog: async () => {
-      const blogPosts = await getBlogPosts();
+      const blogPosts = await getAllBlogPosts();
       return { blogPosts };
     },
   };
