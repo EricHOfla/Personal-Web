@@ -135,10 +135,6 @@ UNFOLD = {
     "SITE_TITLE": "Eric's Portal",
     "SITE_HEADER": "Eric Admin",
     "SITE_URL": "https://oflah.vercel.app",
-    "SITE_ICON": {
-        "light": lambda request: static("admin/img/icon-auth.svg"),  # fallback
-        "dark": lambda request: static("admin/img/icon-auth.svg"),   # fallback
-    },
     "DASHBOARD_CALLBACK": "backend_app.dashboard_callback",  # Optional: For custom dashboard
     "COLORS": {
         "primary": {
