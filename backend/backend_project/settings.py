@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
-from django.templatetags.static import static
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -135,21 +134,6 @@ UNFOLD = {
     "SITE_TITLE": "Eric's Portal",
     "SITE_HEADER": "Eric Admin",
     "SITE_URL": "https://oflah.vercel.app",
-    "DASHBOARD_CALLBACK": "backend_app.dashboard_callback",  # Optional: For custom dashboard
-    "COLORS": {
-        "primary": {
-            "50": "239 246 255",
-            "100": "219 234 254",
-            "200": "191 219 254",
-            "300": "146 197 253",
-            "400": "96 165 250",
-            "500": "59 130 246",
-            "600": "37 99 235",
-            "700": "29 78 216",
-            "800": "30 64 175",
-            "900": "30 58 138",
-        },
-    },
 }
 
 if not DEBUG:
