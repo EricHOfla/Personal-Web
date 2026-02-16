@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 import {
-  FaHome, FaUser, FaBriefcase, FaEnvelope, FaCode,
-  FaGraduationCap, FaBlog, FaServicestack, FaCertificate,
+  FaEnvelope, FaCode,
   FaGithub, FaLinkedin, FaTwitter, FaArrowRight, FaFacebook,
   FaYoutube, FaInstagram, FaGlobe, FaPhone, FaMapMarkerAlt,
   FaLaptopCode, FaPaintBrush, FaMobileAlt, FaServer, FaDatabase,
   FaCloud, FaCogs, FaRocket
 } from 'react-icons/fa';
 import { HiLightningBolt, HiOutlineExternalLink } from 'react-icons/hi';
-import { BiCodeAlt } from 'react-icons/bi';
 import { MdDesignServices, MdWebAsset } from 'react-icons/md';
 import { getProfile } from '../../../services/profileService';
 import { getSkills } from '../../../services/skillsService';
