@@ -8,7 +8,7 @@ import {
   FaLaptopCode, FaPaintBrush, FaMobileAlt, FaServer, FaDatabase,
   FaCloud, FaCogs, FaRocket
 } from 'react-icons/fa';
-import { HiSparkles, HiLightningBolt, HiOutlineExternalLink } from 'react-icons/hi';
+import { HiLightningBolt, HiOutlineExternalLink } from 'react-icons/hi';
 import { BiCodeAlt } from 'react-icons/bi';
 import { MdDesignServices, MdWebAsset } from 'react-icons/md';
 import { getSidenavItems } from '../../../services/sidenavService';
@@ -20,7 +20,6 @@ import { getSocialLinks } from '../../../services/socialLinksService';
 import { getFunFacts } from '../../../services/funFactsService';
 import { getServices } from '../../../services/servicesService';
 import { buildMediaUrl } from '../../../services/api';
-import SidenavTitle from './SidenavTitle';
 
 // Icon mapping for navigation items
 const iconMap = {
@@ -96,7 +95,6 @@ const getServiceIcon = (serviceName) => {
 };
 
 function Sidenav({ onNavigate, profile: profileProp }) {
-  const [items, setItems] = useState([]);
   const [profile, setProfile] = useState(profileProp || null);
   const [skills, setSkills] = useState([]);
   const [projects, setProjects] = useState([]);
@@ -134,7 +132,6 @@ function Sidenav({ onNavigate, profile: profileProp }) {
           !profileProp ? getProfile().catch(() => null) : Promise.resolve(null)
         ]);
 
-        setItems(Array.isArray(sidenavData) ? sidenavData : sidenavData?.results || []);
         if (fetchedProfile) setProfile(fetchedProfile);
         setSkills(Array.isArray(skillsData) ? skillsData : skillsData?.results || []);
         setProjects(Array.isArray(projectsData) ? projectsData : projectsData?.results || []);
@@ -155,7 +152,6 @@ function Sidenav({ onNavigate, profile: profileProp }) {
   // Calculate dynamic stats
   const yearsOfExperience = calculateYearsOfExperience(experiences);
   const projectsCount = projects.length;
-  const skillsCount = skills.length;
 
   // Filter skills for coding and design categories only
   const codingAndDesignSkills = skills.filter(skill => {
@@ -178,26 +174,6 @@ function Sidenav({ onNavigate, profile: profileProp }) {
 
   // Get top services (first 2)
   const topServices = services.slice(0, 2);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.06,
-        delayChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { x: -20, opacity: 0 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: { type: 'spring', stiffness: 120, damping: 15 }
-    }
-  };
 
   // Get fun fact values from database
   const getStatValue = (label) => {

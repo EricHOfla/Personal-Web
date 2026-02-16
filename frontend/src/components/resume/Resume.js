@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Title from "../home/Title";
 import Education from "./Education";
 import Skills from "./Skills";
 import { FaGraduationCap, FaCode, FaBriefcase } from "react-icons/fa";

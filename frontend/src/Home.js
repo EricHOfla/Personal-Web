@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
+import React, { useRef, useState, lazy, Suspense } from "react";
 
 import { FaUser, FaEnvelope, FaBars, FaSun, FaMoon } from "react-icons/fa";
 import { IoIosPaper } from "react-icons/io";

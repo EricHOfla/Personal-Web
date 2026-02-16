@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { getAllTestimonials } from "../../services/testimonialService";
 import TestimonialCard from "./TestimonialCard";
 import TestimonialForm from "./TestimonialForm";
@@ -10,7 +10,6 @@ const Testimonials = () => {
     const [refreshTrigger, setRefreshTrigger] = useState(0);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showModal, setShowModal] = useState(false);
-    const sliderRef = useRef(null);
 
     useEffect(() => {
         const fetchTestimonials = async () => {
@@ -45,7 +44,7 @@ const Testimonials = () => {
             const interval = setInterval(nextSlide, 5000);
             return () => clearInterval(interval);
         }
-    }, [testimonials.length]);
+    }, [testimonials.length, nextSlide]);
 
     if (loading && refreshTrigger === 0) return null;
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FaQuoteLeft } from "react-icons/fa";
 import { buildMediaUrl } from "../../services/api";
 

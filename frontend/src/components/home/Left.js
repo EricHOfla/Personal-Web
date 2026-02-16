@@ -3,7 +3,6 @@ import { useTypewriter, Cursor } from "react-simple-typewriter";
 import { BsCloudLightningFill } from "react-icons/bs";
 import { FaGithub, FaLinkedin, FaFacebook, FaTwitter, FaYoutube, FaInstagram } from "react-icons/fa";
 import { FiMail, FiSend, FiGlobe } from "react-icons/fi";
-import CV from "../../assets/Eric_resume.pdf";
 import { bannerImg } from "../../assets/index";
 import { getSocialLinks } from "../../services/socialLinksService";
 import { buildMediaUrl, getResumePdfUrl } from "../../services/api";

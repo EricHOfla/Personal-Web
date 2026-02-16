@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { FaArrowRight, FaChevronRight } from 'react-icons/fa';
+import { FaChevronRight } from 'react-icons/fa';
 import { HiOutlineExternalLink } from 'react-icons/hi';
 
 function SidenavTitle({ item, index, iconMap, onNavigate }) {
