@@ -131,7 +131,7 @@ else:
 # Session backend - use database for reliability on Render free tier
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
-SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'False') == 'True'
+UNFOLD = {
     "SITE_TITLE": "Eric's Portal",
     "SITE_HEADER": "Eric Admin",
     "SITE_URL": "https://oflah.vercel.app",
@@ -155,9 +155,6 @@ SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'False') == 'True'
         },
     },
 }
-
-# Moved SESSION_ENGINE up with cache config
-SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'False') == 'True'
 
 if not DEBUG:
     # Security settings for production
