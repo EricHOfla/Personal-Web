@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { getAllTestimonials } from "../../services/testimonialService";
 import TestimonialCard from "./TestimonialCard";
 import TestimonialForm from "./TestimonialForm";
@@ -30,9 +30,9 @@ const Testimonials = () => {
         setShowModal(false);
     };
 
-    const nextSlide = () => {
+    const nextSlide = useCallback(() => {
         setCurrentIndex((prev) => (prev + 1 >= testimonials.length ? 0 : prev + 1));
-    };
+    }, [testimonials.length]);
 
     const prevSlide = () => {
         setCurrentIndex((prev) => (prev - 1 < 0 ? testimonials.length - 1 : prev - 1));

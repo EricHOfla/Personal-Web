@@ -11,7 +11,6 @@ import {
 import { HiLightningBolt, HiOutlineExternalLink } from 'react-icons/hi';
 import { BiCodeAlt } from 'react-icons/bi';
 import { MdDesignServices, MdWebAsset } from 'react-icons/md';
-import { getSidenavItems } from '../../../services/sidenavService';
 import { getProfile } from '../../../services/profileService';
 import { getSkills } from '../../../services/skillsService';
 import { getProjects } from '../../../services/projectsService';
@@ -20,21 +19,6 @@ import { getSocialLinks } from '../../../services/socialLinksService';
 import { getFunFacts } from '../../../services/funFactsService';
 import { getServices } from '../../../services/servicesService';
 import { buildMediaUrl } from '../../../services/api';
-
-// Icon mapping for navigation items
-const iconMap = {
-  home: FaHome,
-  about: FaUser,
-  projects: FaBriefcase,
-  work: FaBriefcase,
-  contact: FaEnvelope,
-  skills: FaCode,
-  education: FaGraduationCap,
-  blog: FaBlog,
-  services: FaServicestack,
-  certificates: FaCertificate,
-  default: BiCodeAlt
-};
 
 // Social icon mapping
 const socialIconMap = {
@@ -112,7 +96,6 @@ function Sidenav({ onNavigate, profile: profileProp }) {
       try {
         // Fetch all data in parallel for better performance
         const [
-          sidenavData,
           skillsData,
           projectsData,
           experiencesData,
@@ -121,7 +104,6 @@ function Sidenav({ onNavigate, profile: profileProp }) {
           servicesData,
           fetchedProfile
         ] = await Promise.all([
-          getSidenavItems().catch(() => []),
           getSkills().catch(() => []),
           getProjects().catch(() => []),
           getExperiences().catch(() => []),
