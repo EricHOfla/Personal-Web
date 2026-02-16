@@ -1,4 +1,5 @@
 // api.js
+import cacheService from './cacheService';
 
 // Base API host
 const API_HOST = process.env.REACT_APP_API_URL || process.env.REACT_APP_API_BASE_URL || 'https://personal-web-srv9.onrender.com';
@@ -17,10 +18,24 @@ const buildUrl = (endpoint) => {
   return fullUrl;
 };
 
-// API call function
+// API call function with caching support
 export const apiCall = async (endpoint, options = {}) => {
   const url = buildUrl(endpoint);
-  const { headers, body, ...rest } = options;
+  const { headers, body, cache = true, cacheTTL, ...rest } = options;
+  
+  // Only cache GET requests
+  const method = options.method || 'GET';
+  const shouldCache = cache && method === 'GET';
+  
+  // Check cache for GET requests
+  if (shouldCache) {
+    const cacheKey = `api:${url}`;
+    const cachedData = cacheService.get(cacheKey);
+    if (cachedData) {
+      console.log('[API Cache] Hit:', url);
+      return cachedData;
+    }
+  }
 
   const finalHeaders = { ...headers };
   // If body is not FormData, default to application/json
@@ -32,6 +47,7 @@ export const apiCall = async (endpoint, options = {}) => {
     const response = await fetch(url, {
       headers: finalHeaders,
       body,
+      method,
       ...rest,
     });
 
@@ -40,11 +56,21 @@ export const apiCall = async (endpoint, options = {}) => {
     }
 
     const contentType = response.headers.get('content-type');
+    let data;
     if (contentType && contentType.includes('application/json')) {
-      return await response.json();
+      data = await response.json();
     } else {
-      return response;
+      data = response;
     }
+    
+    // Cache successful GET responses
+    if (shouldCache && data) {
+      const cacheKey = `api:${url}`;
+      cacheService.set(cacheKey, data, cacheTTL);
+      console.log('[API Cache] Set:', url);
+    }
+    
+    return data;
   } catch (error) {
     console.error('[API] Call failed:', error);
     console.error('[API] Endpoint tried:', url);
@@ -71,7 +97,17 @@ export const getResumePdfUrl = () => {
 };
 
 // Helpers for HTTP methods
-export const apiGet = (endpoint, headers = {}) => apiCall(endpoint, { method: 'GET', headers });
-export const apiPost = (endpoint, data, headers = {}) => apiCall(endpoint, { method: 'POST', headers, body: JSON.stringify(data) });
-export const apiPut = (endpoint, data, headers = {}) => apiCall(endpoint, { method: 'PUT', headers, body: JSON.stringify(data) });
-export const apiDelete = (endpoint, headers = {}) => apiCall(endpoint, { method: 'DELETE', headers });
+export const apiGet = (endpoint, headers = {}, cache = true, cacheTTL) => 
+  apiCall(endpoint, { method: 'GET', headers, cache, cacheTTL });
+export const apiPost = (endpoint, data, headers = {}) => 
+  apiCall(endpoint, { method: 'POST', headers, body: JSON.stringify(data), cache: false });
+export const apiPut = (endpoint, data, headers = {}) => 
+  apiCall(endpoint, { method: 'PUT', headers, body: JSON.stringify(data), cache: false });
+export const apiDelete = (endpoint, headers = {}) => 
+  apiCall(endpoint, { method: 'DELETE', headers, cache: false });
+
+// Clear cache helper
+export const clearApiCache = () => {
+  cacheService.clearAll();
+  console.log('[API Cache] Cleared all cache');
+};

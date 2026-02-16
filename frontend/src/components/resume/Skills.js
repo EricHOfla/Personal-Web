@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { getSkills } from "../../services/skillsService";
 
-function Skills() {
+function Skills({ appData }) {
   const [skills, setSkills] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Use prefetched data if available
+    if (appData?.skills) {
+      setSkills(Array.isArray(appData.skills) ? appData.skills : appData.skills.results || []);
+      setLoading(false);
+      return;
+    }
+
+    // Fallback to fetching if no prefetched data
     const fetchSkills = async () => {
       try {
         const data = await getSkills();
@@ -18,7 +26,7 @@ function Skills() {
     };
 
     fetchSkills();
-  }, []);
+  }, [appData]);
 
   if (loading) {
     return (

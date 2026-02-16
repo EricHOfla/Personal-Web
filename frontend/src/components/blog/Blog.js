@@ -3,12 +3,20 @@ import { getAllBlogPosts } from "../../services/blogService";
 import BlogCard from "./BlogCard";
 import Testimonials from "../testimonials/Testimonials";
 
-function Blog({ onReadMore }) {
+function Blog({ onReadMore, appData }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Use prefetched data if available
+    if (appData?.blogPosts) {
+      setPosts(Array.isArray(appData.blogPosts) ? appData.blogPosts : appData.blogPosts.results || []);
+      setLoading(false);
+      return;
+    }
+
+    // Fallback to fetching if no prefetched data
     const fetchPosts = async () => {
       try {
         const data = await getAllBlogPosts();
@@ -22,7 +30,7 @@ function Blog({ onReadMore }) {
     };
 
     fetchPosts();
-  }, []);
+  }, [appData]);
 
   return (
     <section className="app-shell">

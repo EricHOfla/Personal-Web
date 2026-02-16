@@ -33,6 +33,7 @@ def get_object(model, pk):
         return None
 
 # ===== Profile =====
+@cache_page(60 * 5)  # Cache for 5 minutes 
 @api_view(['GET', 'POST'])
 def user_profile_list(request):
     if request.method == 'GET':
@@ -64,6 +65,7 @@ def user_profile_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Social Links =====
+@cache_page(60 * 5)  # Cache for 5 minutes
 @api_view(['GET', 'POST'])
 def social_link_list(request):
     if request.method == 'GET':
@@ -95,6 +97,7 @@ def social_link_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Services =====
+@cache_page(60 * 5)  # Cache for 5 minutes
 @api_view(['GET', 'POST'])
 def service_list(request):
     if request.method == 'GET':
@@ -126,6 +129,7 @@ def service_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Fun Facts =====
+@cache_page(60 * 5)  # Cache for 5 minutes
 @api_view(['GET', 'POST'])
 def fun_fact_list(request):
     if request.method == 'GET':
@@ -157,6 +161,7 @@ def fun_fact_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Experiences =====
+@cache_page(60 * 5)  # Cache for 5 minutes
 @api_view(['GET', 'POST'])
 def experience_list(request):
     if request.method == 'GET':
@@ -188,6 +193,7 @@ def experience_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Education =====
+@cache_page(60 * 5)  # Cache for 5 minutes
 @api_view(['GET', 'POST'])
 def education_list(request):
     if request.method == 'GET':
@@ -219,6 +225,7 @@ def education_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Skills =====
+@cache_page(60 * 5)  # Cache for 5 minutes
 @api_view(['GET', 'POST'])
 def skill_list(request):
     if request.method == 'GET':
@@ -250,6 +257,7 @@ def skill_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Projects =====
+@cache_page(60 * 5)  # Cache for 5 minutes
 @api_view(['GET', 'POST'])
 def project_list(request):
     if request.method == 'GET':
@@ -362,6 +370,7 @@ def contact_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Sidenav Items =====
+@cache_page(60 * 5)  # Cache for 5 minutes
 @api_view(['GET', 'POST'])
 def sidenav_item_list(request):
     if request.method == 'GET':

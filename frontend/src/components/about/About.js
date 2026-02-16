@@ -4,7 +4,7 @@ import AboutMe from "./AboutMe";
 import MyServices from "./MyServices";
 import FunFact from "./FunFact";
 
-function About({ profile: profileProp }) {
+function About({ profile: profileProp, appData }) {
   const [profile, setProfile] = useState(profileProp || null);
   const [loading, setLoading] = useState(!profileProp);
 
@@ -15,6 +15,7 @@ function About({ profile: profileProp }) {
       return;
     }
 
+    // Fallback if appData is not provided
     const fetchProfile = async () => {
       try {
         const data = await getProfile();
@@ -50,8 +51,8 @@ function About({ profile: profileProp }) {
   return (
     <div className="app-shell space-y-8 sm:space-y-12 md:space-y-16 py-6 sm:py-8 md:py-12">
       <AboutMe profile={profile} />
-      <MyServices />
-      <FunFact />
+      <MyServices appData={appData} />
+      <FunFact appData={appData} />
     </div>
   );
 }

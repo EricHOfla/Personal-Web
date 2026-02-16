@@ -2,12 +2,20 @@ import React, { useEffect, useState } from "react";
 import ServicesCard from "./ServicesCard";
 import { getServices } from "../../services/servicesService";
 
-function MyServices() {
+function MyServices({ appData }) {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Use prefetched data if available
+    if (appData?.services) {
+      setServices(Array.isArray(appData.services) ? appData.services : appData.services.results || []);
+      setLoading(false);
+      return;
+    }
+
+    // Fallback to fetching if no prefetched data
     const fetchServices = async () => {
       try {
         const data = await getServices();
@@ -20,7 +28,7 @@ function MyServices() {
     };
 
     fetchServices();
-  }, []);
+  }, [appData]);
 
   if (loading) {
     return (

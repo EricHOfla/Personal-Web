@@ -16,7 +16,7 @@ const BlogDetail = lazy(() => import("./components/blog/BlogDetail"));
 const Contact = lazy(() => import("./components/contact/Contact"));
 const Sidenav = lazy(() => import("./components/home/sidenav/Sidenav"));
 
-const Home = ({ profile, theme, toggleTheme }) => {
+const Home = ({ profile, appData, theme, toggleTheme }) => {
   const [about, setAbout] = useState(true);
   const [resume, setResume] = useState(false);
   const [projects, setProjects] = useState(false);
@@ -227,19 +227,19 @@ const Home = ({ profile, theme, toggleTheme }) => {
             {/* ======================== Smaller device content Start ======================== */}
             <div className="w-full h-full lgl:hidden bg-transparent rounded-2xl flex flex-col gap-4 sm:gap-6 overflow-y-auto">
               <article id="about-section">
-                <About profile={profile} />
+                <About profile={profile} appData={appData} />
               </article>
               <article id="resume-section">
-                <Resume />
+                <Resume appData={appData} />
               </article>
               <article id="projects-section">
-                <Projects />
+                <Projects appData={appData} />
               </article>
               <article id="blog-section">
                 {selectedBlogSlug ? (
                   <BlogDetail slug={selectedBlogSlug} onBack={() => setSelectedBlogSlug(null)} />
                 ) : (
-                  <Blog onReadMore={(slug) => setSelectedBlogSlug(slug)} />
+                  <Blog appData={appData} onReadMore={(slug) => setSelectedBlogSlug(slug)} />
                 )}
               </article>
               <article id="contact-section">
@@ -250,22 +250,22 @@ const Home = ({ profile, theme, toggleTheme }) => {
 
             <div className="w-full h-[96%] hidden lgl:flex justify-center overflow-y-scroll scrollbar-thin scrollbar-thumb-[#646464]">
               <div className={`w-full ${about ? "block" : "hidden"}`}>
-                <About profile={profile} />
+                <About profile={profile} appData={appData} />
               </div>
 
               <div className={`w-full ${resume ? "block" : "hidden"}`}>
-                <Resume />
+                <Resume appData={appData} />
               </div>
 
               <div className={`w-full ${projects ? "block" : "hidden"}`}>
-                <Projects />
+                <Projects appData={appData} />
               </div>
 
               <div className={`w-full ${blog ? "block" : "hidden"}`}>
                 {selectedBlogSlug ? (
                   <BlogDetail slug={selectedBlogSlug} onBack={() => setSelectedBlogSlug(null)} />
                 ) : (
-                  <Blog onReadMore={(slug) => setSelectedBlogSlug(slug)} />
+                  <Blog appData={appData} onReadMore={(slug) => setSelectedBlogSlug(slug)} />
                 )}
               </div>
 
@@ -314,6 +314,7 @@ const Home = ({ profile, theme, toggleTheme }) => {
             <Suspense fallback={<LoadingFallback />}>
               <Sidenav
                 profile={profile}
+                appData={appData}
                 theme={theme}
                 toggleTheme={toggleTheme}
                 onNavigate={(page) => {

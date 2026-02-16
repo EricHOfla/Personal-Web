@@ -2,13 +2,21 @@ import React, { useEffect, useState } from "react";
 import { getProjects } from "../../services/projectsService";
 import ProjectsCard from "./ProjectsCard";
 
-function Projects() {
+function Projects({ appData }) {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
+    // Use prefetched data if available
+    if (appData?.projects) {
+      setProjects(Array.isArray(appData.projects) ? appData.projects : appData.projects.results || []);
+      setLoading(false);
+      return;
+    }
+
+    // Fallback to fetching if no prefetched data
     const fetchProjects = async () => {
       try {
         const data = await getProjects();
@@ -22,7 +30,7 @@ function Projects() {
     };
 
     fetchProjects();
-  }, []);
+  }, [appData]);
 
   const categories = ["all", ...new Set(projects.map((p) => p.category).filter(Boolean))];
   const filteredProjects = filter === "all" ? projects : projects.filter((p) => p.category === filter);

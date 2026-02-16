@@ -6,12 +6,25 @@ import ResumeCard from "./ResumeCard";
 import { getEducation } from "../../services/educationService";
 import { getExperiences } from "../../services/experiencesService";
 
-const Education = ({ mode = "all" }) => {
+const Education = ({ mode = "all", appData }) => {
   const [education, setEducation] = useState([]);
   const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Use prefetched data if available
+    if (appData) {
+      if (appData.education) {
+        setEducation(Array.isArray(appData.education) ? appData.education : appData.education.results || []);
+      }
+      if (appData.experiences) {
+        setExperiences(Array.isArray(appData.experiences) ? appData.experiences : appData.experiences.results || []);
+      }
+      setLoading(false);
+      return;
+    }
+
+    // Fallback to fetching if no prefetched data
     const fetchData = async () => {
       try {
         const eduData = await getEducation();
@@ -28,7 +41,7 @@ const Education = ({ mode = "all" }) => {
     };
 
     fetchData();
-  }, []);
+  }, [appData]);
 
   if (loading) return (
     <div className="education-section space-y-6 sm:space-y-8">

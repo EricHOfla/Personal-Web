@@ -2,11 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { getFunFacts } from '../../services/funFactsService';
 import FunFactCard from './FunFactCard';
 
-function FunFact() {
+function FunFact({ appData }) {
   const [funFacts, setFunFacts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Use prefetched data if available
+    if (appData?.funFacts) {
+      setFunFacts(Array.isArray(appData.funFacts) ? appData.funFacts : appData.funFacts.results || []);
+      setLoading(false);
+      return;
+    }
+
+    // Fallback to fetching if no prefetched data
     const fetchFunFacts = async () => {
       try {
         const data = await getFunFacts();
@@ -19,7 +27,7 @@ function FunFact() {
     };
 
     fetchFunFacts();
-  }, []);
+  }, [appData]);
 
   if (loading) {
     return (

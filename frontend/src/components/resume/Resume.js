@@ -4,7 +4,7 @@ import Education from "./Education";
 import Skills from "./Skills";
 import { FaGraduationCap, FaCode, FaBriefcase } from "react-icons/fa";
 
-const Resume = () => {
+const Resume = ({ appData }) => {
   const [activeTab, setActiveTab] = useState("education");
 
   const tabs = [
@@ -44,9 +44,9 @@ const Resume = () => {
       </div>
 
       <div className="max-w-5xl mx-auto">
-        {activeTab === "education" && <Education mode="education" />}
-        {activeTab === "skills" && <Skills />}
-        {activeTab === "experience" && <Education mode="experience" />}
+        {activeTab === "education" && <Education mode="education" appData={appData} />}
+        {activeTab === "skills" && <Skills appData={appData} />}
+        {activeTab === "experience" && <Education mode="experience" appData={appData} />}
       </div>
     </section>
   );
