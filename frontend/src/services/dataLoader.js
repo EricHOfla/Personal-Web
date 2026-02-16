@@ -10,7 +10,7 @@ import { getSkills } from './skillsService';
 import { getProjects } from './projectsService';
 import { getAllBlogPosts } from './blogService';
 import { getSidenavItems } from './sidenavService';
-import { getTestimonials } from './testimonialService';
+import { getAllTestimonials } from './testimonialService';
 
 /**
  * Prefetch all application data in parallel
@@ -46,7 +46,7 @@ export const prefetchAllData = async () => {
       getProjects(),
       getAllBlogPosts(),
       getSidenavItems(),
-      getTestimonials(),
+      getAllTestimonials(),
     ]);
 
     const endTime = performance.now();
