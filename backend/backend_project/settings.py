@@ -182,12 +182,8 @@ APPEND_SLASH = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Use WhiteNoise for static files (CSS, JS)
-# We set STRICT to False so it doesn't crash if an icon is missing
-# Use WhiteNoise for static files (CSS, JS)
-# Disable compression to resolve build errors on Render for now
-STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
-WHITENOISE_MANIFEST_STRICT = False
+# Use WhiteNoise for static files with caching support
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (User uploads)
 MEDIA_URL = "/media/"
