@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { prefetchAllData } from "./services/dataLoader";
+import { prefetchAllData, prefetchEssentialData } from "./services/dataLoader";
 import Home from "./Home";
 import "./App.css";
+
+const defaultAppData = {
+  profile: null,
+  socialLinks: [],
+  services: [],
+  funFacts: [],
+  experiences: [],
+  education: [],
+  skills: [],
+  projects: [],
+  blogPosts: [],
+  sidenavItems: [],
+  testimonials: [],
+};
 
 function App() {
   const [appData, setAppData] = useState(null);
@@ -23,20 +37,47 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
-    const loadAllData = async () => {
+    let isMounted = true;
+
+    const loadData = async () => {
       try {
-        const data = await prefetchAllData();
-        // Resolve profile if it's an array
-        const resolvedProfile = Array.isArray(data.profile) ? data.profile[0] : data.profile;
-        setAppData({ ...data, profile: resolvedProfile });
+        const essentialData = await prefetchEssentialData();
+        if (!isMounted) return;
+
+        const resolvedProfile = Array.isArray(essentialData.profile)
+          ? essentialData.profile[0]
+          : essentialData.profile;
+
+        setAppData({
+          ...defaultAppData,
+          profile: resolvedProfile,
+          socialLinks: essentialData.socialLinks || [],
+        });
+        setLoading(false);
+
+        const fullData = await prefetchAllData();
+        if (!isMounted) return;
+
+        const resolvedFullProfile = Array.isArray(fullData.profile)
+          ? fullData.profile[0]
+          : fullData.profile;
+
+        setAppData({
+          ...defaultAppData,
+          ...fullData,
+          profile: resolvedFullProfile,
+        });
       } catch (err) {
+        if (!isMounted) return;
         setError(err.message);
-      } finally {
         setLoading(false);
       }
     };
 
-    loadAllData();
+    loadData();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (loading) {

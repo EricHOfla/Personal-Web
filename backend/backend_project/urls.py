@@ -11,8 +11,12 @@ admin.site.site_url = "https://oflah.vercel.app/"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('backend_app.urls')),
-    path('silk/', include('silk.urls', namespace='silk')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path('silk/', include('silk.urls', namespace='silk')),
+    ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

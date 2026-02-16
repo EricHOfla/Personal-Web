@@ -50,8 +50,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'backend_app',
-    'silk',
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ['silk']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -64,8 +66,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'silk.middleware.SilkyMiddleware',       # 11. Monitor Performance - moved to end
 ]
+
+if DEBUG:
+    MIDDLEWARE += ['silk.middleware.SilkyMiddleware']
 
 ROOT_URLCONF = 'backend_project.urls'
 
