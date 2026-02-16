@@ -120,6 +120,7 @@ if os.environ.get('REDIS_URL'):
         }
     }
 else:
+    # Fallback to local memory cache if no Redis
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -127,9 +128,10 @@ else:
         }
     }
 
-# 7. Optimize Django Settings
-# UNFOLD SETTINGS (Tailwind UI)
-UNFOLD = {
+# Session backend - use database for reliability on Render free tier
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'False') == 'True'
     "SITE_TITLE": "Eric's Portal",
     "SITE_HEADER": "Eric Admin",
     "SITE_URL": "https://oflah.vercel.app",
@@ -153,7 +155,8 @@ UNFOLD = {
         },
     },
 }
-SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+
+# Moved SESSION_ENGINE up with cache config
 SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'False') == 'True'
 
 if not DEBUG:
