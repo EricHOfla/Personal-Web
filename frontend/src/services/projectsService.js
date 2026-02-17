@@ -1,6 +1,6 @@
 import { apiCall } from './api';
 
-export const getProjects = () => apiCall('/api/projects/');
+export const getProjects = () => apiCall('/api/projects/', { cache: false });
 export const createProject = (data) =>
   apiCall('/api/projects/', {
     method: 'POST',
