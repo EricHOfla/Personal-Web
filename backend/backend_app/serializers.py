@@ -61,6 +61,20 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return representation
 
 
+class SimpleUserProfileSerializer(serializers.ModelSerializer):
+    """
+    Minimal profile info for blog authors or other lightweight displays.
+    """
+    class Meta:
+        model = UserProfile
+        fields = ["id", "full_name", "first_name", "last_name", "title", "profile_image"]
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['profile_image'] = get_cloudinary_url(instance.profile_image)
+        return representation
+
+
 # =========================
 # 2. Social Links
 # =========================
@@ -133,7 +147,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 # 9. Blog Posts
 # =========================
 class BlogPostSerializer(serializers.ModelSerializer):
-    user = UserProfileSerializer(read_only=True)
+    user = SimpleUserProfileSerializer(read_only=True)
     reading_time = serializers.SerializerMethodField()
 
     class Meta:

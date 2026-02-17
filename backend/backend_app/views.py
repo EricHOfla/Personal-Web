@@ -50,7 +50,7 @@ def get_object(model, pk):
         return None
 
 # ===== Profile =====
-@cache_get_requests(30)  # Cache GET requests for 30 seconds
+@cache_get_requests(60)  # Cache GET requests for 60 seconds
 @api_view(['GET', 'POST'])
 def user_profile_list(request):
     if request.method == 'GET':
@@ -63,6 +63,7 @@ def user_profile_list(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@cache_get_requests(60)
 @api_view(['GET', 'PUT', 'DELETE'])
 def user_profile_detail(request, pk):
     profile = get_object(UserProfile, pk)
@@ -82,7 +83,7 @@ def user_profile_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Social Links =====
-@cache_get_requests(30)  # Cache GET requests for 30 seconds
+@cache_get_requests(60)  # Cache GET requests for 60 seconds
 @api_view(['GET', 'POST'])
 def social_link_list(request):
     if request.method == 'GET':
@@ -95,6 +96,7 @@ def social_link_list(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@cache_get_requests(60)
 @api_view(['GET', 'PUT', 'DELETE'])
 def social_link_detail(request, pk):
     link = get_object(SocialLink, pk)
@@ -114,7 +116,7 @@ def social_link_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Services =====
-@cache_get_requests(30)  # Cache GET requests for 30 seconds
+@cache_get_requests(60)  # Cache GET requests for 60 seconds
 @api_view(['GET', 'POST'])
 def service_list(request):
     if request.method == 'GET':
@@ -127,6 +129,7 @@ def service_list(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@cache_get_requests(60)
 @api_view(['GET', 'PUT', 'DELETE'])
 def service_detail(request, pk):
     service = get_object(Service, pk)
@@ -146,7 +149,7 @@ def service_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Fun Facts =====
-@cache_get_requests(30)  # Cache GET requests for 30 seconds
+@cache_get_requests(60)  # Cache GET requests for 60 seconds
 @api_view(['GET', 'POST'])
 def fun_fact_list(request):
     if request.method == 'GET':
@@ -159,6 +162,7 @@ def fun_fact_list(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@cache_get_requests(60)
 @api_view(['GET', 'PUT', 'DELETE'])
 def fun_fact_detail(request, pk):
     fact = get_object(FunFact, pk)
@@ -178,7 +182,7 @@ def fun_fact_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Experiences =====
-@cache_get_requests(30)  # Cache GET requests for 30 seconds
+@cache_get_requests(60)  # Cache GET requests for 60 seconds
 @api_view(['GET', 'POST'])
 def experience_list(request):
     if request.method == 'GET':
@@ -191,6 +195,7 @@ def experience_list(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@cache_get_requests(60)
 @api_view(['GET', 'PUT', 'DELETE'])
 def experience_detail(request, pk):
     exp = get_object(Experience, pk)
@@ -210,7 +215,7 @@ def experience_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Education =====
-@cache_get_requests(30)  # Cache GET requests for 30 seconds
+@cache_get_requests(60)  # Cache GET requests for 60 seconds
 @api_view(['GET', 'POST'])
 def education_list(request):
     if request.method == 'GET':
@@ -223,6 +228,7 @@ def education_list(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@cache_get_requests(60)
 @api_view(['GET', 'PUT', 'DELETE'])
 def education_detail(request, pk):
     item = get_object(Education, pk)
@@ -242,7 +248,7 @@ def education_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Skills =====
-@cache_get_requests(30)  # Cache GET requests for 30 seconds
+@cache_get_requests(60)  # Cache GET requests for 60 seconds
 @api_view(['GET', 'POST'])
 def skill_list(request):
     if request.method == 'GET':
@@ -255,6 +261,7 @@ def skill_list(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@cache_get_requests(60)
 @api_view(['GET', 'PUT', 'DELETE'])
 def skill_detail(request, pk):
     item = get_object(Skill, pk)
@@ -274,7 +281,7 @@ def skill_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Projects =====
-@cache_get_requests(30)  # Cache GET requests for 30 seconds
+@cache_get_requests(60)  # Cache GET requests for 60 seconds
 @api_view(['GET', 'POST'])
 def project_list(request):
     if request.method == 'GET':
@@ -287,6 +294,7 @@ def project_list(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@cache_get_requests(60)
 @api_view(['GET', 'PUT', 'DELETE'])
 def project_detail(request, pk):
     item = get_object(Project, pk)
@@ -306,7 +314,7 @@ def project_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Blog Posts =====
-@cache_get_requests(30)  # Cache GET requests for 30 seconds
+@cache_get_requests(60)  # Cache GET requests for 60 seconds
 @api_view(['GET', 'POST'])
 def blog_post_list(request):
     if request.method == 'GET':
@@ -320,6 +328,7 @@ def blog_post_list(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@cache_get_requests(60)  # Cache GET requests for 60 seconds
 @api_view(['GET', 'PUT', 'DELETE'])
 def blog_post_detail(request, slug):
     try:
@@ -419,11 +428,11 @@ def sidenav_item_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Testimonials =====
-@cache_get_requests(10)  # Cache GET requests for 10 seconds
+@cache_get_requests(60)
 @api_view(['GET', 'POST'])
 def testimonial_list(request):
     if request.method == 'GET':
-        items = Testimonial.objects.filter(is_active=True).order_by('display_order', '-created_at')
+        items = Testimonial.objects.filter(is_active=True).select_related('user').order_by('display_order', '-created_at')
         serializer = TestimonialSerializer(items, many=True, context={'request': request})
         return Response(serializer.data)
     serializer = TestimonialSerializer(data=request.data, context={'request': request})
@@ -432,6 +441,7 @@ def testimonial_list(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@cache_get_requests(60)
 @api_view(['GET', 'PUT', 'DELETE'])
 def testimonial_detail(request, pk):
     item = get_object(Testimonial, pk)

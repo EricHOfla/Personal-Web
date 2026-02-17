@@ -120,7 +120,9 @@ export const buildMediaUrl = (path) => {
   )) {
     // Use the Cloudinary cloud name from env or fallback
     const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'dfcpda9te';
-    return `https://res.cloudinary.com/${cloudName}/image/upload/v1/${cleanPath}`;
+
+    // Add Cloudinary quality and format optimization (f_auto, q_auto)
+    return `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/v1/${cleanPath}`;
   }
 
   // Fallback: prepend API host for truly local media files

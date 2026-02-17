@@ -36,7 +36,7 @@ class SocialLink(models.Model):
     url = models.URLField()
     icon = models.CharField(max_length=50, blank=True)
     display_order = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -51,7 +51,7 @@ class Service(models.Model):
     description = models.TextField()
     icon = models.CharField(max_length=50, blank=True)
     display_order = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -66,7 +66,7 @@ class FunFact(models.Model):
     value = models.IntegerField(blank=True, null=True)
     icon = models.CharField(max_length=50, blank=True)
     display_order = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -83,7 +83,7 @@ class Experience(models.Model):
     time_period = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     display_order = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -100,7 +100,7 @@ class Education(models.Model):
     time_period = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     display_order = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -123,7 +123,7 @@ class Skill(models.Model):
     proficiency_level = models.IntegerField(blank=True, null=True)
     description = models.TextField(blank=True)
     display_order = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -142,8 +142,8 @@ class Project(models.Model):
     github_url = models.URLField(blank=True)
     technologies = models.JSONField(blank=True, null=True)
     display_order = models.IntegerField(default=0)
-    is_featured = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False, db_index=True)
+    is_active = models.BooleanField(default=True, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -198,7 +198,7 @@ class SidenavItem(models.Model):
     item_text = models.CharField(max_length=200)
     item_url = models.CharField(max_length=255, blank=True)
     display_order = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -215,7 +215,7 @@ class Testimonial(models.Model):
     message = models.TextField()
     image = models.ImageField(upload_to="testimonials/", blank=True, null=True)
     display_order = models.IntegerField(default=0, db_index=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -23,20 +23,18 @@ function BlogDetail({ slug, onBack }) {
         const data = await getBlogPost(slug);
         setPost(data);
         setError(null);
+        setLoading(false); // Show content immediately after fetching
 
-        // Track the view count only once per single view
+        // Track the view count in the background
         if (!hasTrackedView.current) {
-          try {
-            await trackBlogPostView(slug);
-            hasTrackedView.current = true;
-          } catch (trackErr) {
+          hasTrackedView.current = true;
+          trackBlogPostView(slug).catch(trackErr => {
             console.error("Failed to track view:", trackErr);
-          }
+          });
         }
       } catch (err) {
         setError(err.message);
         console.error("Failed to fetch blog post:", err);
-      } finally {
         setLoading(false);
       }
     };
