@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from .models import ContactMessage, Testimonial, UserProfile
 
 def admin_notifications(request):
