@@ -22,11 +22,11 @@ const buildUrl = (endpoint) => {
 export const apiCall = async (endpoint, options = {}) => {
   const url = buildUrl(endpoint);
   const { headers, body, cache = true, cacheTTL, ...rest } = options;
-  
+
   // Only cache GET requests
   const method = options.method || 'GET';
   const shouldCache = cache && method === 'GET';
-  
+
   // Check cache for GET requests
   if (shouldCache) {
     const cacheKey = `api:${url}`;
@@ -69,14 +69,14 @@ export const apiCall = async (endpoint, options = {}) => {
     } else {
       data = response;
     }
-    
+
     // Cache successful GET responses
     if (shouldCache && data) {
       const cacheKey = `api:${url}`;
       cacheService.set(cacheKey, data, cacheTTL);
       console.log('[API Cache] Set:', url);
     }
-    
+
     return data;
   } catch (error) {
     if (error.name === 'AbortError') {
@@ -92,23 +92,53 @@ export const apiCall = async (endpoint, options = {}) => {
 // Build media URL
 export const buildMediaUrl = (path) => {
   if (!path) return '';
-  
+
   // If already a full URL (Cloudinary or external), return as-is
   if (path.startsWith('http://') || path.startsWith('https://')) {
     return path;
   }
 
-  // For relative paths, prepend /media/
-  const host = API_HOST.endsWith('/') ? API_HOST.slice(0, -1) : API_HOST;
-  let cleanPath = path.startsWith('/') ? path : `/${path}`;
-  
-  // If path doesn't already start with /media/, add it
-  if (!cleanPath.startsWith('/media/')) {
-    cleanPath = `/media${cleanPath}`;
+  // Check if this looks like a Cloudinary path (e.g., /media/projects/filename_hash)
+  // Cloudinary paths stored by django-cloudinary-storage are like: 
+  //   /media/media/projects/filename_hash  OR  media/projects/filename_hash
+  // We need to convert these to full Cloudinary URLs
+  let cleanPath = path.startsWith('/') ? path.slice(1) : path;
+
+  // Remove the leading "media/" prefix if present (django adds /media/ via MEDIA_URL)
+  if (cleanPath.startsWith('media/')) {
+    cleanPath = cleanPath.slice(6); // Remove "media/"
+  }
+  // Handle double media prefix: "media/media/projects/..." -> "media/projects/..."
+  if (cleanPath.startsWith('media/')) {
+    cleanPath = cleanPath.slice(6);
   }
 
-  const mediaUrl = `${host}${cleanPath}`;
-  return mediaUrl;
+  // If we have a clean path that looks like a Cloudinary public_id,
+  // build the Cloudinary URL directly
+  // Cloudinary public IDs typically look like: projects/filename_hash (no extension)
+  // or profiles/filename.ext
+  if (cleanPath && (
+    cleanPath.startsWith('projects/') ||
+    cleanPath.startsWith('profiles/') ||
+    cleanPath.startsWith('blogs/') ||
+    cleanPath.startsWith('testimonials/') ||
+    cleanPath.startsWith('cv/')
+  )) {
+    // Use the Cloudinary cloud name from env or fallback
+    const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'dfcpda9te';
+    return `https://res.cloudinary.com/${cloudName}/image/upload/v1/${cleanPath}`;
+  }
+
+  // Fallback: prepend API host for truly local media files
+  const host = API_HOST.endsWith('/') ? API_HOST.slice(0, -1) : API_HOST;
+  let mediaPath = path.startsWith('/') ? path : `/${path}`;
+
+  // If path doesn't already start with /media/, add it
+  if (!mediaPath.startsWith('/media/')) {
+    mediaPath = `/media${mediaPath}`;
+  }
+
+  return `${host}${mediaPath}`;
 };
 
 // URL for dynamic resume PDF
@@ -117,13 +147,13 @@ export const getResumePdfUrl = () => {
 };
 
 // Helpers for HTTP methods
-export const apiGet = (endpoint, headers = {}, cache = true, cacheTTL) => 
+export const apiGet = (endpoint, headers = {}, cache = true, cacheTTL) =>
   apiCall(endpoint, { method: 'GET', headers, cache, cacheTTL });
-export const apiPost = (endpoint, data, headers = {}) => 
+export const apiPost = (endpoint, data, headers = {}) =>
   apiCall(endpoint, { method: 'POST', headers, body: JSON.stringify(data), cache: false });
-export const apiPut = (endpoint, data, headers = {}) => 
+export const apiPut = (endpoint, data, headers = {}) =>
   apiCall(endpoint, { method: 'PUT', headers, body: JSON.stringify(data), cache: false });
-export const apiDelete = (endpoint, headers = {}) => 
+export const apiDelete = (endpoint, headers = {}) =>
   apiCall(endpoint, { method: 'DELETE', headers, cache: false });
 
 // Clear cache helper

@@ -1,9 +1,47 @@
 from rest_framework import serializers
+from django.conf import settings
 from .models import (
     UserProfile, SocialLink, Service, FunFact,
     Experience, Education, Skill, Project,
     BlogPost, ContactMessage, SidenavItem, Testimonial
 )
+
+
+def get_cloudinary_url(file_field):
+    """
+    Build the full Cloudinary URL for a file field.
+    When using django-cloudinary-storage, .url may return a relative path
+    like '/media/projects/filename' instead of the full Cloudinary URL.
+    This helper ensures we always return the full URL.
+    """
+    if not file_field:
+        return None
+
+    try:
+        url = file_field.url
+    except Exception:
+        return None
+
+    # If it's already a full URL (Cloudinary or external), return as-is
+    if url and (url.startswith('http://') or url.startswith('https://')):
+        return url
+
+    # Build the Cloudinary URL from the stored name/path
+    # The file_field.name contains the Cloudinary public_id (e.g., "media/projects/filename")
+    cloud_name = getattr(settings, 'CLOUDINARY_CLOUD_NAME', None)
+    if cloud_name and file_field.name:
+        # Remove leading slashes and /media/ prefix from the name
+        public_id = file_field.name
+        if public_id.startswith('/'):
+            public_id = public_id.lstrip('/')
+        # Construct the full Cloudinary URL  
+        # Cloudinary auto-detects format, so we use image/upload for images
+        cloudinary_url = f"https://res.cloudinary.com/{cloud_name}/image/upload/v1/{public_id}"
+        return cloudinary_url
+
+    # Fallback: return the url as-is
+    return url
+
 
 # =========================
 # 1. User Profile
@@ -17,14 +55,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_profile_image(self, obj):
-        if obj.profile_image:
-            return obj.profile_image.url
-        return None
+        return get_cloudinary_url(obj.profile_image)
 
     def get_cv_file(self, obj):
-        if obj.cv_file:
-            return obj.cv_file.url
-        return None
+        return get_cloudinary_url(obj.cv_file)
 
 
 # =========================
@@ -92,9 +126,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_image_url(self, obj):
-        if obj.image_url:
-            return obj.image_url.url
-        return None
+        return get_cloudinary_url(obj.image_url)
 
 
 # =========================
@@ -110,9 +142,7 @@ class BlogPostSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_featured_image(self, obj):
-        if obj.featured_image:
-            return obj.featured_image.url
-        return None
+        return get_cloudinary_url(obj.featured_image)
 
     def get_reading_time(self, obj):
         word_count = len(obj.content.split())
@@ -156,9 +186,7 @@ class TestimonialSerializer(serializers.ModelSerializer):
         }
 
     def get_image_display(self, obj):
-        if obj.image:
-            return obj.image.url
-        return None
+        return get_cloudinary_url(obj.image)
 
     def create(self, validated_data):
         if "user" not in validated_data:
