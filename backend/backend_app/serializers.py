@@ -27,17 +27,23 @@ def get_cloudinary_url(file_field):
         return url
 
     # Build the Cloudinary URL from the stored name/path
-    # The file_field.name contains the Cloudinary public_id (e.g., "media/projects/filename")
     cloud_name = getattr(settings, 'CLOUDINARY_CLOUD_NAME', None)
     if cloud_name and file_field.name:
-        # Remove leading slashes and /media/ prefix from the name
         public_id = file_field.name
+        
+        # Clean up leading slashes
         if public_id.startswith('/'):
             public_id = public_id.lstrip('/')
-        # Construct the full Cloudinary URL  
-        # Cloudinary auto-detects format, so we use image/upload for images
-        cloudinary_url = f"https://res.cloudinary.com/{cloud_name}/image/upload/v1/{public_id}"
-        return cloudinary_url
+            
+        # The Cloudinary analysis shows all files are stored under 'media/' folder
+        # e.g., 'media/projects/xyz'.
+        # Django might store the name as 'projects/xyz'.
+        # We need to ensure the 'media/' prefix is there.
+        if not public_id.startswith('media/'):
+            public_id = f"media/{public_id}"
+
+        # Construct the full Cloudinary URL
+        return f"https://res.cloudinary.com/{cloud_name}/image/upload/v1/{public_id}"
 
     # Fallback: return the url as-is
     return url
