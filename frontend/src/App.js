@@ -41,9 +41,12 @@ function App() {
 
     const loadData = async () => {
       try {
+        console.log('[App] Loading essential data...');
         const essentialData = await prefetchEssentialData();
         if (!isMounted) return;
 
+        console.log('[App] Essential data loaded:', essentialData);
+        
         const resolvedProfile = Array.isArray(essentialData.profile)
           ? essentialData.profile[0]
           : essentialData.profile;
@@ -55,9 +58,12 @@ function App() {
         });
         setLoading(false);
 
+        console.log('[App] Loading full data in background...');
         const fullData = await prefetchAllData();
         if (!isMounted) return;
 
+        console.log('[App] Full data loaded:', fullData);
+        
         const resolvedFullProfile = Array.isArray(fullData.profile)
           ? fullData.profile[0]
           : fullData.profile;
@@ -68,8 +74,9 @@ function App() {
           profile: resolvedFullProfile,
         });
       } catch (err) {
+        console.error('[App] Error loading data:', err);
         if (!isMounted) return;
-        setError(err.message);
+        setError(err.message || 'Failed to load application data');
         setLoading(false);
       }
     };
@@ -90,13 +97,30 @@ function App() {
       </div>
     );
   }
-  if (error) return <div className="bg-bodyColor text-textColor h-screen flex items-center justify-center">Error: {error}</div>;
+  if (error) return (
+    <div className="bg-bodyColor text-textColor h-screen flex items-center justify-center p-4">
+      <div className="text-center">
+        <p className="text-red-500 mb-2">Error loading application</p>
+        <p className="text-sm text-gray-400">{error}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="mt-4 px-4 py-2 bg-designColor text-black rounded hover:bg-opacity-80"
+        >
+          Retry
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="w-full lgl:h-screen font-bodyfont overflow-hidden text-textColor bg-bodyColor transition-colors duration-300 relative">
       <div className="max-w-screen-2xl h-full mx-auto flex justify-center items-center">
-        {appData?.profile && (
+        {appData?.profile ? (
           <Home profile={appData.profile} appData={appData} theme={theme} toggleTheme={toggleTheme} />
+        ) : (
+          <div className="flex items-center justify-center h-screen">
+            <p className="text-textColor">No profile data available. Please check your backend.</p>
+          </div>
         )}
       </div>
     </div>

@@ -89,15 +89,27 @@ export const prefetchEssentialData = async () => {
   console.log('[DataLoader] Prefetching essential data...');
   
   try {
-    const [profile, socialLinks] = await Promise.all([
+    const [profileResult, socialLinksResult] = await Promise.allSettled([
       getProfile(),
       getSocialLinks(),
     ]);
 
+    const profile = profileResult.status === 'fulfilled' ? profileResult.value : null;
+    const socialLinks = socialLinksResult.status === 'fulfilled' ? socialLinksResult.value : [];
+
+    if (!profile) {
+      console.warn('[DataLoader] Profile data failed to load');
+    }
+
+    console.log('[DataLoader] Essential data loaded:', { profile, socialLinks });
+    
     return { profile, socialLinks };
   } catch (error) {
     console.error('[DataLoader] Essential data prefetch failed:', error);
-    throw error;
+    // Return empty data instead of throwing
+    return { profile: null, socialLinks: [] };
+  }
+};
   }
 };
 
