@@ -1,4 +1,5 @@
 from rest_framework import serializers
+import cloudinary
 from .models import (
     UserProfile, SocialLink, Service, FunFact,
     Experience, Education, Skill, Project,
@@ -18,7 +19,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_profile_image(self, obj):
         if obj.profile_image:
-            return obj.profile_image.url
+            # Return full Cloudinary URL if using Cloudinary storage
+            url = obj.profile_image.url
+            if url and not url.startswith('http'):
+                # Build full Cloudinary URL from path
+                from django.conf import settings
+                cloud_name = settings.CLOUDINARY_CLOUD_NAME
+                if cloud_name:
+                    # Remove /media/ prefix if present
+                    path = url.replace('/media/', '')
+                    return f"https://res.cloudinary.com/{cloud_name}/image/upload/{path}"
+            return url
         return None
 
     def get_cv_file(self, obj):
@@ -94,7 +105,14 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_image_url(self, obj):
         if obj.image_url:
-            return obj.image_url.url
+            url = obj.image_url.url
+            if url and not url.startswith('http'):
+                from django.conf import settings
+                cloud_name = settings.CLOUDINARY_CLOUD_NAME
+                if cloud_name:
+                    path = url.replace('/media/', '')
+                    return f"https://res.cloudinary.com/{cloud_name}/image/upload/{path}"
+            return url
         return None
 
 
@@ -112,7 +130,14 @@ class BlogPostSerializer(serializers.ModelSerializer):
 
     def get_featured_image(self, obj):
         if obj.featured_image:
-            return obj.featured_image.url
+            url = obj.featured_image.url
+            if url and not url.startswith('http'):
+                from django.conf import settings
+                cloud_name = settings.CLOUDINARY_CLOUD_NAME
+                if cloud_name:
+                    path = url.replace('/media/', '')
+                    return f"https://res.cloudinary.com/{cloud_name}/image/upload/{path}"
+            return url
         return None
 
     def get_reading_time(self, obj):
