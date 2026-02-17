@@ -81,11 +81,20 @@ export const apiCall = async (endpoint, options = {}) => {
 // Build media URL
 export const buildMediaUrl = (path) => {
   if (!path) return '';
-  if (path.startsWith('http')) return path;
+  
+  // If already a full URL (Cloudinary or external), return as-is
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path;
+  }
 
-  // Ensure path starts with / but API_HOST doesn't end with /
+  // For relative paths, prepend /media/
   const host = API_HOST.endsWith('/') ? API_HOST.slice(0, -1) : API_HOST;
-  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  let cleanPath = path.startsWith('/') ? path : `/${path}`;
+  
+  // If path doesn't already start with /media/, add it
+  if (!cleanPath.startsWith('/media/')) {
+    cleanPath = `/media${cleanPath}`;
+  }
 
   const mediaUrl = `${host}${cleanPath}`;
   return mediaUrl;
