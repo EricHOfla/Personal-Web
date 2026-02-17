@@ -7,6 +7,9 @@ import os
 from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 load_dotenv()
 
@@ -128,10 +131,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.ManifestStaticFilesStorage'
 # ===============================
 
 # Cloudinary configuration
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
-
 cloudinary.config(
     cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
     api_key=os.environ.get('CLOUDINARY_API_KEY'),
