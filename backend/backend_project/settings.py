@@ -144,6 +144,8 @@ MEDIA_ROOT = BASE_DIR / "media"
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://oflah.vercel.app",
+    "https://oflatech.vercel.app",
+    "https://oflacoder.vercel.app",
     "https://oflah.com",
 ]
 
