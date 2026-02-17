@@ -18,9 +18,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_profile_image(self, obj):
         if obj.profile_image:
-            url = obj.profile_image.url
-            print(f"[Serializer] Profile image URL: {url}")
-            return url
+            return obj.profile_image.url
         return None
 
     def get_cv_file(self, obj):
@@ -96,9 +94,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_image_url(self, obj):
         if obj.image_url:
-            url = obj.image_url.url
-            print(f"[Serializer] Project image URL: {url}")
-            return url
+            return obj.image_url.url
         return None
 
 
@@ -116,9 +112,7 @@ class BlogPostSerializer(serializers.ModelSerializer):
 
     def get_featured_image(self, obj):
         if obj.featured_image:
-            url = obj.featured_image.url
-            print(f"[Serializer] Blog image URL: {url}")
-            return url
+            return obj.featured_image.url
         return None
 
     def get_reading_time(self, obj):

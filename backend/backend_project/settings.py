@@ -130,20 +130,40 @@ STATICFILES_STORAGE = 'whitenoise.storage.ManifestStaticFilesStorage'
 # MEDIA (CLOUDINARY)
 # ===============================
 
+# Parse Cloudinary URL if provided, otherwise use individual env vars
+cloudinary_url = os.environ.get('CLOUDINARY_URL')
+if cloudinary_url:
+    # Format: cloudinary://api_key:api_secret@cloud_name
+    import re
+    match = re.match(r'cloudinary://(\d+):([^@]+)@(.+)', cloudinary_url)
+    if match:
+        cloud_api_key, cloud_api_secret, cloud_name = match.groups()
+        CLOUDINARY_CLOUD_NAME = cloud_name
+        CLOUDINARY_API_KEY = cloud_api_key
+        CLOUDINARY_API_SECRET = cloud_api_secret
+    else:
+        CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME')
+        CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY')
+        CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET')
+else:
+    CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME')
+    CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY')
+    CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET')
+
 # Cloudinary configuration
 cloudinary.config(
-    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    api_key=os.environ.get('CLOUDINARY_API_KEY'),
-    api_secret=os.environ.get('CLOUDINARY_API_SECRET'),
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET,
     secure=True
 )
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+    'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
+    'API_KEY': CLOUDINARY_API_KEY,
+    'API_SECRET': CLOUDINARY_API_SECRET,
 }
 
 MEDIA_URL = "/media/"
