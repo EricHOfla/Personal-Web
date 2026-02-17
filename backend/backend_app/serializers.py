@@ -1,5 +1,4 @@
 from rest_framework import serializers
-import cloudinary
 from .models import (
     UserProfile, SocialLink, Service, FunFact,
     Experience, Education, Skill, Project,
@@ -19,23 +18,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_profile_image(self, obj):
         if obj.profile_image:
-            # Return full Cloudinary URL if using Cloudinary storage
-            url = obj.profile_image.url
-            if url and not url.startswith('http'):
-                # Build full Cloudinary URL from path
-                from django.conf import settings
-                cloud_name = settings.CLOUDINARY_CLOUD_NAME
-                if cloud_name:
-                    # Remove /media/ prefix if present
-                    path = url.replace('/media/', '')
-                    return f"https://res.cloudinary.com/{cloud_name}/image/upload/{path}"
-            return url
+            return obj.profile_image.url
         return None
 
     def get_cv_file(self, obj):
-        request = self.context.get("request")
-        if obj.cv_file and request:
-            return request.build_absolute_uri(obj.cv_file.url)
+        if obj.cv_file:
+            return obj.cv_file.url
         return None
 
 
@@ -105,14 +93,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_image_url(self, obj):
         if obj.image_url:
-            url = obj.image_url.url
-            if url and not url.startswith('http'):
-                from django.conf import settings
-                cloud_name = settings.CLOUDINARY_CLOUD_NAME
-                if cloud_name:
-                    path = url.replace('/media/', '')
-                    return f"https://res.cloudinary.com/{cloud_name}/image/upload/{path}"
-            return url
+            return obj.image_url.url
         return None
 
 
@@ -130,21 +111,12 @@ class BlogPostSerializer(serializers.ModelSerializer):
 
     def get_featured_image(self, obj):
         if obj.featured_image:
-            url = obj.featured_image.url
-            if url and not url.startswith('http'):
-                from django.conf import settings
-                cloud_name = settings.CLOUDINARY_CLOUD_NAME
-                if cloud_name:
-                    path = url.replace('/media/', '')
-                    return f"https://res.cloudinary.com/{cloud_name}/image/upload/{path}"
-            return url
+            return obj.featured_image.url
         return None
 
     def get_reading_time(self, obj):
-        # Rough estimate: 200 words per minute
         word_count = len(obj.content.split())
-        reading_time = max(1, round(word_count / 200))
-        return reading_time
+        return max(1, round(word_count / 200))
 
 
 # =========================
@@ -171,10 +143,14 @@ class SidenavItemSerializer(serializers.ModelSerializer):
 # =========================
 class TestimonialSerializer(serializers.ModelSerializer):
     image_display = serializers.SerializerMethodField(read_only=True)
-    
+
     class Meta:
         model = Testimonial
-        fields = ["id", "user", "name", "role", "company", "message", "image", "image_display", "display_order", "is_active", "created_at"]
+        fields = [
+            "id", "user", "name", "role", "company",
+            "message", "image", "image_display",
+            "display_order", "is_active", "created_at"
+        ]
         extra_kwargs = {
             "user": {"required": False},
         }
@@ -185,7 +161,6 @@ class TestimonialSerializer(serializers.ModelSerializer):
         return None
 
     def create(self, validated_data):
-        # Automatically assign the first UserProfile if not provided
         if "user" not in validated_data:
             profile = UserProfile.objects.first()
             if profile:
