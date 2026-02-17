@@ -85,9 +85,6 @@
         <span class="icon">✉️</span>
         {% if unread_messages_count %}
             <span class="notification-badge">{{ unread_messages_count }}</span>
-            {% for message in unread_messages_preview %}
-                <img src="{{ message.profile_image_url }}" alt="{{ message.name }}">
-            {% endfor %}
         {% endif %}
     </a>
 
@@ -99,9 +96,6 @@
             <span class="notification-badge" style="background: var(--secondary);">
                 {{ inactive_testimonials_count }}
             </span>
-            {% for testimonial in inactive_testimonials_preview %}
-                <img src="{{ testimonial.image_url }}" alt="{{ testimonial.name }}">
-            {% endfor %}
         {% endif %}
     </a>
 
