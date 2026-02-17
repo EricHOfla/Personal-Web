@@ -177,7 +177,8 @@ APPEND_SLASH = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# WhiteNoise middleware serves static files - no custom storage needed
+# Required for cloudinary_storage compatibility
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # Media files (User uploads)
 MEDIA_URL = "/media/"
