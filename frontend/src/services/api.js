@@ -91,10 +91,13 @@ export const apiCall = async (endpoint, options = {}) => {
 
 // Build media URL
 export const buildMediaUrl = (path) => {
+  console.log('[buildMediaUrl] Input path:', path);
+  
   if (!path) return '';
   
   // If already a full URL (Cloudinary or external), return as-is
   if (path.startsWith('http://') || path.startsWith('https://')) {
+    console.log('[buildMediaUrl] Full URL detected, returning as-is:', path);
     return path;
   }
 
@@ -108,6 +111,7 @@ export const buildMediaUrl = (path) => {
   }
 
   const mediaUrl = `${host}${cleanPath}`;
+  console.log('[buildMediaUrl] Relative path, built URL:', mediaUrl);
   return mediaUrl;
 };
 
