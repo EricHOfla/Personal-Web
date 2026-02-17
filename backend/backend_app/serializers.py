@@ -35,12 +35,9 @@ def get_cloudinary_url(file_field):
         if public_id.startswith('/'):
             public_id = public_id.lstrip('/')
             
-        # The Cloudinary analysis shows all files are stored under 'media/' folder
-        # e.g., 'media/projects/xyz'.
-        # Django might store the name as 'projects/xyz'.
-        # We need to ensure the 'media/' prefix is there.
-        if not public_id.startswith('media/'):
-            public_id = f"media/{public_id}"
+        # Do not force 'media/' prefix. Trust the stored name.
+        # If the file was uploaded to 'profiles/name.jpg', public_id is 'profiles/name.jpg'.
+        # If it was uploaded to 'media/profiles/name.jpg', public_id is 'media/profiles/name.jpg'.
 
         # Construct the full Cloudinary URL
         return f"https://res.cloudinary.com/{cloud_name}/image/upload/v1/{public_id}"

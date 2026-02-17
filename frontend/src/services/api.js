@@ -99,8 +99,6 @@ export const buildMediaUrl = (path) => {
   }
 
   // Check if this looks like a Cloudinary path (e.g., /media/projects/filename_hash)
-  // Cloudinary paths stored by django-cloudinary-storage generally include the 'media/' prefix
-  // e.g., 'media/projects/filename_hash'.
   let cleanPath = path.startsWith('/') ? path.slice(1) : path;
 
   // Clean up double media prefix if present
@@ -108,19 +106,18 @@ export const buildMediaUrl = (path) => {
     cleanPath = cleanPath.slice(6);
   }
 
-  // If path is just "projects/..." (unlikely but possible), add "media/"
-  if (!cleanPath.startsWith('media/') && (
+  // If we have a path that looks like a Cloudinary public_id (or relative path starting with media/),
+  // build the Cloudinary URL.
+  // Note: We used to force 'media/' prefix here, but new uploads might not have it.
+  // We now rely on the backend sending the correct path structure.
+  if (cleanPath && (
+    cleanPath.startsWith('media/') ||
     cleanPath.startsWith('projects/') ||
     cleanPath.startsWith('profiles/') ||
     cleanPath.startsWith('blogs/') ||
     cleanPath.startsWith('testimonials/') ||
     cleanPath.startsWith('cv/')
   )) {
-    cleanPath = `media/${cleanPath}`;
-  }
-
-  // If we have a valid structure, build the Cloudinary URL
-  if (cleanPath.startsWith('media/')) {
     // Use the Cloudinary cloud name from env or fallback
     const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'dfcpda9te';
     return `https://res.cloudinary.com/${cloudName}/image/upload/v1/${cleanPath}`;
