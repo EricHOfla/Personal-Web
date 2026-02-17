@@ -1,6 +1,6 @@
 import { apiCall } from './api';
 
-export const getAllTestimonials = () => apiCall('/api/testimonials/');
+export const getAllTestimonials = () => apiCall('/api/testimonials/', { cache: false });
 export const createTestimonial = (data) => apiCall('/api/testimonials/', {
     method: 'POST',
     body: data, // Note: For file uploads, we pass the FormData directly without JSON.stringify

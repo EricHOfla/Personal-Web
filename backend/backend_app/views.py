@@ -419,7 +419,7 @@ def sidenav_item_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 # ===== Testimonials =====
-@cache_get_requests(60 * 15)  # Cache GET requests for 15 minutes
+@cache_get_requests(10)  # Cache GET requests for 10 seconds
 @api_view(['GET', 'POST'])
 def testimonial_list(request):
     if request.method == 'GET':
