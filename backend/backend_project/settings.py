@@ -177,8 +177,7 @@ APPEND_SLASH = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Required by cloudinary_storage during collectstatic
-STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
+# WhiteNoise middleware serves static files - no custom storage needed
 
 # Media files (User uploads)
 MEDIA_URL = "/media/"
@@ -195,15 +194,13 @@ elif os.environ.get('CLOUDINARY_CLOUD_NAME'):
     }
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Django 6.0 specific storage configuration
-STORAGES = {
-    "default": {
-        "BACKEND": DEFAULT_FILE_STORAGE if 'DEFAULT_FILE_STORAGE' in locals() else "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.StaticFilesStorage",
-    },
-}
+# Default storage for media uploads only
+if 'DEFAULT_FILE_STORAGE' in locals():
+    STORAGES = {
+        "default": {
+            "BACKEND": DEFAULT_FILE_STORAGE,
+        },
+    }
 
 
 CORS_ALLOWED_ORIGINS = [
