@@ -157,7 +157,7 @@ cloudinary.config(
 )
 
 # ===============================
-# STORAGES (Django 5.0+ / 6.0 Compatible)
+# STORAGES (Hybrid Compatibility)
 # ===============================
 
 STORAGES = {
@@ -169,7 +169,9 @@ STORAGES = {
     },
 }
 
-# Legacy settings removed: DEFAULT_FILE_STORAGE, STATICFILES_STORAGE
+# Keep legacy settings for compatibility with older Django/packages
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.ManifestStaticFilesStorage'
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,

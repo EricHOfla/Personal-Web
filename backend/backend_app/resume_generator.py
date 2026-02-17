@@ -329,15 +329,22 @@ def generate_resume_pdf(request):
             title = safe_text(proj.title, "Project")
             category = safe_text(getattr(proj, "category", ""))
 
+            # Determine project link (Live > GitHub)
+            project_link = proj.project_url or proj.github_url
+            link_html = ""
+            if project_link:
+                label = "Live Demo" if proj.project_url else "GitHub"
+                link_html = f'  <a href="{project_link}" color="#4F46E5"><u>{label}</u></a>'
+
             if category:
                 elements.append(
                     Paragraph(
-                        f"<b>{title}</b>  <font color='#6B7280'>({category})</font>",
+                        f"<b>{title}</b>  <font color='#6B7280'>({category})</font>{link_html}",
                         styles["ItemTitle"]
                     )
                 )
             else:
-                elements.append(Paragraph(f"<b>{title}</b>", styles["ItemTitle"]))
+                elements.append(Paragraph(f"<b>{title}</b>{link_html}", styles["ItemTitle"]))
 
             if proj.description:
                 elements.append(Paragraph(proj.description, styles["BodyTextJustified"]))
