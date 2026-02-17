@@ -53,18 +53,15 @@ def get_cloudinary_url(file_field):
 # 1. User Profile
 # =========================
 class UserProfileSerializer(serializers.ModelSerializer):
-    profile_image = serializers.SerializerMethodField()
-    cv_file = serializers.SerializerMethodField()
-
     class Meta:
         model = UserProfile
         fields = "__all__"
 
-    def get_profile_image(self, obj):
-        return get_cloudinary_url(obj.profile_image)
-
-    def get_cv_file(self, obj):
-        return get_cloudinary_url(obj.cv_file)
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['profile_image'] = get_cloudinary_url(instance.profile_image)
+        representation['cv_file'] = get_cloudinary_url(instance.cv_file)
+        return representation
 
 
 # =========================
@@ -125,21 +122,20 @@ class SkillSerializer(serializers.ModelSerializer):
 # 8. Projects
 # =========================
 class ProjectSerializer(serializers.ModelSerializer):
-    image_url = serializers.SerializerMethodField()
-
     class Meta:
         model = Project
         fields = "__all__"
 
-    def get_image_url(self, obj):
-        return get_cloudinary_url(obj.image_url)
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['image_url'] = get_cloudinary_url(instance.image_url)
+        return representation
 
 
 # =========================
 # 9. Blog Posts
 # =========================
 class BlogPostSerializer(serializers.ModelSerializer):
-    featured_image = serializers.SerializerMethodField()
     user = UserProfileSerializer(read_only=True)
     reading_time = serializers.SerializerMethodField()
 
@@ -147,8 +143,10 @@ class BlogPostSerializer(serializers.ModelSerializer):
         model = BlogPost
         fields = "__all__"
 
-    def get_featured_image(self, obj):
-        return get_cloudinary_url(obj.featured_image)
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['featured_image'] = get_cloudinary_url(instance.featured_image)
+        return representation
 
     def get_reading_time(self, obj):
         word_count = len(obj.content.split())
