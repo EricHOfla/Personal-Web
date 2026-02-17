@@ -68,7 +68,7 @@ ROOT_URLCONF = 'backend_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,7 +120,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.ManifestStaticFilesStorage'
 
 # ===============================
 # MEDIA (CLOUDINARY)
@@ -152,11 +152,32 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 # ===============================
-# RENDER HTTPS FIX
+# SESSION & CSRF
 # ===============================
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-USE_X_FORWARDED_HOST = True
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 1209600  # 2 weeks
+SESSION_COOKIE_HTTPONLY = True
+
+# CSRF protection for Vercel frontend
+CSRF_TRUSTED_ORIGINS = [
+    'https://oflah.vercel.app',
+    'http://localhost:3000',
+]
+CSRF_COOKIE_SAMESITE = 'Lax'
+
+# ===============================
+# CACHING
+# ===============================
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'personal-web-cache',
+    }
+}
+
+# ===============================
 
 # ⚠ Important: Disable forced redirect for now
 SECURE_SSL_REDIRECT = False
