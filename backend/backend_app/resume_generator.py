@@ -30,7 +30,7 @@ def generate_resume_pdf(request):
         experiences = Experience.objects.order_by('-id')
         education = Education.objects.order_by('-id')
         skills = Skill.objects.order_by('-proficiency_level')
-        projects = Project.objects.filter(is_active=True).order_by('-is_featured', '-id')[:5]
+        projects = Project.objects.filter(is_featured=True)[:5]
         social_links = SocialLink.objects.all()
     except Exception as e:
         return Response({"error": f"Failed to fetch data: {str(e)}"}, status=500)
