@@ -177,7 +177,7 @@ APPEND_SLASH = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Required for cloudinary_storage compatibility
+# Simple static files storage - WhiteNoise middleware serves these
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # Media files (User uploads)
@@ -195,18 +195,12 @@ elif os.environ.get('CLOUDINARY_CLOUD_NAME'):
     }
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-# Default storage for media uploads only
+# Simplified STORAGES - only custom default for media, staticfiles use default Django
 if 'DEFAULT_FILE_STORAGE' in locals():
     STORAGES = {
         "default": {
             "BACKEND": DEFAULT_FILE_STORAGE,
         },
-        "staticfiles": {
-            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-        },
-    }
-else:
-    STORAGES = {
         "staticfiles": {
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
         },
