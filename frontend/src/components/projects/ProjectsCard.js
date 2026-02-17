@@ -19,12 +19,12 @@ function ProjectsCard({ project }) {
 
   return (
     <article className="glass-card group overflow-hidden flex flex-col h-full">
-      <div className="relative overflow-hidden h-40 xs:h-48 sm:h-52 md:h-56">
+      <div className="relative overflow-hidden h-40 xs:h-48 sm:h-52 md:h-56 bg-black/20">
         {imageSrc ? (
           <img
             src={imageSrc}
             alt={title}
-            className="w-full h-full object-cover transition duration-500 group-hover:scale-110"
+            className="w-full h-full object-contain transition duration-500 group-hover:scale-105"
             loading="lazy"
           />
         ) : (
