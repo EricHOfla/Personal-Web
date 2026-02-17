@@ -124,8 +124,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STATICFILES_STORAGE = 'whitenoise.storage.ManifestStaticFilesStorage'
-
 # ===============================
 # MEDIA (CLOUDINARY)
 # ===============================
@@ -158,7 +156,20 @@ cloudinary.config(
     secure=True
 )
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# ===============================
+# STORAGES (Django 5.0+ / 6.0 Compatible)
+# ===============================
+
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.ManifestStaticFilesStorage",
+    },
+}
+
+# Legacy settings removed: DEFAULT_FILE_STORAGE, STATICFILES_STORAGE
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': CLOUDINARY_CLOUD_NAME,
