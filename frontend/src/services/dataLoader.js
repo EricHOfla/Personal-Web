@@ -110,8 +110,6 @@ export const prefetchEssentialData = async () => {
     return { profile: null, socialLinks: [] };
   }
 };
-  }
-};
 
 /**
  * Prefetch data for a specific section
