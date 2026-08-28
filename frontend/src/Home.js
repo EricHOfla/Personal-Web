@@ -1,4 +1,4 @@
-import React, { useRef, useState, lazy, Suspense } from "react";
+import React, { useRef, useState } from "react";
 
 import { FaUser, FaEnvelope, FaBars, FaSun, FaMoon } from "react-icons/fa";
 import { IoIosPaper } from "react-icons/io";
@@ -6,15 +6,15 @@ import { MdWork, MdOutlineClose } from "react-icons/md";
 import { SiGooglechat } from "react-icons/si";
 import { BsTelephonePlusFill } from "react-icons/bs";
 
-// Lazy load components for better performance
-const Left = lazy(() => import("./components/home/Left"));
-const About = lazy(() => import("./components/about/About"));
-const Resume = lazy(() => import("./components/resume/Resume"));
-const Projects = lazy(() => import("./components/projects/Projects"));
-const Blog = lazy(() => import("./components/blog/Blog"));
-const BlogDetail = lazy(() => import("./components/blog/BlogDetail"));
-const Contact = lazy(() => import("./components/contact/Contact"));
-const Sidenav = lazy(() => import("./components/home/sidenav/Sidenav"));
+// Direct imports for instant, zero-latency rendering
+import Left from "./components/home/Left";
+import About from "./components/about/About";
+import Resume from "./components/resume/Resume";
+import Projects from "./components/projects/Projects";
+import Blog from "./components/blog/Blog";
+import BlogDetail from "./components/blog/BlogDetail";
+import Contact from "./components/contact/Contact";
+import Sidenav from "./components/home/sidenav/Sidenav";
 
 const Home = ({ profile, appData, theme, toggleTheme }) => {
   const [about, setAbout] = useState(true);
@@ -27,11 +27,6 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
   const sidenavRef = useRef();
   const backdropRef = useRef();
 
-  const LoadingFallback = () => (
-    <div className="w-full h-full flex items-center justify-center bg-transparent">
-      <div className="w-10 h-10 border-4 border-gray-600 border-t-designColor rounded-full animate-spin"></div>
-    </div>
-  );
 
   return (
     <div className="w-full lgl:w-[95%] h-full lgl:h-[85%] bg-transparent text-textColor z-50 flex flex-col lgl:flex-row items-start justify-between p-2 sm:p-4 lgl:p-0 pb-20 lgl:pb-0">
@@ -209,73 +204,72 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
       {/* ================= Left Icons Start here ====================== */}
 
       <main className="w-full lgl:w-[94%] h-full flex flex-col gap-4 sm:gap-6 lgl:gap-0 lgl:flex-row items-start">
-        <Suspense fallback={<LoadingFallback />}>
-          {/* ======================== Home Left Start here ============================ */}
-          <aside className="w-full lgl:w-5/12 h-full">
-            <Left
-              profile={profile}
-              setAbout={setAbout}
-              setResume={setResume}
-              setProjects={setProjects}
-              setBlog={setBlog}
-              setContact={setContact}
-            />
-          </aside>
-          {/* ======================== Home Left End here ============================== */}
+        {/* ======================== Home Left Start here ============================ */}
+        <aside className="w-full lgl:w-5/12 h-full">
+          <Left
+            profile={profile}
+            setAbout={setAbout}
+            setResume={setResume}
+            setProjects={setProjects}
+            setBlog={setBlog}
+            setContact={setContact}
+          />
+        </aside>
+        {/* ======================== Home Left End here ============================== */}
 
-          <section className="w-full lgl:w-7/12 h-full bg-bodyColor rounded-2xl flex justify-center items-center">
-            {/* ======================== Smaller device content Start ======================== */}
-            <div className="w-full h-full lgl:hidden bg-transparent rounded-2xl flex flex-col gap-4 sm:gap-6 overflow-y-auto">
-              <article id="about-section">
-                <About profile={profile} appData={appData} />
-              </article>
-              <article id="resume-section">
-                <Resume appData={appData} />
-              </article>
-              <article id="projects-section">
-                <Projects appData={appData} />
-              </article>
-              <article id="blog-section">
-                {selectedBlogSlug ? (
-                  <BlogDetail slug={selectedBlogSlug} onBack={() => setSelectedBlogSlug(null)} />
-                ) : (
-                  <Blog appData={appData} onReadMore={(slug) => setSelectedBlogSlug(slug)} />
-                )}
-              </article>
-              <article id="contact-section">
-                <Contact profile={profile} />
-              </article>
+        <section className="w-full lgl:w-7/12 h-full bg-bodyColor rounded-2xl flex justify-center items-center">
+          {/* ======================== Smaller device content Start ======================== */}
+          <div className="w-full h-full lgl:hidden bg-transparent rounded-2xl flex flex-col gap-4 sm:gap-6 overflow-y-auto">
+            <article id="about-section">
+              <About profile={profile} appData={appData} />
+            </article>
+            <article id="resume-section">
+              <Resume appData={appData} />
+            </article>
+            <article id="projects-section">
+              <Projects appData={appData} />
+            </article>
+            <article id="blog-section">
+              {selectedBlogSlug ? (
+                <BlogDetail slug={selectedBlogSlug} onBack={() => setSelectedBlogSlug(null)} />
+              ) : (
+                <Blog appData={appData} onReadMore={(slug) => setSelectedBlogSlug(slug)} />
+              )}
+            </article>
+            <article id="contact-section">
+              <Contact profile={profile} />
+            </article>
+          </div>
+          {/* ======================== Smaller device content End ========================== */}
+
+          <div className="w-full h-[96%] hidden lgl:flex justify-center overflow-y-scroll scrollbar-thin scrollbar-thumb-[#646464]">
+            <div className={`w-full ${about ? "block" : "hidden"}`}>
+              <About profile={profile} appData={appData} />
             </div>
-            {/* ======================== Smaller device content End ========================== */}
 
-            <div className="w-full h-[96%] hidden lgl:flex justify-center overflow-y-scroll scrollbar-thin scrollbar-thumb-[#646464]">
-              <div className={`w-full ${about ? "block" : "hidden"}`}>
-                <About profile={profile} appData={appData} />
-              </div>
-
-              <div className={`w-full ${resume ? "block" : "hidden"}`}>
-                <Resume appData={appData} />
-              </div>
-
-              <div className={`w-full ${projects ? "block" : "hidden"}`}>
-                <Projects appData={appData} />
-              </div>
-
-              <div className={`w-full ${blog ? "block" : "hidden"}`}>
-                {selectedBlogSlug ? (
-                  <BlogDetail slug={selectedBlogSlug} onBack={() => setSelectedBlogSlug(null)} />
-                ) : (
-                  <Blog appData={appData} onReadMore={(slug) => setSelectedBlogSlug(slug)} />
-                )}
-              </div>
-
-              <div className={`w-full ${contact ? "block" : "hidden"}`}>
-                <Contact profile={profile} />
-              </div>
+            <div className={`w-full ${resume ? "block" : "hidden"}`}>
+              <Resume appData={appData} />
             </div>
-          </section>
-        </Suspense>
+
+            <div className={`w-full ${projects ? "block" : "hidden"}`}>
+              <Projects appData={appData} />
+            </div>
+
+            <div className={`w-full ${blog ? "block" : "hidden"}`}>
+              {selectedBlogSlug ? (
+                <BlogDetail slug={selectedBlogSlug} onBack={() => setSelectedBlogSlug(null)} />
+              ) : (
+                <Blog appData={appData} onReadMore={(slug) => setSelectedBlogSlug(slug)} />
+              )}
+            </div>
+
+            <div className={`w-full ${contact ? "block" : "hidden"}`}>
+              <Contact profile={profile} />
+            </div>
+          </div>
+        </section>
       </main>
+
 
       {/* ============= Sidenav - Accessible on all devices ============= */}
       <div
@@ -311,37 +305,35 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
                 {theme === 'dark' ? <FaSun /> : <FaMoon />}
               </button>
             </div>
-            <Suspense fallback={<LoadingFallback />}>
-              <Sidenav
-                profile={profile}
-                appData={appData}
-                theme={theme}
-                toggleTheme={toggleTheme}
-                onNavigate={(page) => {
-                  // Set page state for desktop view
-                  setAbout(page === 'about');
-                  setResume(page === 'resume');
-                  setProjects(page === 'projects');
-                  setBlog(page === 'blog');
-                  setContact(page === 'contact');
-                  if (page !== 'blog') {
-                    setSelectedBlogSlug(null);
+            <Sidenav
+              profile={profile}
+              appData={appData}
+              theme={theme}
+              toggleTheme={toggleTheme}
+              onNavigate={(page) => {
+                // Set page state for desktop view
+                setAbout(page === 'about');
+                setResume(page === 'resume');
+                setProjects(page === 'projects');
+                setBlog(page === 'blog');
+                setContact(page === 'contact');
+                if (page !== 'blog') {
+                  setSelectedBlogSlug(null);
+                }
+
+                // Close the menu
+                setSidenav(false);
+
+                // On mobile, scroll to the section after a short delay
+                setTimeout(() => {
+                  const sectionId = `${page}-section`;
+                  const section = document.getElementById(sectionId);
+                  if (section) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
-
-                  // Close the menu
-                  setSidenav(false);
-
-                  // On mobile, scroll to the section after a short delay
-                  setTimeout(() => {
-                    const sectionId = `${page}-section`;
-                    const section = document.getElementById(sectionId);
-                    if (section) {
-                      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                  }, 100);
-                }}
-              />
-            </Suspense>
+                }, 100);
+              }}
+            />
           </div>
         </div>
       </div>

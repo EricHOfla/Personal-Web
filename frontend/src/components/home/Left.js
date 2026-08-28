@@ -29,7 +29,7 @@ const Left = ({ profile = portfolioData.profile, setAbout, setResume, setProject
     loop: true,
     typeSpeed: 30,
     deleteSpeed: 20,
-    delaySpeed: 99000,
+    delaySpeed: 2500,
   });
 
   const profileImageSrc = profile?.profile_image || profile?.profileImage || "/bannerImg.png";
