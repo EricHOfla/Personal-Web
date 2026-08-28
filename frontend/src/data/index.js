@@ -30,7 +30,7 @@ export const portfolioData = {
   },
 
   about: {
-    title: "About Me",
+    title: "About",
     subtitle: "Get to Know Me",
     description: "I am a Software Engineer specializing in web and mobile development. I build modern, scalable applications with a focus on clean code and great user experiences.",
     stats: [
