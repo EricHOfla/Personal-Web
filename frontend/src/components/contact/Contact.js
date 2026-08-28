@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { submitContactForm } from "../../services/contactService";
 import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaPaperPlane } from "react-icons/fa";
+import { portfolioData } from "../../data";
 
-function Contact({ profile }) {
+function Contact({ profile = portfolioData.profile }) {
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(false);
@@ -11,21 +11,28 @@ function Contact({ profile }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
     setStatus({ type: "", message: "" });
 
     try {
-      await submitContactForm(formData);
-      setStatus({ type: "success", message: "Message sent successfully! I'll get back to you soon." });
+      const recipientEmail = profile?.email || portfolioData.profile.email || "ericofla1@gmail.com";
+      const subject = encodeURIComponent(formData.subject || "Contact from Portfolio");
+      const body = encodeURIComponent(`Hi ${profile?.firstName || "Eric"},\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})`);
+      
+      // Open user's default email client
+      window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+
+      setStatus({ type: "success", message: "Thank you! Opening your email client to send the message directly." });
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err) {
-      setStatus({ type: "error", message: err.message || "Failed to send message. Please try again." });
+      setStatus({ type: "error", message: "Failed to process message. Please email directly." });
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <section className="app-shell">

@@ -1,13 +1,14 @@
 import React from "react";
 import { FaCalendar, FaClock, FaArrowRight, FaEye } from "react-icons/fa";
-import { buildMediaUrl } from "../../services/api";
 
 function BlogCard({ post, onReadMore }) {
+  const [imgError, setImgError] = React.useState(false);
   if (!post) return null;
 
   const {
     slug,
     featured_image,
+    image,
     title = "Untitled Post",
     excerpt,
     content,
@@ -35,26 +36,28 @@ function BlogCard({ post, onReadMore }) {
     })
     : "Unknown date";
 
-  const imageSrc = buildMediaUrl(featured_image);
-  const authorName = user?.full_name || user?.first_name || "Anonymous";
+  const imageSrc = image || featured_image;
+  const authorName = user?.full_name || user?.first_name || "HABUMUGISHA Eric";
 
   return (
     <article className="glass-card group overflow-hidden flex flex-col h-full cursor-pointer" onClick={handleReadMore}>
       <div
         className="block relative overflow-hidden h-40 xs:h-48 sm:h-52 md:h-56"
       >
-        {imageSrc ? (
+        {imageSrc && !imgError ? (
           <img
             src={imageSrc}
             alt={title}
             className="w-full h-full object-cover transition duration-500 group-hover:scale-110"
             loading="lazy"
+            onError={() => setImgError(true)}
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-designColor/20 to-cyan-500/20 flex items-center justify-center">
             <span className="text-4xl sm:text-5xl md:text-6xl opacity-20">📝</span>
           </div>
         )}
+
         <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
           <span className="inline-block px-2 sm:px-3 py-0.5 sm:py-1 bg-designColor text-black text-[10px] sm:text-xs font-semibold rounded-full">
             {category || "General"}

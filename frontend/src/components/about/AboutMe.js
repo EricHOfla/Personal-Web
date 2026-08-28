@@ -1,12 +1,12 @@
 import React from "react";
 import { FaMapMarkerAlt, FaEnvelope, FaPhone, FaCalendar } from "react-icons/fa";
+import { portfolioData } from "../../data";
 
-
-function AboutMe({ profile }) {
+function AboutMe({ profile = portfolioData.profile }) {
   const stats = [
-    { label: "Freelance Status", value: profile?.freelance_status || "Available" },
-    { label: "Residence", value: profile?.residence || profile?.address || "N/A" },
-    { label: "Qualification", value: profile?.qualification || "N/A" },
+    { label: "Freelance Status", value: profile?.freelance_status || profile?.freelanceStatus || "Available" },
+    { label: "Residence", value: profile?.residence || profile?.address || profile?.location || "Kigali, Rwanda" },
+    { label: "Qualification", value: profile?.qualification || "Bachelor Degree" },
   ];
 
   return (
@@ -20,11 +20,24 @@ function AboutMe({ profile }) {
         {/* Avatar */}
         <div className="shrink-0">
           <div className="relative w-24 h-24 xs:w-28 xs:h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 lg:w-48 lg:h-48 rounded-xl sm:rounded-2xl overflow-hidden border-2 sm:border-3 md:border-4 border-designColor/30 shadow-glow flex items-center justify-center text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white bg-gradient-to-br from-designColor to-cyan-500">
-            {profile?.first_name || profile?.last_name
-              ? `${profile.last_name?.charAt(0) || ""}${profile.first_name?.charAt(0) || ""}`
-              : "?"}
+            {profile?.profile_image || profile?.profileImage ? (
+              <img
+                src={profile?.profile_image || profile?.profileImage}
+                alt={profile?.full_name || "Profile"}
+                className="w-full h-full object-cover object-top"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            ) : null}
+            <span className="absolute -z-10">
+              {profile?.first_name || profile?.last_name
+                ? `${profile.last_name?.charAt(0) || ""}${profile.first_name?.charAt(0) || ""}`
+                : "?"}
+            </span>
           </div>
         </div>
+
 
         {/* Bio */}
         <div className="flex-1 space-y-2 sm:space-y-3 md:space-y-4 text-center lg:text-left w-full">

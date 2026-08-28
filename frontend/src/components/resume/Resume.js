@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import Education from "./Education";
 import Skills from "./Skills";
 import { FaGraduationCap, FaCode, FaBriefcase } from "react-icons/fa";
+import { portfolioData } from "../../data";
 
-const Resume = ({ appData }) => {
+const Resume = ({ appData = portfolioData }) => {
   const [activeTab, setActiveTab] = useState("education");
+
 
   const tabs = [
     { id: "education", label: "Education", icon: FaGraduationCap },

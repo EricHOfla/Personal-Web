@@ -1,64 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ResumeTitle from "./ResumeTitle";
 import { MdWork } from "react-icons/md";
 import { GiGraduateCap } from "react-icons/gi";
 import ResumeCard from "./ResumeCard";
-import { getEducation } from "../../services/educationService";
-import { getExperiences } from "../../services/experiencesService";
+import { portfolioData } from "../../data";
 
-const Education = ({ mode = "all", appData }) => {
-  const [education, setEducation] = useState([]);
-  const [experiences, setExperiences] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Use prefetched data if available
-    if (appData) {
-      if (appData.education) {
-        setEducation(Array.isArray(appData.education) ? appData.education : appData.education.results || []);
-      }
-      if (appData.experiences) {
-        setExperiences(Array.isArray(appData.experiences) ? appData.experiences : appData.experiences.results || []);
-      }
-      setLoading(false);
-      return;
-    }
-
-    // Fallback to fetching if no prefetched data
-    const fetchData = async () => {
-      try {
-        const eduData = await getEducation();
-        const expData = await getExperiences();
-        setEducation(Array.isArray(eduData) ? eduData : eduData.results || []);
-        setExperiences(
-          Array.isArray(expData) ? expData : expData.results || []
-        );
-      } catch (err) {
-        console.error("Failed to fetch resume data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [appData]);
-
-  if (loading) return (
-    <div className="education-section space-y-6 sm:space-y-8">
-      <div className="space-y-4 sm:space-y-6">
-        <div className="skeleton h-8 w-1/3 mb-4"></div>
-        <div className="education-list space-y-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="glass-card p-6 space-y-3">
-              <div className="skeleton h-6 w-1/2"></div>
-              <div className="skeleton h-4 w-1/3"></div>
-              <div className="skeleton h-4 w-full"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+const Education = ({ mode = "all", appData = portfolioData }) => {
+  const education = appData?.education || portfolioData.education || [];
+  const experiences = appData?.experiences || appData?.experience || portfolioData.experiences || [];
 
   return (
     <div className="education-section space-y-6 sm:space-y-8">
@@ -68,7 +17,7 @@ const Education = ({ mode = "all", appData }) => {
           <div className="education-list">
             {education.length ? (
               education.map((item) => (
-                <ResumeCard key={item.id} item={item} type="education" />
+                <ResumeCard key={item.id || item.degree} item={item} type="education" />
               ))
             ) : (
               <p className="text-textTertiary text-sm sm:text-base text-center py-4">No education records.</p>
@@ -83,7 +32,7 @@ const Education = ({ mode = "all", appData }) => {
           <div className="experience-list">
             {experiences.length ? (
               experiences.map((item) => (
-                <ResumeCard key={item.id} item={item} type="experience" />
+                <ResumeCard key={item.id || item.job_title || item.title} item={item} type="experience" />
               ))
             ) : (
               <p className="text-textTertiary text-sm sm:text-base text-center py-4">No experiences added.</p>
@@ -96,3 +45,4 @@ const Education = ({ mode = "all", appData }) => {
 };
 
 export default Education;
+

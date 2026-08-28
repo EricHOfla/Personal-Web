@@ -1,70 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { getProjects } from "../../services/projectsService";
+import React, { useState } from "react";
 import ProjectsCard from "./ProjectsCard";
+import { portfolioData } from "../../data";
 
-function Projects({ appData }) {
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+function Projects({ appData = portfolioData }) {
+  const projects = appData?.projects || portfolioData.projects || [];
   const [filter, setFilter] = useState("all");
-
-  useEffect(() => {
-    // Use prefetched data if available
-    if (appData?.projects) {
-      setProjects(Array.isArray(appData.projects) ? appData.projects : appData.projects.results || []);
-      setLoading(false);
-      return;
-    }
-
-    // Fallback to fetching if no prefetched data
-    const fetchProjects = async () => {
-      try {
-        const data = await getProjects();
-        setProjects(Array.isArray(data) ? data : data.results || []);
-      } catch (err) {
-        setError(err.message);
-        console.error("Failed to fetch projects:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProjects();
-  }, [appData]);
 
   const categories = ["all", ...new Set(projects.map((p) => p.category).filter(Boolean))];
   const filteredProjects = filter === "all" ? projects : projects.filter((p) => p.category === filter);
-
-  if (loading) {
-    return (
-      <section className="app-shell">
-        <div className="section-header">
-          <p className="section-label">Projects</p>
-          <h1 className="section-title">Featured Work</h1>
-        </div>
-        <div className="grid gap-4 sm:gap-5 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="glass-card p-4 sm:p-5 md:p-6 space-y-3 sm:space-y-4">
-              <div className="skeleton h-40 xs:h-48 sm:h-52 md:h-56 w-full"></div>
-              <div className="skeleton h-3 sm:h-4 w-3/4"></div>
-              <div className="skeleton h-3 sm:h-4 w-full"></div>
-            </div>
-          ))}
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="app-shell">
-        <div className="glass-card p-4 sm:p-6 md:p-8 text-center">
-          <p className="text-red-400 mb-3 sm:mb-4 text-sm sm:text-base">⚠️ Failed to load projects</p>
-          <p className="text-textSecondary text-xs sm:text-sm">{error}</p>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="app-shell">
@@ -109,3 +52,4 @@ function Projects({ appData }) {
 }
 
 export default Projects;
+

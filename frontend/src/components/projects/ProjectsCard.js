@@ -1,37 +1,44 @@
 import React from "react";
 import { FaGithub, FaExternalLinkAlt, FaCode } from "react-icons/fa";
-import { buildMediaUrl } from "../../services/api";
 
 function ProjectsCard({ project }) {
+  const [imgError, setImgError] = React.useState(false);
   if (!project) return null;
 
   const {
     title = "Untitled Project",
     description,
+    image,
     image_url,
+    githubUrl,
     github_url,
+    liveUrl,
     project_url,
     technologies = [],
     category = "Other",
   } = project;
 
-  const imageSrc = buildMediaUrl(image_url);
+  const imageSrc = image || image_url;
+  const projectGithub = githubUrl || github_url;
+  const projectLive = liveUrl || project_url;
 
   return (
     <article className="glass-card group overflow-hidden flex flex-col h-full">
       <div className="relative overflow-hidden h-40 xs:h-48 sm:h-52 md:h-56 bg-black/20">
-        {imageSrc ? (
+        {imageSrc && !imgError ? (
           <img
             src={imageSrc}
             alt={title}
             className="w-full h-full object-contain transition duration-500 group-hover:scale-105"
             loading="lazy"
+            onError={() => setImgError(true)}
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-designColor/20 to-cyan-500/20 flex items-center justify-center">
             <FaCode className="text-4xl sm:text-5xl md:text-6xl text-white/20" />
           </div>
         )}
+
         <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
           <span className="inline-block px-2 sm:px-3 py-0.5 sm:py-1 bg-surface backdrop-blur-sm text-designColor text-[10px] sm:text-xs font-semibold rounded-full border border-designColor/30">
             {category || "Other"}
@@ -67,9 +74,9 @@ function ProjectsCard({ project }) {
         )}
 
         <div className="flex gap-1.5 sm:gap-2 md:gap-3 pt-2 sm:pt-3 md:pt-4 border-t border-surfaceBorder">
-          {github_url && (
+          {projectGithub && (
             <a
-              href={github_url}
+              href={projectGithub}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-surface hover:border-designColor/30 border border-transparent rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium text-textColor hover:text-designColor transition min-w-0"
@@ -77,9 +84,9 @@ function ProjectsCard({ project }) {
               <FaGithub className="text-xs sm:text-sm md:text-base flex-shrink-0" /> <span className="hidden xs:inline truncate">Code</span>
             </a>
           )}
-          {project_url && (
+          {projectLive && (
             <a
-              href={project_url}
+              href={projectLive}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-designColor hover:bg-designColor/90 rounded-lg text-[10px] xs:text-xs sm:text-sm font-medium text-black transition min-w-0"
@@ -94,3 +101,4 @@ function ProjectsCard({ project }) {
 }
 
 export default React.memo(ProjectsCard);
+

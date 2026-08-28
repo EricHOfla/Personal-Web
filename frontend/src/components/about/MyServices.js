@@ -1,50 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ServicesCard from "./ServicesCard";
-import { getServices } from "../../services/servicesService";
+import { portfolioData } from "../../data";
 
-function MyServices({ appData }) {
-  const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    // Use prefetched data if available
-    if (appData?.services) {
-      setServices(Array.isArray(appData.services) ? appData.services : appData.services.results || []);
-      setLoading(false);
-      return;
-    }
-
-    // Fallback to fetching if no prefetched data
-    const fetchServices = async () => {
-      try {
-        const data = await getServices();
-        setServices(Array.isArray(data) ? data : data.results || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchServices();
-  }, [appData]);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center py-8 sm:py-12">
-        <div className="w-8 h-8 sm:w-10 sm:h-10 border-4 border-designColor border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="glass-card p-4 sm:p-6 text-center text-red-400 text-sm sm:text-base">
-        Error loading services: {error}
-      </div>
-    );
-  }
+function MyServices({ appData = portfolioData }) {
+  const services = appData?.services || portfolioData.services || [];
 
   return (
     <section className="space-y-3 sm:space-y-4 md:space-y-6 px-1 sm:px-2">
@@ -58,7 +17,7 @@ function MyServices({ appData }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-6">
         {services.length ? (
           services.map((service) => (
-            <ServicesCard key={service.id} service={service} />
+            <ServicesCard key={service.id || service.title} service={service} />
           ))
         ) : (
           <div className="glass-card p-3 sm:p-4 md:p-6 text-center text-textSecondary col-span-full text-xs sm:text-sm md:text-base">
@@ -71,3 +30,4 @@ function MyServices({ appData }) {
 }
 
 export default MyServices;
+

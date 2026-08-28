@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useTypewriter, Cursor } from "react-simple-typewriter";
 import { BsCloudLightningFill } from "react-icons/bs";
 import { FaGithub, FaLinkedin, FaFacebook, FaTwitter, FaYoutube, FaInstagram } from "react-icons/fa";
 import { FiMail, FiSend, FiGlobe } from "react-icons/fi";
 import { bannerImg } from "../../assets/index";
-import { getSocialLinks } from "../../services/socialLinksService";
-import { buildMediaUrl, getResumePdfUrl } from "../../services/api";
+import { portfolioData } from "../../data";
 
 const iconMap = {
   github: FaGithub,
@@ -18,8 +17,8 @@ const iconMap = {
   website: FiGlobe,
 };
 
-const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }) => {
-  const [socialLinks, setSocialLinks] = useState([]);
+const Left = ({ profile = portfolioData.profile, setAbout, setResume, setProjects, setBlog, setContact }) => {
+  const socialLinks = portfolioData.socialLinks || [];
 
   const [text] = useTypewriter({
     words: [
@@ -33,34 +32,35 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
     delaySpeed: 99000,
   });
 
-  useEffect(() => {
-    const fetchLinks = async () => {
-      try {
-        const data = await getSocialLinks();
-        setSocialLinks(Array.isArray(data) ? data : data.results || []);
-      } catch (error) {
-        console.error("Failed to load social links", error);
-      }
-    };
+  const profileImageSrc = profile?.profile_image || profile?.profileImage || "/bannerImg.png";
+  const cvUrl = profile?.cv_file || profile?.cvUrl || portfolioData.profile.cvUrl;
 
-    fetchLinks();
-  }, []);
   return (
     <div className="w-full h-full bg-bodyColor rounded-2xl shadow-testShwdow z-10 overflow-hidden flex flex-col">
       {/* Image section */}
-      <div className="w-full mt-6 h-48 xs:h-56 sm:h-72 md:h-80 lgl:h-80 relative">
-        <img
-          className="w-5/6 mx-auto h-full object-contain object-top rounded-2xl bg-white"
-          src={profile?.profile_image ? buildMediaUrl(profile.profile_image) : bannerImg}
-          alt={profile?.full_name || "Profile banner"}
-        />
+      <div className="w-full px-6 pt-5 flex justify-center">
+        <div className="w-48 xs:w-52 sm:w-60 md:w-64 h-48 xs:h-52 sm:h-60 md:h-64 rounded-2xl overflow-hidden border border-surfaceBorder/60 shadow-lg relative bg-surface">
+          <img
+            className="w-full h-full object-cover object-top transition duration-500 hover:scale-105"
+            src={profileImageSrc}
+            onError={(e) => {
+              if (e.target.src !== bannerImg) {
+                e.target.src = bannerImg;
+              }
+            }}
+            alt={profile?.full_name || profile?.fullName || "Profile banner"}
+          />
+        </div>
       </div>
+
+
+
 
       {/* Info section */}
       <div className="flex-1 flex flex-col justify-between p-4 sm:p-6">
         <div className="flex flex-col items-center gap-1.5 sm:gap-2">
           <h1 className="text-textColor text-xl xs:text-2xl sm:text-3xl font-semibold text-center">
-            {profile?.full_name || profile?.first_name || "HABUMUGISHA Eric"}
+            {profile?.full_name || profile?.fullName || profile?.first_name || "HABUMUGISHA Eric"}
           </h1>
           <p className="text-sm sm:text-base text-designColor tracking-wide text-center">
             {text}
@@ -69,9 +69,9 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
 
           {/* Social icons */}
           <div className="flex justify-center flex-wrap gap-2 sm:gap-3 mt-2">
-            {socialLinks.length
-              ? socialLinks.map((link) => {
-                const key = (link.platform || link.icon || "").toLowerCase();
+            {socialLinks.length ? (
+              socialLinks.map((link) => {
+                const key = (link.platform || link.icon || link.name || "").toLowerCase();
                 const Icon = iconMap[key] || FiGlobe;
                 return (
                   <a
@@ -85,13 +85,16 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
                   </a>
                 );
               })
-              : <span className="text-xs sm:text-sm text-textSecondary">No social links</span>}
+            ) : (
+              <span className="text-xs sm:text-sm text-textSecondary">No social links</span>
+            )}
           </div>
         </div>
         {/* Buttons */}
         <div className="flex flex-col xs:flex-row mt-4 min-h-[3rem] sm:h-14">
           <a
-            href={getResumePdfUrl()}
+            href={cvUrl || "/Eric_H_Resume.pdf"}
+            download="Eric_H_Resume.pdf"
             target="_blank"
             className="flex-1 border-t-[1px] xs:border-r-[1px] border-surfaceBorder text-xs sm:text-sm tracking-wide uppercase gap-1.5 sm:gap-2 group transition-all duration-300"
             rel="noreferrer"
@@ -122,3 +125,4 @@ const Left = ({ profile, setAbout, setResume, setProjects, setBlog, setContact }
 };
 
 export default Left;
+

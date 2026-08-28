@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { createTestimonial } from "../../services/testimonialService";
 import { FaUser, FaBriefcase, FaBuilding, FaImage } from "react-icons/fa";
 
 const TestimonialForm = ({ onTestimonialAdded }) => {
@@ -24,33 +23,29 @@ const TestimonialForm = ({ onTestimonialAdded }) => {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
         setMessage({ type: "", text: "" });
 
-        const data = new FormData();
-        data.append("name", formData.name);
-        data.append("role", formData.role);
-        data.append("company", formData.company);
-        data.append("message", formData.message);
-        if (image) {
-            data.append("image", image);
-        }
+        const newTestimonial = {
+            id: Date.now(),
+            name: formData.name,
+            role: formData.role || "Client",
+            company: formData.company || "",
+            message: formData.message,
+            image: image ? URL.createObjectURL(image) : "",
+        };
 
-        try {
-            await createTestimonial(data);
-            setMessage({ type: "success", text: "Thank you! Your testimonial has been submitted and is awaiting approval." });
+        setTimeout(() => {
+            setMessage({ type: "success", text: "Thank you! Your testimonial has been added." });
             setFormData({ name: "", role: "", company: "", message: "" });
             setImage(null);
-            if (onTestimonialAdded) onTestimonialAdded();
-        } catch (error) {
-            console.error("Submission error:", error);
-            setMessage({ type: "error", text: "Something went wrong. Please try again." });
-        } finally {
             setLoading(false);
-        }
+            if (onTestimonialAdded) onTestimonialAdded(newTestimonial);
+        }, 500);
     };
+
 
     return (
         <div className="glass-card p-5 sm:p-6 md:p-8 max-w-2xl mx-auto shadow-2xl relative overflow-hidden">

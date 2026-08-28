@@ -1,34 +1,21 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { getAllTestimonials } from "../../services/testimonialService";
+import React, { useState, useEffect, useCallback } from "react";
 import TestimonialCard from "./TestimonialCard";
 import TestimonialForm from "./TestimonialForm";
 import { FaChevronLeft, FaChevronRight, FaPlus, FaTimes } from "react-icons/fa";
+import { portfolioData } from "../../data";
 
-const Testimonials = () => {
-    const [testimonials, setTestimonials] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [refreshTrigger, setRefreshTrigger] = useState(0);
+const Testimonials = ({ appData = portfolioData }) => {
+    const [testimonials, setTestimonials] = useState(appData?.testimonials || portfolioData.testimonials || []);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showModal, setShowModal] = useState(false);
 
-    useEffect(() => {
-        const fetchTestimonials = async () => {
-            try {
-                const data = await getAllTestimonials();
-                setTestimonials(Array.isArray(data) ? data : data.results || []);
-            } catch (error) {
-                console.error("Failed to fetch testimonials", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchTestimonials();
-    }, [refreshTrigger]);
-
-    const handleTestimonialAdded = () => {
-        setRefreshTrigger(prev => prev + 1);
+    const handleTestimonialAdded = (newTestimonial) => {
+        if (newTestimonial) {
+            setTestimonials((prev) => [newTestimonial, ...prev]);
+        }
         setShowModal(false);
     };
+
 
     const nextSlide = useCallback(() => {
         setCurrentIndex((prev) => (prev + 1 >= testimonials.length ? 0 : prev + 1));
@@ -46,9 +33,8 @@ const Testimonials = () => {
         }
     }, [testimonials.length, nextSlide]);
 
-    if (loading && refreshTrigger === 0) return null;
-
     return (
+
         <div className="w-full py-10 sm:py-16 border-t border-surfaceBorder overflow-hidden">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
                 <div className="section-header !mb-0 text-left">

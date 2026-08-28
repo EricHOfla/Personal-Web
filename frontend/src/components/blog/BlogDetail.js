@@ -1,71 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
+import React from "react";
 import { FaCalendar, FaClock, FaArrowLeft, FaUser, FaEye } from "react-icons/fa";
-import { getBlogPost, trackBlogPostView } from "../../services/blogService";
-import { buildMediaUrl } from "../../services/api";
+import { portfolioData } from "../../data";
 
-function BlogDetail({ slug, onBack }) {
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const hasTrackedView = useRef(false);
+function BlogDetail({ slug, onBack, appData = portfolioData }) {
+  const posts = appData?.blogPosts || portfolioData.blogPosts || [];
+  const post = posts.find((p) => p.slug === slug) || posts[0];
 
-  useEffect(() => {
-    // Reset the tracking ref when the slug changes
-    hasTrackedView.current = false;
-  }, [slug]);
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      if (!slug) return;
-
-      try {
-        setLoading(true);
-        const data = await getBlogPost(slug);
-        setPost(data);
-        setError(null);
-        setLoading(false); // Show content immediately after fetching
-
-        // Track the view count in the background
-        if (!hasTrackedView.current) {
-          hasTrackedView.current = true;
-          trackBlogPostView(slug).catch(trackErr => {
-            console.error("Failed to track view:", trackErr);
-          });
-        }
-      } catch (err) {
-        setError(err.message);
-        console.error("Failed to fetch blog post:", err);
-        setLoading(false);
-      }
-    };
-
-    fetchPost();
-  }, [slug]);
-
-
-
-
-
-
-  if (loading) {
-    return (
-      <section className="app-shell">
-        <div className="flex justify-center items-center min-h-[50vh]">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 border-4 border-designColor border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-textSecondary text-sm">Loading post...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error || !post) {
+  if (!post) {
     return (
       <section className="app-shell">
         <div className="glass-card p-6 sm:p-8 md:p-12 text-center">
-          <p className="text-red-400 mb-4 text-lg">⚠️ Failed to load blog post</p>
-          <p className="text-textSecondary text-sm mb-6">{error || "Post not found"}</p>
+          <p className="text-red-400 mb-4 text-lg">⚠️ Blog post not found</p>
           <button
             onClick={onBack}
             className="px-6 py-2 bg-designColor text-black rounded-lg hover:bg-designColor/90 transition font-medium"
@@ -82,6 +27,7 @@ function BlogDetail({ slug, onBack }) {
     content,
     excerpt,
     featured_image,
+    image,
     published_date,
     category = "General",
     reading_time,
@@ -96,8 +42,8 @@ function BlogDetail({ slug, onBack }) {
     })
     : "Unknown date";
 
-  const imageSrc = buildMediaUrl(featured_image);
-  const authorName = user?.full_name || user?.first_name || "Anonymous";
+  const imageSrc = image || featured_image;
+  const authorName = user?.full_name || user?.first_name || "HABUMUGISHA Eric";
 
   // Format content with paragraphs
   const formattedContent = content
@@ -192,13 +138,11 @@ function BlogDetail({ slug, onBack }) {
           ))}
         </div>
 
-        {/* Footer */}
-        <div className="mt-1 sm:mt-6 pt-1 sm:pt-2 border-t border-surfaceBorder">
-
-        </div>
+        <div className="mt-1 sm:mt-6 pt-1 sm:pt-2 border-t border-surfaceBorder"></div>
       </article>
     </section>
   );
 }
 
 export default BlogDetail;
+

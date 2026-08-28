@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-
+import React from 'react';
 import {
   FaEnvelope, FaCode,
   FaGithub, FaLinkedin, FaTwitter, FaArrowRight, FaFacebook,
@@ -9,14 +8,8 @@ import {
 } from 'react-icons/fa';
 import { HiLightningBolt, HiOutlineExternalLink } from 'react-icons/hi';
 import { MdDesignServices, MdWebAsset } from 'react-icons/md';
-import { getProfile } from '../../../services/profileService';
-import { getSkills } from '../../../services/skillsService';
-import { getProjects } from '../../../services/projectsService';
-import { getExperiences } from '../../../services/experiencesService';
-import { getSocialLinks } from '../../../services/socialLinksService';
-import { getFunFacts } from '../../../services/funFactsService';
-import { getServices } from '../../../services/servicesService';
-import { buildMediaUrl } from '../../../services/api';
+import { portfolioData } from '../../../data';
+import { bannerImg } from '../../../assets';
 
 // Social icon mapping
 const socialIconMap = {
@@ -46,27 +39,6 @@ const serviceIconMap = {
   'default': FaCode
 };
 
-// Calculate years of experience from experiences data
-const calculateYearsOfExperience = (experiences) => {
-  if (!experiences || experiences.length === 0) return 0;
-
-  let totalMonths = 0;
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1;
-
-  experiences.forEach(exp => {
-    const startYear = exp.start_year || exp.startYear || currentYear;
-    const startMonth = exp.start_month || exp.startMonth || 1;
-    const endYear = exp.end_year || exp.endYear || (exp.is_current ? currentYear : currentYear);
-    const endMonth = exp.end_month || exp.endMonth || (exp.is_current ? currentMonth : 12);
-
-    const months = (endYear - startYear) * 12 + (endMonth - startMonth);
-    totalMonths += Math.max(0, months);
-  });
-
-  return Math.round(totalMonths / 12);
-};
-
 // Get service icon based on service name
 const getServiceIcon = (serviceName) => {
   const name = (serviceName || '').toLowerCase();
@@ -76,68 +48,21 @@ const getServiceIcon = (serviceName) => {
   return serviceIconMap.default;
 };
 
-function Sidenav({ onNavigate, profile: profileProp }) {
-  const [profile, setProfile] = useState(profileProp || null);
-  const [skills, setSkills] = useState([]);
-  const [projects, setProjects] = useState([]);
-  const [experiences, setExperiences] = useState([]);
-  const [socialLinks, setSocialLinks] = useState([]);
-  const [funFacts, setFunFacts] = useState([]);
-  const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (profileProp) {
-      setProfile(profileProp);
-    }
-    const fetchAllData = async () => {
-      try {
-        // Fetch all data in parallel for better performance
-        const [
-          skillsData,
-          projectsData,
-          experiencesData,
-          socialData,
-          funFactsData,
-          servicesData,
-          fetchedProfile
-        ] = await Promise.all([
-          getSkills().catch(() => []),
-          getProjects().catch(() => []),
-          getExperiences().catch(() => []),
-          getSocialLinks().catch(() => []),
-          getFunFacts().catch(() => []),
-          getServices().catch(() => []),
-          // Only fetch profile if not provided in props
-          !profileProp ? getProfile().catch(() => null) : Promise.resolve(null)
-        ]);
-
-        if (fetchedProfile) setProfile(fetchedProfile);
-        setSkills(Array.isArray(skillsData) ? skillsData : skillsData?.results || []);
-        setProjects(Array.isArray(projectsData) ? projectsData : projectsData?.results || []);
-        setExperiences(Array.isArray(experiencesData) ? experiencesData : experiencesData?.results || []);
-        setSocialLinks(Array.isArray(socialData) ? socialData : socialData?.results || []);
-        setFunFacts(Array.isArray(funFactsData) ? funFactsData : funFactsData?.results || []);
-        setServices(Array.isArray(servicesData) ? servicesData : servicesData?.results || []);
-      } catch (err) {
-        console.error('Failed to fetch sidenav data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAllData();
-  }, [profileProp]);
+function Sidenav({ onNavigate, profile: profileProp, appData = portfolioData }) {
+  const profile = profileProp || appData?.profile || portfolioData.profile;
+  const skills = appData?.skills || portfolioData.skills || [];
+  const projects = appData?.projects || portfolioData.projects || [];
+  const socialLinks = appData?.socialLinks || portfolioData.socialLinks || [];
+  const funFacts = appData?.funFacts || portfolioData.funFacts || [];
+  const services = appData?.services || portfolioData.services || [];
 
   // Calculate dynamic stats
-  const yearsOfExperience = calculateYearsOfExperience(experiences);
+  const yearsOfExperience = profile?.yearsOfExperience || 3;
   const projectsCount = projects.length;
 
   // Filter skills for coding and design categories only
   const codingAndDesignSkills = skills.filter(skill => {
-    const categoryName = typeof skill.category === 'object'
-      ? (skill.category?.name || skill.category?.category_name || '').toLowerCase()
-      : (skill.category || '').toLowerCase();
+    const categoryName = (skill.category || '').toLowerCase();
 
     return categoryName.includes('coding') ||
       categoryName.includes('programming') ||
@@ -158,29 +83,16 @@ function Sidenav({ onNavigate, profile: profileProp }) {
   // Get fun fact values from database
   const getStatValue = (label) => {
     const fact = funFacts.find(f =>
-      f.label?.toLowerCase().includes(label.toLowerCase()) ||
-      f.title?.toLowerCase().includes(label.toLowerCase()) ||
-      f.name?.toLowerCase().includes(label.toLowerCase())
+      (f.description || f.label || '').toLowerCase().includes(label.toLowerCase())
     );
     return fact?.value || fact?.count || fact?.number || null;
   };
 
   // Get display name from profile
-  const displayName = profile?.full_name || ((profile?.first_name && profile?.last_name)
-    ? `${profile.first_name} ${profile.last_name}`
-    : profile?.first_name || 'HABUMUGISHA Eric');
+  const displayName = profile?.full_name || profile?.fullName || 'HABUMUGISHA Eric';
+  const displayTitle = profile?.title || profile?.subtitle || 'Software Engineer';
+  const profileImageSrc = profile?.profile_image || profile?.profileImage || bannerImg;
 
-  // Get title from profile
-  const displayTitle = profile?.title || profile?.job_title || profile?.qualification || 'Software Engineer';
-
-  if (loading) return (
-    <div className="flex items-center justify-center h-screen bg-gradient-to-b from-bodyColor to-[#0d0d0d]">
-      <div className="relative flex items-center justify-center">
-        {/* Simple CSS Spinner can be added here or just a static efficient loader */}
-        <div className="w-10 h-10 border-4 border-gray-600 border-t-designColor rounded-full animate-spin"></div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-bodyColor via-bodyColor to-[#0a0a0a]">
@@ -205,17 +117,23 @@ function Sidenav({ onNavigate, profile: profileProp }) {
             className="flex items-center gap-4 mb-6"
           >
             <div className="relative group">
-              {profile?.profile_image ? (
+              {profileImageSrc ? (
                 <img
-                  src={buildMediaUrl(profile.profile_image)}
+                  src={profileImageSrc}
                   alt={displayName}
                   className="w-16 h-16 rounded-2xl object-cover border-2 border-designColor/30 shadow-xl shadow-designColor/20 group-hover:border-designColor/60 transition-all duration-300"
+                  onError={(e) => {
+                    if (e.target.src !== bannerImg) {
+                      e.target.src = bannerImg;
+                    }
+                  }}
                 />
               ) : (
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-designColor via-purple-500 to-cyan-500 flex items-center justify-center shadow-xl shadow-designColor/20">
                   <HiLightningBolt className="text-black text-2xl" />
                 </div>
               )}
+
               {/* Online Status Indicator */}
               <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-bodyColor"></span>
             </div>
@@ -454,19 +372,16 @@ function Sidenav({ onNavigate, profile: profileProp }) {
           />
         </button>
 
-        {/* Copyright - From Database (links to Admin) */}
-        <a
-          href="https://personal-web-srv9.onrender.com/admin/"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Admin"
-          className="block text-center text-[10px] text-textSecondary mt-4 hover:text-designColor transition-colors"
+        {/* Copyright */}
+        <p
+          className="block text-center text-[10px] text-textSecondary mt-4"
         >
-          © {new Date().getFullYear()} {profile?.copyright_name || profile?.full_name || 'Eric H Ofla'}. All rights reserved
-        </a>
+          © {new Date().getFullYear()} {profile?.copyright_name || profile?.copyrightName || profile?.full_name || 'Eric H Ofla'}. All rights reserved
+        </p>
       </div>
     </div>
   );
 }
 
 export default Sidenav;
+
