@@ -5,6 +5,7 @@ import { FaGithub, FaLinkedin, FaFacebook, FaTwitter, FaYoutube, FaInstagram } f
 import { FiMail, FiSend, FiGlobe } from "react-icons/fi";
 import { bannerImg } from "../../assets/index";
 import { portfolioData } from "../../data";
+import { generateResumePDF } from "../../utils/generateResumePDF";
 
 const iconMap = {
   github: FaGithub,
@@ -33,7 +34,6 @@ const Left = ({ profile = portfolioData.profile, setAbout, setResume, setProject
   });
 
   const profileImageSrc = profile?.profile_image || profile?.profileImage || "/bannerImg.png";
-  const cvUrl = profile?.cv_file || profile?.cvUrl || portfolioData.profile.cvUrl;
 
   return (
     <div className="w-full h-full bg-bodyColor rounded-2xl shadow-testShwdow z-10 overflow-hidden flex flex-col">
@@ -92,19 +92,16 @@ const Left = ({ profile = portfolioData.profile, setAbout, setResume, setProject
         </div>
         {/* Buttons */}
         <div className="flex flex-col xs:flex-row mt-4 min-h-[3rem] sm:h-14">
-          <a
-            href={cvUrl || "/Eric_H_Resume.pdf"}
-            download="Eric_H_Resume.pdf"
-            target="_blank"
+          <button
+            onClick={generateResumePDF}
             className="flex-1 border-t-[1px] xs:border-r-[1px] border-surfaceBorder text-xs sm:text-sm tracking-wide uppercase gap-1.5 sm:gap-2 group transition-all duration-300"
-            rel="noreferrer"
             style={{ background: 'var(--btnGradient)' }}
           >
-            <button className="w-full h-full py-3 xs:py-0 flex justify-center items-center gap-1.5 sm:gap-2 font-medium relative overflow-hidden dark:text-white text-textColor">
+            <span className="w-full h-full py-3 xs:py-0 flex justify-center items-center gap-1.5 sm:gap-2 font-medium relative overflow-hidden dark:text-white text-textColor">
               <span className="relative z-10 text-xs sm:text-sm">Download CV</span>
               <BsCloudLightningFill className="relative z-10 group-hover:animate-pulse text-sm sm:text-base" />
-            </button>
-          </a>
+            </span>
+          </button>
           <button
             onClick={() => {
               setAbout(false);

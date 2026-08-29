@@ -325,6 +325,26 @@ export const portfolioData = {
       image: "",
     },
   ],
+  certifications: [
+    {
+      id: 1,
+      name: "Full Stack Web Development",
+      issuer: "Coursera / Meta",
+      year: "2024",
+    },
+    {
+      id: 2,
+      name: "Cloud Computing & DevOps",
+      issuer: "AWS Training",
+      year: "2025",
+    },
+  ],
+
+  languages: [
+    { id: 1, name: "English",     level: "Professional" },
+    { id: 2, name: "Kinyarwanda", level: "Native"       },
+    { id: 3, name: "French",      level: "Intermediate" },
+  ],
 };
 
 // Aliases for convenient default import & individual named exports
