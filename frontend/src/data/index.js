@@ -241,7 +241,7 @@ export const portfolioData = {
     },
     {
       "id": 3,
-      "title": "nDeveloper Portfolio & Tech Hub",
+      "title": "Developer Portfolio & Tech Hub",
       "category": "Portfolio",
       "description": "Modern, responsive, backend-free developer portfolio built with React, Tailwind CSS, and optimized static architecture.",
       "image": "",
