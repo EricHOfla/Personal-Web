@@ -75,7 +75,6 @@ const Admin = () => {
   const handleGitHubOAuthLogin = () => {
     const clientId = process.env.REACT_APP_GITHUB_CLIENT_ID || "Ov23libr3bYt8U1NwM9j";
     const scope = "repo,user";
-    // Omit redirect_uri so GitHub automatically redirects to the registered callback URL
     window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=${scope}`;
   };
 
@@ -115,7 +114,6 @@ const Admin = () => {
       setPasswordInput("");
       setAuthError("");
     } else if (!storedHash) {
-      // First time password setup on this device
       localStorage.setItem("admin_pass_hash", inputHash);
       sessionStorage.setItem("admin_authenticated", "true");
       setIsAuthenticated(true);
@@ -156,7 +154,6 @@ const Admin = () => {
         throw new Error(`Unauthorized GitHub user (@${user.login}). Only the owner (@${githubSettings.owner}) can unlock this portfolio.`);
       }
 
-      // Token verified successfully!
       localStorage.setItem("gh_token", trimmed);
       setGithubSettings((prev) => ({ ...prev, token: trimmed }));
       sessionStorage.setItem("admin_authenticated", "true");
@@ -557,20 +554,20 @@ const Admin = () => {
   // =========================================================
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#0a0c10] text-gray-100 flex items-center justify-center p-4 font-sans relative overflow-hidden">
+      <div className="min-h-screen bg-[#0a0c10] text-gray-100 flex items-center justify-center p-3 xs:p-4 sm:p-6 font-sans relative overflow-hidden">
         {/* Glow background effects */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/4 left-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="w-full max-w-md bg-gray-900/90 border border-purple-900/50 p-6 sm:p-8 rounded-3xl shadow-2xl backdrop-blur-xl relative z-10">
-          <div className="flex flex-col items-center text-center mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white text-2xl shadow-lg shadow-purple-900/40 mb-4">
+        <div className="w-full max-w-md bg-gray-900/95 border border-purple-900/50 p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-2xl backdrop-blur-xl relative z-10">
+          <div className="flex flex-col items-center text-center mb-5 sm:mb-6">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white text-xl sm:text-2xl shadow-lg shadow-purple-900/40 mb-3 sm:mb-4">
               {showTokenReset ? <FaGithub /> : <FaLock />}
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold text-white">
+            <h1 className="text-lg sm:text-2xl font-bold text-white">
               {showTokenReset ? "Verify GitHub Ownership" : "Admin Portal Access"}
             </h1>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-gray-400 mt-1 max-w-xs">
               {showTokenReset
                 ? "Enter your GitHub Personal Access Token to verify ownership and unlock."
                 : "Enter your secret Admin Password to manage your portfolio."}
@@ -589,9 +586,9 @@ const Admin = () => {
               <button
                 type="button"
                 onClick={handleGitHubOAuthLogin}
-                className="w-full py-3 bg-[#24292e] hover:bg-[#2f363d] text-white border border-gray-700/80 font-medium rounded-xl text-sm transition flex items-center justify-center gap-2.5 shadow-lg mb-4 hover:border-purple-500/50"
+                className="w-full py-3 sm:py-3.5 bg-[#24292e] hover:bg-[#2f363d] text-white border border-gray-700/80 font-medium rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2.5 shadow-lg mb-4 hover:border-purple-500/50"
               >
-                <FaGithub className="text-lg" /> Sign in with GitHub
+                <FaGithub className="text-base sm:text-lg" /> Sign in with GitHub
               </button>
 
               <div className="flex items-center gap-3 my-4">
@@ -600,7 +597,7 @@ const Admin = () => {
                 <div className="flex-1 h-[1px] bg-gray-800" />
               </div>
 
-              <form onSubmit={handleLogin} className="space-y-4">
+              <form onSubmit={handleLogin} className="space-y-3 sm:space-y-4">
                 <div>
                   <label className="block text-xs text-gray-400 mb-1">Admin Password</label>
                   <input
@@ -610,13 +607,13 @@ const Admin = () => {
                     placeholder="••••••••••••"
                     value={passwordInput}
                     onChange={(e) => setPasswordInput(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white text-sm outline-none focus:border-purple-500 transition"
+                    className="w-full px-3.5 py-2.5 sm:py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white text-sm outline-none focus:border-purple-500 transition"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2"
+                  className="w-full py-3 sm:py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-xl text-xs sm:text-sm transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2"
                 >
                   <FaKey /> Unlock with Password
                 </button>
@@ -637,7 +634,7 @@ const Admin = () => {
             </div>
           ) : (
             <div>
-              <form onSubmit={handleResetWithToken} className="space-y-4">
+              <form onSubmit={handleResetWithToken} className="space-y-3 sm:space-y-4">
                 <div>
                   <label className="block text-xs text-gray-400 mb-1">GitHub Personal Access Token</label>
                   <input
@@ -647,7 +644,7 @@ const Admin = () => {
                     placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
                     value={tokenResetInput}
                     onChange={(e) => setTokenResetInput(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white text-sm outline-none focus:border-purple-500 transition font-mono text-xs"
+                    className="w-full px-3.5 py-2.5 sm:py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white text-xs sm:text-sm outline-none focus:border-purple-500 transition font-mono"
                   />
                   <span className="text-[11px] text-gray-500 mt-1 block">
                     Must belong to owner account: <strong>@EricHOfla</strong>
@@ -657,7 +654,7 @@ const Admin = () => {
                 <button
                   type="submit"
                   disabled={isVerifyingToken}
-                  className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-3 sm:py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-xl text-xs sm:text-sm transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isVerifyingToken ? <FaSpinner className="animate-spin" /> : <FaShieldAlt />}
                   {isVerifyingToken ? "Verifying with GitHub..." : "Verify & Unlock"}
@@ -679,7 +676,7 @@ const Admin = () => {
             </div>
           )}
 
-          <div className="mt-6 pt-4 border-t border-gray-800/80 text-center">
+          <div className="mt-5 pt-4 border-t border-gray-800/80 text-center">
             <a
               href="/"
               className="text-xs text-gray-500 hover:text-purple-400 transition flex items-center justify-center gap-1.5"
@@ -696,65 +693,77 @@ const Admin = () => {
   // RENDER UNLOCKED ADMIN PANEL
   // =========================================================
   return (
-    <div className="min-h-screen bg-[#0f1117] text-gray-100 font-sans p-4 sm:p-8">
+    <div className="min-h-screen bg-[#0f1117] text-gray-100 font-sans p-3 xs:p-4 sm:p-6 md:p-8 pb-20 sm:pb-8">
       {/* Top Header */}
-      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-gray-800">
-        <div>
-          <div className="flex items-center gap-3">
-            <a
-              href="/"
-              className="p-2 rounded-xl bg-gray-800/80 hover:bg-gray-700 text-purple-400 hover:text-purple-300 transition-all flex items-center gap-2 text-sm"
-              title="Return to Portfolio"
-            >
-              <FaArrowLeft /> Website
-            </a>
-            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-              Portfolio Admin Panel
-            </h1>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-950 border border-green-700/60 text-green-300 flex items-center gap-1">
-              <FaShieldAlt /> Authenticated
-            </span>
+      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 sm:pb-6 border-b border-gray-800">
+        <div className="w-full sm:w-auto">
+          <div className="flex flex-wrap items-center justify-between sm:justify-start gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <a
+                href="/"
+                className="p-2 sm:px-3 sm:py-2 rounded-xl bg-gray-800/80 hover:bg-gray-700 text-purple-400 hover:text-purple-300 transition-all flex items-center gap-1.5 text-xs sm:text-sm"
+                title="Return to Portfolio"
+              >
+                <FaArrowLeft /> <span className="hidden xs:inline">Website</span>
+              </a>
+              <h1 className="text-lg xs:text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                Admin Panel
+              </h1>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-950 border border-green-700/60 text-green-300 flex items-center gap-1">
+                <FaShieldAlt /> <span className="hidden xs:inline">Authenticated</span>
+              </span>
+              <button
+                onClick={handleLogout}
+                className="sm:hidden p-2 text-xs bg-gray-800 hover:bg-red-950/60 hover:text-red-300 rounded-xl border border-gray-700 hover:border-red-800 text-gray-400 transition"
+                title="Lock / Log Out"
+              >
+                <FaSignOutAlt />
+              </button>
+            </div>
           </div>
-          <p className="text-xs sm:text-sm text-gray-400 mt-1">
-            Data updates save directly to <code className="text-purple-300">frontend/src/data/index.js</code>.
+          <p className="text-[11px] sm:text-xs text-gray-400 mt-1">
+            Flat-File data management for <code className="text-purple-300 break-all">frontend/src/data/index.js</code>.
           </p>
         </div>
 
-        {/* Global Actions */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
+        {/* Global Action Buttons */}
+        <div className="grid grid-cols-2 xs:flex xs:flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
           <button
             onClick={() => setShowConfig(!showConfig)}
-            className="px-3 py-2 text-xs sm:text-sm bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 flex items-center gap-2 transition"
+            className="px-3 py-2 text-xs sm:text-sm bg-gray-800/90 hover:bg-gray-700 rounded-xl border border-gray-700 flex items-center justify-center gap-1.5 transition"
           >
-            <FaKey className="text-yellow-400" />
-            GitHub Settings
+            <FaKey className="text-yellow-400 text-xs" />
+            <span>Settings</span>
           </button>
 
           <button
             onClick={handleDownloadFile}
-            className="px-3 py-2 text-xs sm:text-sm bg-gray-800 hover:bg-gray-700 rounded-xl border border-gray-700 flex items-center gap-2 transition"
+            className="px-3 py-2 text-xs sm:text-sm bg-gray-800/90 hover:bg-gray-700 rounded-xl border border-gray-700 flex items-center justify-center gap-1.5 transition"
             title="Download index.js file"
           >
-            <FaDownload />
-            Download index.js
+            <FaDownload className="text-xs" />
+            <span>Export JS</span>
           </button>
 
           <button
             onClick={handleSaveToGitHub}
             disabled={isSaving}
-            className={`px-4 py-2 text-xs sm:text-sm rounded-xl font-medium flex items-center gap-2 shadow-lg transition-all ${
+            className={`col-span-2 xs:col-auto px-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-xl font-medium flex items-center justify-center gap-2 shadow-lg transition-all ${
               hasUnsavedChanges
                 ? "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-900/40 animate-pulse"
                 : "bg-purple-700 hover:bg-purple-600 text-white"
             } disabled:opacity-50`}
           >
             {isSaving ? <FaSpinner className="animate-spin" /> : <FaSave />}
-            {isSaving ? "Publishing..." : hasUnsavedChanges ? "Save & Deploy to Live Site *" : "Save & Deploy"}
+            <span>{isSaving ? "Publishing..." : hasUnsavedChanges ? "Save & Deploy *" : "Save & Deploy"}</span>
           </button>
 
           <button
             onClick={handleLogout}
-            className="p-2 text-xs sm:text-sm bg-gray-800 hover:bg-red-950/60 hover:text-red-300 rounded-xl border border-gray-700 hover:border-red-800 text-gray-400 transition"
+            className="hidden sm:flex p-2.5 text-xs sm:text-sm bg-gray-800 hover:bg-red-950/60 hover:text-red-300 rounded-xl border border-gray-700 hover:border-red-800 text-gray-400 transition items-center justify-center"
             title="Lock / Log Out"
           >
             <FaSignOutAlt />
@@ -764,9 +773,9 @@ const Admin = () => {
 
       {/* Status Notifications */}
       {statusMsg.text && (
-        <div className="max-w-6xl mx-auto mt-4">
+        <div className="max-w-6xl mx-auto mt-3 sm:mt-4">
           <div
-            className={`p-3 sm:p-4 rounded-xl text-sm flex items-center justify-between border ${
+            className={`p-3 sm:p-4 rounded-xl text-xs sm:text-sm flex items-start sm:items-center justify-between gap-2 border ${
               statusMsg.type === "success"
                 ? "bg-green-950/50 border-green-700/60 text-green-200"
                 : statusMsg.type === "error"
@@ -774,13 +783,13 @@ const Admin = () => {
                 : "bg-blue-950/50 border-blue-700/60 text-blue-200"
             }`}
           >
-            <div className="flex items-center gap-2">
-              {statusMsg.type === "success" && <FaCheck className="text-green-400" />}
-              <span>{statusMsg.text}</span>
+            <div className="flex items-center gap-2 min-w-0">
+              {statusMsg.type === "success" && <FaCheck className="text-green-400 flex-shrink-0" />}
+              <span className="break-words">{statusMsg.text}</span>
             </div>
             <button
               onClick={() => setStatusMsg({ type: "", text: "" })}
-              className="text-xs underline opacity-70 hover:opacity-100"
+              className="text-xs underline opacity-70 hover:opacity-100 flex-shrink-0 ml-2"
             >
               Dismiss
             </button>
@@ -790,8 +799,8 @@ const Admin = () => {
 
       {/* GitHub Settings Modal / Dropdown */}
       {showConfig && (
-        <div className="max-w-6xl mx-auto mt-4 p-5 bg-gray-900/90 border border-purple-900/50 rounded-2xl shadow-xl">
-          <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-800">
+        <div className="max-w-6xl mx-auto mt-3 sm:mt-4 p-4 sm:p-5 bg-gray-900/90 border border-purple-900/50 rounded-2xl shadow-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-3 border-b border-gray-800 gap-2">
             <h3 className="text-sm font-semibold flex items-center gap-2 text-purple-300">
               <FaGithub /> GitHub Repository Configuration
             </h3>
@@ -802,12 +811,12 @@ const Admin = () => {
               >
                 <FaLock /> Change Admin Password
               </button>
-              <span className="text-xs text-gray-400">Stored safely in your browser</span>
+              <span className="text-[11px] text-gray-400">Stored safely in browser</span>
             </div>
           </div>
 
           {showChangePassword && (
-            <form onSubmit={handleChangePassword} className="p-4 bg-gray-950/80 border border-gray-800 rounded-xl mb-4 space-y-3">
+            <form onSubmit={handleChangePassword} className="p-3 sm:p-4 bg-gray-950/80 border border-gray-800 rounded-xl mb-4 space-y-3">
               <h4 className="text-xs font-semibold text-gray-200">Change Master Password</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <input
@@ -901,7 +910,7 @@ const Admin = () => {
                 type="text"
                 value={githubSettings.path}
                 onChange={(e) => handleSettingsChange("path", e.target.value)}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 outline-none"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 outline-none font-mono text-[11px]"
               />
             </div>
 
@@ -918,48 +927,51 @@ const Admin = () => {
         </div>
       )}
 
-      {/* Main Navigation Tabs */}
-      <div className="max-w-6xl mx-auto mt-6 flex flex-wrap gap-2 pb-2 border-b border-gray-800 text-xs sm:text-sm">
-        {[
-          { id: "projects", label: "Projects", count: data.projects?.length || 0, icon: FaCode },
-          { id: "blog", label: "Blog Posts", count: data.blogPosts?.length || 0, icon: FaNewspaper },
-          { id: "skills", label: "Skills", count: data.skills?.length || 0, icon: FaCode },
-          { id: "experience", label: "Experience", count: data.experiences?.length || 0, icon: FaBriefcase },
-          { id: "education", label: "Education", count: data.education?.length || 0, icon: FaGraduationCap },
-          { id: "certifications", label: "Certificates", count: data.certifications?.length || 0, icon: FaCertificate },
-          { id: "profile", label: "Profile / Bio", icon: FaUser },
-        ].map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-all ${
-                isActive
-                  ? "bg-purple-600 text-white shadow-lg shadow-purple-900/30"
-                  : "bg-gray-900/80 text-gray-400 hover:text-gray-200 hover:bg-gray-800"
-              }`}
-            >
-              <Icon />
-              {tab.label}
-              {tab.count !== undefined && (
-                <span className="text-[11px] px-2 py-0.5 rounded-full bg-black/40 text-gray-300">
-                  {tab.count}
-                </span>
-              )}
-            </button>
-          );
-        })}
+      {/* Main Navigation Tabs - Horizontally Scrollable on Mobile */}
+      <div className="max-w-6xl mx-auto mt-4 sm:mt-6 overflow-x-auto scrollbar-none pb-2 border-b border-gray-800 -mx-3 px-3 sm:mx-0 sm:px-0">
+        <div className="flex gap-1.5 sm:gap-2 min-w-max text-xs sm:text-sm">
+          {[
+            { id: "projects", label: "Projects", count: data.projects?.length || 0, icon: FaCode },
+            { id: "blog", label: "Blog", count: data.blogPosts?.length || 0, icon: FaNewspaper },
+            { id: "skills", label: "Skills", count: data.skills?.length || 0, icon: FaCode },
+            { id: "experience", label: "Experience", count: data.experiences?.length || 0, icon: FaBriefcase },
+            { id: "education", label: "Education", count: data.education?.length || 0, icon: FaGraduationCap },
+            { id: "certifications", label: "Certificates", count: data.certifications?.length || 0, icon: FaCertificate },
+            { id: "profile", label: "Profile", icon: FaUser },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium flex items-center gap-1.5 sm:gap-2 transition-all flex-shrink-0 ${
+                  isActive
+                    ? "bg-purple-600 text-white shadow-lg shadow-purple-900/30"
+                    : "bg-gray-900/80 text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                }`}
+              >
+                <Icon className="text-xs sm:text-sm" />
+                <span>{tab.label}</span>
+                {tab.count !== undefined && (
+                  <span className="text-[10px] sm:text-[11px] px-1.5 py-0.2 rounded-full bg-black/40 text-gray-300">
+                    {tab.count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Tab Contents */}
-      <div className="max-w-6xl mx-auto mt-6">
+      <div className="max-w-6xl mx-auto mt-4 sm:mt-6">
         {/* ======================= TAB 1: PROJECTS ======================= */}
         {activeTab === "projects" && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-5 rounded-2xl shadow-xl">
-              <h2 className="text-base font-semibold flex items-center gap-2 mb-4 text-purple-300">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            {/* Add Project Form */}
+            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xl">
+              <h2 className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-3 sm:mb-4 text-purple-300">
                 <FaPlus /> Add New Project
               </h2>
               <form onSubmit={handleAddProject} className="space-y-3 text-xs">
@@ -971,7 +983,7 @@ const Admin = () => {
                     placeholder="e.g. AI Content Platform"
                     value={newProject.title}
                     onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
 
@@ -980,7 +992,7 @@ const Admin = () => {
                   <select
                     value={newProject.category}
                     onChange={(e) => setNewProject({ ...newProject, category: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   >
                     <option value="Web">Web Application</option>
                     <option value="Mobile">Mobile Application</option>
@@ -995,21 +1007,21 @@ const Admin = () => {
                   <textarea
                     rows={3}
                     required
-                    placeholder="Brief summary of the project features and architecture..."
+                    placeholder="Brief summary of the project features..."
                     value={newProject.description}
                     onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-400 mb-1">Live URL (Demo)</label>
+                  <label className="block text-gray-400 mb-1">Live Demo URL</label>
                   <input
                     type="url"
                     placeholder="https://my-app.vercel.app"
                     value={newProject.liveUrl}
                     onChange={(e) => setNewProject({ ...newProject, liveUrl: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-[11px]"
                   />
                 </div>
 
@@ -1020,7 +1032,7 @@ const Admin = () => {
                     placeholder="https://github.com/EricHOfla/my-app"
                     value={newProject.githubUrl}
                     onChange={(e) => setNewProject({ ...newProject, githubUrl: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-[11px]"
                   />
                 </div>
 
@@ -1028,54 +1040,55 @@ const Admin = () => {
                   <label className="block text-gray-400 mb-1">Technologies (comma-separated)</label>
                   <input
                     type="text"
-                    placeholder="React, Node.js, Tailwind CSS, TypeScript"
+                    placeholder="React, Node.js, Tailwind CSS"
                     value={newProject.technologies}
                     onChange={(e) => setNewProject({ ...newProject, technologies: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2"
+                  className="w-full py-2.5 sm:py-3 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm"
                 >
                   <FaPlus /> Add to Projects
                 </button>
               </form>
             </div>
 
-            <div className="lg:col-span-2 space-y-3">
-              <h2 className="text-base font-semibold text-gray-300">
+            {/* Existing Projects List */}
+            <div className="lg:col-span-2 space-y-2.5 sm:space-y-3">
+              <h2 className="text-sm sm:text-base font-semibold text-gray-300">
                 Current Projects ({data.projects?.length || 0})
               </h2>
               {data.projects?.map((proj) => (
                 <div
                   key={proj.id}
-                  className="p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-start justify-between gap-4 hover:border-gray-700 transition"
+                  className="p-3.5 sm:p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-start justify-between gap-3 hover:border-gray-700 transition"
                 >
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs px-2 py-0.5 rounded bg-purple-900/50 text-purple-300 border border-purple-800/50">
+                  <div className="flex-1 space-y-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-purple-900/50 text-purple-300 border border-purple-800/50">
                         {proj.category}
                       </span>
-                      <h3 className="font-semibold text-sm text-white">{proj.title}</h3>
+                      <h3 className="font-semibold text-xs sm:text-sm text-white truncate">{proj.title}</h3>
                     </div>
                     <p className="text-xs text-gray-400 line-clamp-2">{proj.description}</p>
-                    <div className="flex flex-wrap gap-1.5 pt-1">
+                    <div className="flex flex-wrap gap-1 pt-1">
                       {proj.technologies?.map((tech, idx) => (
-                        <span key={idx} className="text-[10px] px-2 py-0.5 bg-gray-800 rounded text-gray-300">
+                        <span key={idx} className="text-[10px] px-1.5 py-0.5 bg-gray-800 rounded text-gray-300">
                           {tech}
                         </span>
                       ))}
                     </div>
-                    <div className="flex gap-3 text-xs pt-1 text-purple-400">
+                    <div className="flex flex-wrap gap-3 text-xs pt-1 text-purple-400">
                       {proj.liveUrl && (
-                        <a href={proj.liveUrl} target="_blank" rel="noreferrer" className="hover:underline">
+                        <a href={proj.liveUrl} target="_blank" rel="noreferrer" className="hover:underline flex items-center gap-1">
                           Live Demo ↗
                         </a>
                       )}
                       {proj.githubUrl && (
-                        <a href={proj.githubUrl} target="_blank" rel="noreferrer" className="hover:underline">
+                        <a href={proj.githubUrl} target="_blank" rel="noreferrer" className="hover:underline flex items-center gap-1">
                           GitHub ↗
                         </a>
                       )}
@@ -1084,7 +1097,7 @@ const Admin = () => {
 
                   <button
                     onClick={() => handleDeleteProject(proj.id)}
-                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                    className="p-2.5 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-xl transition flex-shrink-0"
                     title="Delete project"
                   >
                     <FaTrash />
@@ -1097,10 +1110,10 @@ const Admin = () => {
 
         {/* ======================= TAB 2: BLOG ======================= */}
         {activeTab === "blog" && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-5 rounded-2xl shadow-xl">
-              <h2 className="text-base font-semibold flex items-center gap-2 mb-4 text-purple-300">
-                <FaPlus /> Write New Blog Post
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xl">
+              <h2 className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-3 sm:mb-4 text-purple-300">
+                <FaPlus /> Write Blog Post
               </h2>
               <form onSubmit={handleAddBlog} className="space-y-3 text-xs">
                 <div>
@@ -1108,10 +1121,10 @@ const Admin = () => {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Modern Web Architecture in 2026"
+                    placeholder="e.g. Modern Web Architecture"
                     value={newBlog.title}
                     onChange={(e) => setNewBlog({ ...newBlog, title: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
 
@@ -1122,28 +1135,28 @@ const Admin = () => {
                     placeholder="Development, AI, Tutorial"
                     value={newBlog.category}
                     onChange={(e) => setNewBlog({ ...newBlog, category: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-400 mb-1">Excerpt / Short Summary *</label>
+                  <label className="block text-gray-400 mb-1">Short Excerpt *</label>
                   <textarea
                     rows={2}
                     required
-                    placeholder="Short overview shown on blog cards..."
+                    placeholder="Brief overview..."
                     value={newBlog.excerpt}
                     onChange={(e) => setNewBlog({ ...newBlog, excerpt: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-400 mb-1">Full Content (Paragraphs) *</label>
+                  <label className="block text-gray-400 mb-1">Article Content *</label>
                   <textarea
-                    rows={6}
+                    rows={5}
                     required
-                    placeholder="Full article body content..."
+                    placeholder="Full article text..."
                     value={newBlog.content}
                     onChange={(e) => setNewBlog({ ...newBlog, content: e.target.value })}
                     className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-xs"
@@ -1152,7 +1165,7 @@ const Admin = () => {
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-gray-400 mb-1">Read Time (min)</label>
+                    <label className="block text-gray-400 mb-1">Read (min)</label>
                     <input
                       type="number"
                       value={newBlog.reading_time}
@@ -1166,43 +1179,43 @@ const Admin = () => {
                       type="date"
                       value={newBlog.published_date}
                       onChange={(e) => setNewBlog({ ...newBlog, published_date: e.target.value })}
-                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
                     />
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2"
+                  className="w-full py-2.5 sm:py-3 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm"
                 >
                   <FaPlus /> Add Blog Post
                 </button>
               </form>
             </div>
 
-            <div className="lg:col-span-2 space-y-3">
-              <h2 className="text-base font-semibold text-gray-300">
+            <div className="lg:col-span-2 space-y-2.5 sm:space-y-3">
+              <h2 className="text-sm sm:text-base font-semibold text-gray-300">
                 Published Articles ({data.blogPosts?.length || 0})
               </h2>
               {data.blogPosts?.map((post) => (
                 <div
                   key={post.id}
-                  className="p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-start justify-between gap-4"
+                  className="p-3.5 sm:p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-start justify-between gap-3"
                 >
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2 text-xs">
-                      <span className="px-2 py-0.5 rounded bg-indigo-900/50 text-indigo-300 border border-indigo-800/50">
+                  <div className="flex-1 space-y-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 text-xs">
+                      <span className="px-2 py-0.5 rounded bg-indigo-900/50 text-indigo-300 border border-indigo-800/50 text-[10px]">
                         {post.category}
                       </span>
-                      <span className="text-gray-400">{post.published_date}</span>
-                      <span className="text-gray-500">• {post.reading_time} min read</span>
+                      <span className="text-gray-400 text-[11px]">{post.published_date}</span>
+                      <span className="text-gray-500 text-[11px]">• {post.reading_time} min</span>
                     </div>
-                    <h3 className="font-semibold text-sm text-white">{post.title}</h3>
+                    <h3 className="font-semibold text-xs sm:text-sm text-white truncate">{post.title}</h3>
                     <p className="text-xs text-gray-400 line-clamp-2">{post.excerpt}</p>
                   </div>
                   <button
                     onClick={() => handleDeleteBlog(post.id)}
-                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                    className="p-2.5 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-xl transition flex-shrink-0"
                     title="Delete post"
                   >
                     <FaTrash />
@@ -1215,9 +1228,9 @@ const Admin = () => {
 
         {/* ======================= TAB 3: SKILLS ======================= */}
         {activeTab === "skills" && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-5 rounded-2xl shadow-xl">
-              <h2 className="text-base font-semibold flex items-center gap-2 mb-4 text-purple-300">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xl">
+              <h2 className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-3 sm:mb-4 text-purple-300">
                 <FaPlus /> Add Skill
               </h2>
               <form onSubmit={handleAddSkill} className="space-y-3 text-xs">
@@ -1229,7 +1242,7 @@ const Admin = () => {
                     placeholder="e.g. Next.js, Docker, Python"
                     value={newSkill.name}
                     onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
 
@@ -1238,7 +1251,7 @@ const Admin = () => {
                   <select
                     value={newSkill.category}
                     onChange={(e) => setNewSkill({ ...newSkill, category: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   >
                     <option value="Coding">Coding / Frameworks</option>
                     <option value="Languages">Languages</option>
@@ -1256,13 +1269,13 @@ const Admin = () => {
                     max="100"
                     value={newSkill.level}
                     onChange={(e) => setNewSkill({ ...newSkill, level: e.target.value })}
-                    className="w-full accent-purple-500 cursor-pointer"
+                    className="w-full accent-purple-500 cursor-pointer h-2 bg-gray-700 rounded-lg"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2"
+                  className="w-full py-2.5 sm:py-3 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm"
                 >
                   <FaPlus /> Add Skill
                 </button>
@@ -1270,10 +1283,10 @@ const Admin = () => {
             </div>
 
             <div className="lg:col-span-2">
-              <h2 className="text-base font-semibold text-gray-300 mb-3">
+              <h2 className="text-sm sm:text-base font-semibold text-gray-300 mb-3">
                 Skills List ({data.skills?.length || 0})
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                 {data.skills?.map((skill) => (
                   <div
                     key={skill.id}
@@ -1283,8 +1296,8 @@ const Admin = () => {
                       <span className="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-purple-300">
                         {skill.category}
                       </span>
-                      <h4 className="font-semibold text-sm text-white mt-1">{skill.name || skill.skill_name}</h4>
-                      <p className="text-xs text-gray-400">{skill.proficiency_level || skill.level}% proficiency</p>
+                      <h4 className="font-semibold text-xs sm:text-sm text-white mt-1">{skill.name || skill.skill_name}</h4>
+                      <p className="text-[11px] text-gray-400">{skill.proficiency_level || skill.level}% proficiency</p>
                     </div>
                     <button
                       onClick={() => handleDeleteSkill(skill.id)}
@@ -1301,10 +1314,10 @@ const Admin = () => {
 
         {/* ======================= TAB 4: EXPERIENCE ======================= */}
         {activeTab === "experience" && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-5 rounded-2xl shadow-xl">
-              <h2 className="text-base font-semibold flex items-center gap-2 mb-4 text-purple-300">
-                <FaPlus /> Add Work Experience
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xl">
+              <h2 className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-3 sm:mb-4 text-purple-300">
+                <FaPlus /> Add Experience
               </h2>
               <form onSubmit={handleAddExperience} className="space-y-3 text-xs">
                 <div>
@@ -1312,22 +1325,22 @@ const Admin = () => {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Senior Full Stack Engineer"
+                    placeholder="e.g. Senior Software Engineer"
                     value={newExp.title}
                     onChange={(e) => setNewExp({ ...newExp, title: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-400 mb-1">Company / Organization *</label>
+                  <label className="block text-gray-400 mb-1">Company *</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. TechCorp Solutions"
+                    placeholder="e.g. TechCorp"
                     value={newExp.company}
                     onChange={(e) => setNewExp({ ...newExp, company: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
 
@@ -1336,10 +1349,10 @@ const Admin = () => {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. 2024 - Present or 2022 - 2024"
+                    placeholder="e.g. 2024 - Present"
                     value={newExp.duration}
                     onChange={(e) => setNewExp({ ...newExp, duration: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
                   />
                 </div>
 
@@ -1347,54 +1360,56 @@ const Admin = () => {
                   <label className="block text-gray-400 mb-1">Location</label>
                   <input
                     type="text"
-                    placeholder="Kigali, Rwanda or Remote"
+                    placeholder="Kigali, Rwanda"
                     value={newExp.location}
                     onChange={(e) => setNewExp({ ...newExp, location: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-400 mb-1">Description / Responsibilities *</label>
+                  <label className="block text-gray-400 mb-1">Description *</label>
                   <textarea
                     rows={3}
                     required
-                    placeholder="Key accomplishments, technologies used, responsibilities..."
+                    placeholder="Accomplishments and responsibilities..."
                     value={newExp.description}
                     onChange={(e) => setNewExp({ ...newExp, description: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2"
+                  className="w-full py-2.5 sm:py-3 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm"
                 >
                   <FaPlus /> Add Experience
                 </button>
               </form>
             </div>
 
-            <div className="lg:col-span-2 space-y-3">
-              <h2 className="text-base font-semibold text-gray-300">
-                Work Experience ({data.experiences?.length || 0})
+            <div className="lg:col-span-2 space-y-2.5 sm:space-y-3">
+              <h2 className="text-sm sm:text-base font-semibold text-gray-300">
+                Work History ({data.experiences?.length || 0})
               </h2>
               {data.experiences?.map((exp) => (
                 <div
                   key={exp.id}
-                  className="p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-start justify-between gap-4"
+                  className="p-3.5 sm:p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-start justify-between gap-3"
                 >
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-semibold text-sm text-white">{exp.job_title || exp.title}</h3>
-                      <span className="text-xs text-purple-300">{exp.time_period || exp.duration}</span>
+                  <div className="flex-1 space-y-1 min-w-0">
+                    <div className="flex flex-wrap items-center justify-between gap-1">
+                      <h3 className="font-semibold text-xs sm:text-sm text-white">{exp.job_title || exp.title}</h3>
+                      <span className="text-[11px] text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-900/50">
+                        {exp.time_period || exp.duration}
+                      </span>
                     </div>
                     <p className="text-xs text-gray-400 font-medium">{exp.company} — {exp.location}</p>
                     <p className="text-xs text-gray-400 pt-1">{exp.description}</p>
                   </div>
                   <button
                     onClick={() => handleDeleteExperience(exp.id)}
-                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition flex-shrink-0"
                   >
                     <FaTrash />
                   </button>
@@ -1406,33 +1421,33 @@ const Admin = () => {
 
         {/* ======================= TAB 5: EDUCATION ======================= */}
         {activeTab === "education" && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-5 rounded-2xl shadow-xl">
-              <h2 className="text-base font-semibold flex items-center gap-2 mb-4 text-purple-300">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xl">
+              <h2 className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-3 sm:mb-4 text-purple-300">
                 <FaPlus /> Add Education
               </h2>
               <form onSubmit={handleAddEducation} className="space-y-3 text-xs">
                 <div>
-                  <label className="block text-gray-400 mb-1">Degree / Qualification *</label>
+                  <label className="block text-gray-400 mb-1">Degree *</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Bachelor of Science in Software Engineering"
+                    placeholder="e.g. A0 in Software Engineering"
                     value={newEdu.degree}
                     onChange={(e) => setNewEdu({ ...newEdu, degree: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-400 mb-1">Institution / University *</label>
+                  <label className="block text-gray-400 mb-1">Institution *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. UNILAK"
                     value={newEdu.institution}
                     onChange={(e) => setNewEdu({ ...newEdu, institution: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
 
@@ -1443,50 +1458,52 @@ const Admin = () => {
                     placeholder="e.g. 2023 - Present"
                     value={newEdu.duration}
                     onChange={(e) => setNewEdu({ ...newEdu, duration: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-400 mb-1">Description / Major</label>
+                  <label className="block text-gray-400 mb-1">Description</label>
                   <textarea
                     rows={3}
-                    placeholder="Coursework, honors, major subjects..."
+                    placeholder="Coursework, honors..."
                     value={newEdu.description}
                     onChange={(e) => setNewEdu({ ...newEdu, description: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2"
+                  className="w-full py-2.5 sm:py-3 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm"
                 >
                   <FaPlus /> Add Education
                 </button>
               </form>
             </div>
 
-            <div className="lg:col-span-2 space-y-3">
-              <h2 className="text-base font-semibold text-gray-300">
-                Education History ({data.education?.length || 0})
+            <div className="lg:col-span-2 space-y-2.5 sm:space-y-3">
+              <h2 className="text-sm sm:text-base font-semibold text-gray-300">
+                Education Records ({data.education?.length || 0})
               </h2>
               {data.education?.map((edu) => (
                 <div
                   key={edu.id}
-                  className="p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-start justify-between gap-4"
+                  className="p-3.5 sm:p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-start justify-between gap-3"
                 >
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-semibold text-sm text-white">{edu.degree}</h3>
-                      <span className="text-xs text-purple-300">{edu.time_period || edu.duration}</span>
+                  <div className="flex-1 space-y-1 min-w-0">
+                    <div className="flex flex-wrap items-center justify-between gap-1">
+                      <h3 className="font-semibold text-xs sm:text-sm text-white">{edu.degree}</h3>
+                      <span className="text-[11px] text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-900/50">
+                        {edu.time_period || edu.duration}
+                      </span>
                     </div>
                     <p className="text-xs text-gray-400 font-medium">{edu.institution} — {edu.location}</p>
                     <p className="text-xs text-gray-400 pt-1">{edu.description}</p>
                   </div>
                   <button
                     onClick={() => handleDeleteEducation(edu.id)}
-                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition flex-shrink-0"
                   >
                     <FaTrash />
                   </button>
@@ -1498,9 +1515,9 @@ const Admin = () => {
 
         {/* ======================= TAB 6: CERTIFICATES ======================= */}
         {activeTab === "certifications" && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-5 rounded-2xl shadow-xl">
-              <h2 className="text-base font-semibold flex items-center gap-2 mb-4 text-purple-300">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xl">
+              <h2 className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-3 sm:mb-4 text-purple-300">
                 <FaPlus /> Add Certificate
               </h2>
               <form onSubmit={handleAddCertification} className="space-y-3 text-xs">
@@ -1509,10 +1526,10 @@ const Admin = () => {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. AWS Certified Solutions Architect"
+                    placeholder="e.g. AWS Certified Developer"
                     value={newCert.name}
                     onChange={(e) => setNewCert({ ...newCert, name: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
 
@@ -1521,10 +1538,10 @@ const Admin = () => {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Amazon Web Services, Meta, Coursera"
+                    placeholder="e.g. Meta, AWS, Coursera"
                     value={newCert.issuer}
                     onChange={(e) => setNewCert({ ...newCert, issuer: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
 
@@ -1535,35 +1552,35 @@ const Admin = () => {
                     placeholder="2025"
                     value={newCert.year}
                     onChange={(e) => setNewCert({ ...newCert, year: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2"
+                  className="w-full py-2.5 sm:py-3 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm"
                 >
                   <FaPlus /> Add Certificate
                 </button>
               </form>
             </div>
 
-            <div className="lg:col-span-2 space-y-3">
-              <h2 className="text-base font-semibold text-gray-300">
-                Certificates ({data.certifications?.length || 0})
+            <div className="lg:col-span-2 space-y-2.5 sm:space-y-3">
+              <h2 className="text-sm sm:text-base font-semibold text-gray-300">
+                Certifications ({data.certifications?.length || 0})
               </h2>
               {data.certifications?.map((cert) => (
                 <div
                   key={cert.id}
-                  className="p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-center justify-between"
+                  className="p-3.5 sm:p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-center justify-between gap-3"
                 >
-                  <div>
-                    <h3 className="font-semibold text-sm text-white">{cert.name}</h3>
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-xs sm:text-sm text-white truncate">{cert.name}</h3>
                     <p className="text-xs text-gray-400">{cert.issuer} • {cert.year}</p>
                   </div>
                   <button
                     onClick={() => handleDeleteCertification(cert.id)}
-                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition flex-shrink-0"
                   >
                     <FaTrash />
                   </button>
@@ -1575,11 +1592,11 @@ const Admin = () => {
 
         {/* ======================= TAB 7: PROFILE ======================= */}
         {activeTab === "profile" && (
-          <div className="max-w-2xl bg-gray-900/90 border border-gray-800 p-6 rounded-2xl shadow-xl">
-            <h2 className="text-base font-semibold text-purple-300 mb-4 flex items-center gap-2">
+          <div className="max-w-2xl bg-gray-900/90 border border-gray-800 p-4 sm:p-6 rounded-2xl shadow-xl">
+            <h2 className="text-sm sm:text-base font-semibold text-purple-300 mb-3 sm:mb-4 flex items-center gap-2">
               <FaUser /> Edit Profile & Bio
             </h2>
-            <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveProfile} className="space-y-3 sm:space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-gray-400 mb-1">Full Name</label>
@@ -1587,7 +1604,7 @@ const Admin = () => {
                     type="text"
                     value={profileForm.fullName || profileForm.full_name || ""}
                     onChange={(e) => setProfileForm({ ...profileForm, fullName: e.target.value, full_name: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
                 <div>
@@ -1596,7 +1613,7 @@ const Admin = () => {
                     type="text"
                     value={profileForm.title || ""}
                     onChange={(e) => setProfileForm({ ...profileForm, title: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
               </div>
@@ -1608,7 +1625,7 @@ const Admin = () => {
                     type="email"
                     value={profileForm.email || ""}
                     onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
                 <div>
@@ -1617,34 +1634,34 @@ const Admin = () => {
                     type="text"
                     value={profileForm.phone || ""}
                     onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
-                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-gray-400 mb-1">Location / Residence</label>
+                <label className="block text-gray-400 mb-1">Location</label>
                 <input
                   type="text"
                   value={profileForm.location || profileForm.address || ""}
                   onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value, address: e.target.value })}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                  className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-gray-400 mb-1">Bio & Summary (Included in Website & CV)</label>
+                <label className="block text-gray-400 mb-1">Bio / Summary</label>
                 <textarea
-                  rows={5}
+                  rows={4}
                   value={profileForm.bio || ""}
                   onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
-                  className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                  className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
                 />
               </div>
 
               <button
                 type="submit"
-                className="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center gap-2"
+                className="w-full sm:w-auto px-5 py-2.5 sm:py-3 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm"
               >
                 <FaCheck /> Apply Profile Changes
               </button>
@@ -1654,19 +1671,36 @@ const Admin = () => {
       </div>
 
       {/* Footer Info */}
-      <div className="max-w-6xl mx-auto mt-12 pt-6 border-t border-gray-800/80 text-center text-xs text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div className="max-w-6xl mx-auto mt-8 sm:mt-12 pt-4 sm:pt-6 border-t border-gray-800/80 text-center text-[11px] sm:text-xs text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-2">
         <span>Portfolio Admin Panel • Flat-File Architecture</span>
         <button
           onClick={() => setShowJsonPreview(!showJsonPreview)}
           className="text-purple-400 hover:underline flex items-center gap-1"
         >
-          <FaEye /> {showJsonPreview ? "Hide Data Code" : "Preview Generated Data Code"}
+          <FaEye /> {showJsonPreview ? "Hide Data Code" : "Preview Data Code"}
         </button>
       </div>
 
       {showJsonPreview && (
-        <div className="max-w-6xl mx-auto mt-4 p-4 bg-gray-950 border border-gray-800 rounded-xl overflow-x-auto text-[11px] font-mono text-gray-300">
+        <div className="max-w-6xl mx-auto mt-4 p-3 sm:p-4 bg-gray-950 border border-gray-800 rounded-xl overflow-x-auto text-[10px] sm:text-[11px] font-mono text-gray-300">
           <pre>{serializePortfolioData(data)}</pre>
+        </div>
+      )}
+
+      {/* Mobile Sticky Bottom Action Bar */}
+      {hasUnsavedChanges && (
+        <div className="sm:hidden fixed bottom-0 left-0 right-0 p-3 bg-gray-950/95 border-t border-purple-800/50 backdrop-blur-lg z-50 flex items-center justify-between gap-2 shadow-2xl">
+          <span className="text-xs text-purple-300 font-medium flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" /> Unsaved Changes
+          </span>
+          <button
+            onClick={handleSaveToGitHub}
+            disabled={isSaving}
+            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-lg shadow-purple-900/40"
+          >
+            {isSaving ? <FaSpinner className="animate-spin" /> : <FaSave />}
+            <span>{isSaving ? "Saving..." : "Save & Deploy"}</span>
+          </button>
         </div>
       )}
     </div>
