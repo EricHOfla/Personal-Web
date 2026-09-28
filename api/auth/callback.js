@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     return res.status(400).send("Missing OAuth code parameter.");
   }
 
-  const clientId = process.env.GITHUB_CLIENT_ID || process.env.REACT_APP_GITHUB_CLIENT_ID;
+  const clientId = process.env.GITHUB_CLIENT_ID || process.env.REACT_APP_GITHUB_CLIENT_ID || "Ov23libr3bYt8U1NwM9j";
   const clientSecret = process.env.GITHUB_CLIENT_SECRET;
   const authorizedOwner = (process.env.GITHUB_OWNER || "EricHOfla").toLowerCase();
 
