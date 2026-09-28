@@ -45,6 +45,39 @@ const Admin = () => {
   const [isVerifyingToken, setIsVerifyingToken] = useState(false);
   const [showTokenReset, setShowTokenReset] = useState(false);
 
+  // Check if returning from GitHub OAuth redirect
+  useEffect(() => {
+    const fullHash = window.location.hash || "";
+    const fullSearch = window.location.search || "";
+    const combined = fullHash + "&" + fullSearch;
+
+    if (combined.includes("token=")) {
+      const cleaned = combined.replace(/^#admin\??/, "").replace(/^\?/, "");
+      const params = new URLSearchParams(cleaned);
+      const urlToken = params.get("token");
+      const urlUser = params.get("user");
+
+      if (urlToken) {
+        localStorage.setItem("gh_token", urlToken);
+        setGithubSettings((prev) => ({ ...prev, token: urlToken }));
+        sessionStorage.setItem("admin_authenticated", "true");
+        setIsAuthenticated(true);
+        setStatusMsg({
+          type: "success",
+          text: `🎉 Successfully signed in with GitHub as @${urlUser || "EricHOfla"}!`,
+        });
+        window.history.replaceState({}, document.title, window.location.pathname + "#admin");
+      }
+    }
+  }, []);
+
+  const handleGitHubOAuthLogin = () => {
+    const clientId = process.env.REACT_APP_GITHUB_CLIENT_ID || "Ov23liaVercelClientId";
+    const redirectUri = window.location.origin + "/api/auth/callback";
+    const scope = "repo,user";
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}`;
+  };
+
   // Load stored data or fall back to portfolioData
   const [data, setData] = useState(() => {
     const cached = localStorage.getItem("admin_portfolio_data");
@@ -550,6 +583,21 @@ const Admin = () => {
 
           {!showTokenReset ? (
             <div>
+              {/* 1-Click Sign in with GitHub */}
+              <button
+                type="button"
+                onClick={handleGitHubOAuthLogin}
+                className="w-full py-3 bg-[#24292e] hover:bg-[#2f363d] text-white border border-gray-700/80 font-medium rounded-xl text-sm transition flex items-center justify-center gap-2.5 shadow-lg mb-4 hover:border-purple-500/50"
+              >
+                <FaGithub className="text-lg" /> Sign in with GitHub
+              </button>
+
+              <div className="flex items-center gap-3 my-4">
+                <div className="flex-1 h-[1px] bg-gray-800" />
+                <span className="text-[11px] text-gray-500 uppercase tracking-wider">or with password</span>
+                <div className="flex-1 h-[1px] bg-gray-800" />
+              </div>
+
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
                   <label className="block text-xs text-gray-400 mb-1">Admin Password</label>
@@ -568,7 +616,7 @@ const Admin = () => {
                   type="submit"
                   className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2"
                 >
-                  <FaKey /> Unlock Admin Panel
+                  <FaKey /> Unlock with Password
                 </button>
               </form>
 
@@ -581,7 +629,7 @@ const Admin = () => {
                   }}
                   className="text-xs text-purple-400 hover:text-purple-300 transition flex items-center justify-center gap-1.5 mx-auto"
                 >
-                  <FaGithub /> Forgot password? Unlock with GitHub Token
+                  <FaKey /> Enter GitHub Token Manually
                 </button>
               </div>
             </div>
