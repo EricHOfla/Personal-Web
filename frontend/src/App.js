@@ -6,10 +6,21 @@ import "./App.css";
 
 function App() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
-  const [route, setRoute] = useState(() => {
+
+  const isMatchingAdminRoute = () => {
     const path = window.location.pathname.toLowerCase();
     const hash = window.location.hash.toLowerCase();
-    return path === "/admin" || hash === "#admin" ? "admin" : "home";
+    const search = window.location.search.toLowerCase();
+    return (
+      path.startsWith("/admin") ||
+      hash.startsWith("#admin") ||
+      hash.includes("token=") ||
+      search.includes("token=")
+    );
+  };
+
+  const [route, setRoute] = useState(() => {
+    return isMatchingAdminRoute() ? "admin" : "home";
   });
 
   const toggleTheme = () => {
@@ -27,9 +38,7 @@ function App() {
 
   useEffect(() => {
     const handleLocationChange = () => {
-      const path = window.location.pathname.toLowerCase();
-      const hash = window.location.hash.toLowerCase();
-      setRoute(path === "/admin" || hash === "#admin" ? "admin" : "home");
+      setRoute(isMatchingAdminRoute() ? "admin" : "home");
     };
 
     window.addEventListener("popstate", handleLocationChange);
