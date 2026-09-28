@@ -37,12 +37,13 @@ const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return sessionStorage.getItem("admin_authenticated") === "true";
   });
-  const [hasPasswordSet, setHasPasswordSet] = useState(() => {
-    return !!localStorage.getItem("admin_pass_hash");
-  });
   const [passwordInput, setPasswordInput] = useState("");
   const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
   const [authError, setAuthError] = useState("");
+
+  const [tokenResetInput, setTokenResetInput] = useState("");
+  const [isVerifyingToken, setIsVerifyingToken] = useState(false);
+  const [showTokenReset, setShowTokenReset] = useState(false);
 
   // Load stored data or fall back to portfolioData
   const [data, setData] = useState(() => {
@@ -67,28 +68,7 @@ const Admin = () => {
     branch: localStorage.getItem("gh_branch") || "main",
   });
 
-  // ================= Password Handlers =================
-  const handleSetInitialPassword = async (e) => {
-    e.preventDefault();
-    if (!passwordInput || passwordInput.length < 4) {
-      setAuthError("Password must be at least 4 characters long.");
-      return;
-    }
-    if (passwordInput !== confirmPasswordInput) {
-      setAuthError("Passwords do not match. Please re-type.");
-      return;
-    }
-
-    const hash = await hashPassword(passwordInput);
-    localStorage.setItem("admin_pass_hash", hash);
-    sessionStorage.setItem("admin_authenticated", "true");
-    setHasPasswordSet(true);
-    setIsAuthenticated(true);
-    setPasswordInput("");
-    setConfirmPasswordInput("");
-    setAuthError("");
-  };
-
+  // ================= Password & Token Handlers =================
   const handleLogin = async (e) => {
     e.preventDefault();
     const storedHash = localStorage.getItem("admin_pass_hash");
@@ -99,8 +79,63 @@ const Admin = () => {
       setIsAuthenticated(true);
       setPasswordInput("");
       setAuthError("");
+    } else if (!storedHash) {
+      // First time password setup on this device
+      localStorage.setItem("admin_pass_hash", inputHash);
+      sessionStorage.setItem("admin_authenticated", "true");
+      setIsAuthenticated(true);
+      setPasswordInput("");
+      setAuthError("");
     } else {
       setAuthError("Incorrect password. Access denied.");
+    }
+  };
+
+  const handleResetWithToken = async (e) => {
+    e.preventDefault();
+    const trimmed = tokenResetInput.trim();
+    if (!trimmed) {
+      setAuthError("Please enter your GitHub Personal Access Token.");
+      return;
+    }
+
+    setIsVerifyingToken(true);
+    setAuthError("");
+
+    try {
+      const res = await fetch("https://api.github.com/user", {
+        headers: {
+          Authorization: `token ${trimmed}`,
+          Accept: "application/vnd.github.v3+json",
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Invalid GitHub Token or token expired. Please check your token.");
+      }
+
+      const user = await res.json();
+      const expectedOwner = (githubSettings.owner || "EricHOfla").toLowerCase();
+
+      if (user.login?.toLowerCase() !== expectedOwner) {
+        throw new Error(`Unauthorized GitHub user (@${user.login}). Only the owner (@${githubSettings.owner}) can unlock this portfolio.`);
+      }
+
+      // Token verified successfully!
+      localStorage.setItem("gh_token", trimmed);
+      setGithubSettings((prev) => ({ ...prev, token: trimmed }));
+      sessionStorage.setItem("admin_authenticated", "true");
+      setIsAuthenticated(true);
+      setIsVerifyingToken(false);
+      setTokenResetInput("");
+      setShowTokenReset(false);
+      setStatusMsg({
+        type: "success",
+        text: `🎉 Verified as @${user.login}! You have full admin access. You can now set or update your Master Password in Settings.`,
+      });
+    } catch (err) {
+      setIsVerifyingToken(false);
+      setAuthError(err.message || "Failed to verify GitHub token.");
     }
   };
 
@@ -495,15 +530,15 @@ const Admin = () => {
         <div className="w-full max-w-md bg-gray-900/90 border border-purple-900/50 p-6 sm:p-8 rounded-3xl shadow-2xl backdrop-blur-xl relative z-10">
           <div className="flex flex-col items-center text-center mb-6">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white text-2xl shadow-lg shadow-purple-900/40 mb-4">
-              <FaLock />
+              {showTokenReset ? <FaGithub /> : <FaLock />}
             </div>
             <h1 className="text-xl sm:text-2xl font-bold text-white">
-              {hasPasswordSet ? "Admin Portal Access" : "Create Master Password"}
+              {showTokenReset ? "Verify GitHub Ownership" : "Admin Portal Access"}
             </h1>
             <p className="text-xs text-gray-400 mt-1">
-              {hasPasswordSet
-                ? "Enter your secret Admin Password to access data management."
-                : "Welcome Eric! Set your private master password for the admin panel."}
+              {showTokenReset
+                ? "Enter your GitHub Personal Access Token to verify ownership and unlock."
+                : "Enter your secret Admin Password to manage your portfolio."}
             </p>
           </div>
 
@@ -513,7 +548,7 @@ const Admin = () => {
             </div>
           )}
 
-          {hasPasswordSet ? (
+          {!showTokenReset ? (
             <div>
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
@@ -537,61 +572,64 @@ const Admin = () => {
                 </button>
               </form>
 
-              <div className="mt-3 text-center">
+              <div className="mt-4 text-center">
                 <button
                   type="button"
                   onClick={() => {
-                    if (window.confirm("Forgot your password? Click OK to reset and create a new master password.")) {
-                      localStorage.removeItem("admin_pass_hash");
-                      sessionStorage.removeItem("admin_authenticated");
-                      setHasPasswordSet(false);
-                      setPasswordInput("");
-                      setConfirmPasswordInput("");
-                      setAuthError("");
-                    }
+                    setShowTokenReset(true);
+                    setAuthError("");
                   }}
-                  className="text-[11px] text-gray-500 hover:text-purple-400 transition"
+                  className="text-xs text-purple-400 hover:text-purple-300 transition flex items-center justify-center gap-1.5 mx-auto"
                 >
-                  Forgot password? Reset here
+                  <FaGithub /> Forgot password? Unlock with GitHub Token
                 </button>
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSetInitialPassword} className="space-y-3">
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">New Master Password *</label>
-                <input
-                  type="password"
-                  required
-                  placeholder="At least 4 characters"
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-gray-800/80 border border-gray-700 rounded-xl text-white text-sm outline-none focus:border-purple-500 transition"
-                />
-              </div>
+            <div>
+              <form onSubmit={handleResetWithToken} className="space-y-4">
+                <div>
+                  <label className="block text-xs text-gray-400 mb-1">GitHub Personal Access Token</label>
+                  <input
+                    type="password"
+                    required
+                    autoFocus
+                    placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                    value={tokenResetInput}
+                    onChange={(e) => setTokenResetInput(e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white text-sm outline-none focus:border-purple-500 transition font-mono text-xs"
+                  />
+                  <span className="text-[11px] text-gray-500 mt-1 block">
+                    Must belong to owner account: <strong>@EricHOfla</strong>
+                  </span>
+                </div>
 
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Confirm Password *</label>
-                <input
-                  type="password"
-                  required
-                  placeholder="Re-enter password"
-                  value={confirmPasswordInput}
-                  onChange={(e) => setConfirmPasswordInput(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-gray-800/80 border border-gray-700 rounded-xl text-white text-sm outline-none focus:border-purple-500 transition"
-                />
-              </div>
+                <button
+                  type="submit"
+                  disabled={isVerifyingToken}
+                  className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {isVerifyingToken ? <FaSpinner className="animate-spin" /> : <FaShieldAlt />}
+                  {isVerifyingToken ? "Verifying with GitHub..." : "Verify & Unlock"}
+                </button>
+              </form>
 
-              <button
-                type="submit"
-                className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2 mt-2"
-              >
-                <FaShieldAlt /> Set Password & Enter
-              </button>
-            </form>
+              <div className="mt-4 text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowTokenReset(false);
+                    setAuthError("");
+                  }}
+                  className="text-xs text-gray-400 hover:text-white transition"
+                >
+                  ← Back to Password Login
+                </button>
+              </div>
+            </div>
           )}
 
-          <div className="mt-6 text-center">
+          <div className="mt-6 pt-4 border-t border-gray-800/80 text-center">
             <a
               href="/"
               className="text-xs text-gray-500 hover:text-purple-400 transition flex items-center justify-center gap-1.5"
