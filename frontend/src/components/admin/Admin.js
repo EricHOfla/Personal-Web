@@ -514,27 +514,48 @@ const Admin = () => {
           )}
 
           {hasPasswordSet ? (
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Admin Password</label>
-                <input
-                  type="password"
-                  required
-                  autoFocus
-                  placeholder="••••••••••••"
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white text-sm outline-none focus:border-purple-500 transition"
-                />
-              </div>
+            <div>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div>
+                  <label className="block text-xs text-gray-400 mb-1">Admin Password</label>
+                  <input
+                    type="password"
+                    required
+                    autoFocus
+                    placeholder="••••••••••••"
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white text-sm outline-none focus:border-purple-500 transition"
+                  />
+                </div>
 
-              <button
-                type="submit"
-                className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2"
-              >
-                <FaKey /> Unlock Admin Panel
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2"
+                >
+                  <FaKey /> Unlock Admin Panel
+                </button>
+              </form>
+
+              <div className="mt-3 text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm("Forgot your password? Click OK to reset and create a new master password.")) {
+                      localStorage.removeItem("admin_pass_hash");
+                      sessionStorage.removeItem("admin_authenticated");
+                      setHasPasswordSet(false);
+                      setPasswordInput("");
+                      setConfirmPasswordInput("");
+                      setAuthError("");
+                    }
+                  }}
+                  className="text-[11px] text-gray-500 hover:text-purple-400 transition"
+                >
+                  Forgot password? Reset here
+                </button>
+              </div>
+            </div>
           ) : (
             <form onSubmit={handleSetInitialPassword} className="space-y-3">
               <div>
