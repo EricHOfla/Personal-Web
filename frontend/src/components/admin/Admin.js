@@ -22,6 +22,8 @@ import {
   FaLock,
   FaSignOutAlt,
   FaShieldAlt,
+  FaEdit,
+  FaTimes,
 } from "react-icons/fa";
 
 // Cryptographic SHA-256 helper
@@ -259,6 +261,69 @@ const Admin = () => {
   });
 
   const [profileForm, setProfileForm] = useState(data.profile || {});
+
+  // ================= Edit Modal State =================
+  const [editItem, setEditItem] = useState(null);   // the item being edited (copy)
+  const [editType, setEditType] = useState(null);   // "project" | "blog" | "skill" | "experience" | "education" | "certification"
+
+  const openEdit = (type, item) => {
+    setEditType(type);
+    // For projects, flatten technologies array to comma string for editing
+    if (type === "project") {
+      setEditItem({
+        ...item,
+        technologies: Array.isArray(item.technologies) ? item.technologies.join(", ") : (item.technologies || ""),
+      });
+    } else {
+      setEditItem({ ...item });
+    }
+  };
+
+  const closeEdit = () => {
+    setEditItem(null);
+    setEditType(null);
+  };
+
+  const handleSaveEdit = () => {
+    if (!editItem || !editType) return;
+
+    if (editType === "project") {
+      const techArray = editItem.technologies
+        ? editItem.technologies.split(",").map((t) => t.trim()).filter(Boolean)
+        : [];
+      const updated = { ...editItem, technologies: techArray, project_url: editItem.liveUrl, github_url: editItem.githubUrl };
+      updateData({ ...data, projects: data.projects.map((p) => (p.id === updated.id ? updated : p)) });
+    } else if (editType === "blog") {
+      const updated = { ...editItem };
+      updateData({ ...data, blogPosts: data.blogPosts.map((b) => (b.id === updated.id ? updated : b)) });
+    } else if (editType === "skill") {
+      const updated = {
+        ...editItem,
+        skill_name: editItem.name || editItem.skill_name,
+        proficiency_level: Number(editItem.level || editItem.proficiency_level) || 85,
+        level: Number(editItem.level || editItem.proficiency_level) || 85,
+      };
+      updateData({ ...data, skills: data.skills.map((s) => (s.id === updated.id ? updated : s)) });
+    } else if (editType === "experience") {
+      const updated = {
+        ...editItem,
+        job_title: editItem.title || editItem.job_title,
+        time_period: editItem.duration || editItem.time_period,
+      };
+      updateData({ ...data, experiences: data.experiences.map((e) => (e.id === updated.id ? updated : e)) });
+    } else if (editType === "education") {
+      const updated = {
+        ...editItem,
+        time_period: editItem.duration || editItem.time_period,
+      };
+      updateData({ ...data, education: data.education.map((e) => (e.id === updated.id ? updated : e)) });
+    } else if (editType === "certification") {
+      updateData({ ...data, certifications: data.certifications.map((c) => (c.id === editItem.id ? { ...editItem } : c)) });
+    }
+
+    setStatusMsg({ type: "success", text: `Updated successfully!` });
+    closeEdit();
+  };
 
   useEffect(() => {
     setProfileForm(data.profile || {});
@@ -1101,13 +1166,22 @@ const Admin = () => {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => handleDeleteProject(proj.id)}
-                    className="p-2.5 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-xl transition flex-shrink-0"
-                    title="Delete project"
-                  >
-                    <FaTrash />
-                  </button>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button
+                      onClick={() => openEdit("project", proj)}
+                      className="p-2.5 text-gray-500 hover:text-purple-400 hover:bg-purple-950/40 rounded-xl transition"
+                      title="Edit project"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteProject(proj.id)}
+                      className="p-2.5 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-xl transition"
+                      title="Delete project"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -1219,13 +1293,22 @@ const Admin = () => {
                     <h3 className="font-semibold text-xs sm:text-sm text-white truncate">{post.title}</h3>
                     <p className="text-xs text-gray-400 line-clamp-2">{post.excerpt}</p>
                   </div>
-                  <button
-                    onClick={() => handleDeleteBlog(post.id)}
-                    className="p-2.5 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-xl transition flex-shrink-0"
-                    title="Delete post"
-                  >
-                    <FaTrash />
-                  </button>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button
+                      onClick={() => openEdit("blog", post)}
+                      className="p-2.5 text-gray-500 hover:text-purple-400 hover:bg-purple-950/40 rounded-xl transition"
+                      title="Edit post"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteBlog(post.id)}
+                      className="p-2.5 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-xl transition"
+                      title="Delete post"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -1305,12 +1388,22 @@ const Admin = () => {
                       <h4 className="font-semibold text-xs sm:text-sm text-white mt-1">{skill.name || skill.skill_name}</h4>
                       <p className="text-[11px] text-gray-400">{skill.proficiency_level || skill.level}% proficiency</p>
                     </div>
-                    <button
-                      onClick={() => handleDeleteSkill(skill.id)}
-                      className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
-                    >
-                      <FaTrash />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => openEdit("skill", skill)}
+                        className="p-2 text-gray-500 hover:text-purple-400 hover:bg-purple-950/40 rounded-lg transition"
+                        title="Edit skill"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteSkill(skill.id)}
+                        className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                        title="Delete skill"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1413,12 +1506,22 @@ const Admin = () => {
                     <p className="text-xs text-gray-400 font-medium">{exp.company} — {exp.location}</p>
                     <p className="text-xs text-gray-400 pt-1">{exp.description}</p>
                   </div>
-                  <button
-                    onClick={() => handleDeleteExperience(exp.id)}
-                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition flex-shrink-0"
-                  >
-                    <FaTrash />
-                  </button>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button
+                      onClick={() => openEdit("experience", exp)}
+                      className="p-2 text-gray-500 hover:text-purple-400 hover:bg-purple-950/40 rounded-lg transition"
+                      title="Edit experience"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteExperience(exp.id)}
+                      className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                      title="Delete experience"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -1507,12 +1610,22 @@ const Admin = () => {
                     <p className="text-xs text-gray-400 font-medium">{edu.institution} — {edu.location}</p>
                     <p className="text-xs text-gray-400 pt-1">{edu.description}</p>
                   </div>
-                  <button
-                    onClick={() => handleDeleteEducation(edu.id)}
-                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition flex-shrink-0"
-                  >
-                    <FaTrash />
-                  </button>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button
+                      onClick={() => openEdit("education", edu)}
+                      className="p-2 text-gray-500 hover:text-purple-400 hover:bg-purple-950/40 rounded-lg transition"
+                      title="Edit education"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteEducation(edu.id)}
+                      className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                      title="Delete education"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -1584,12 +1697,22 @@ const Admin = () => {
                     <h3 className="font-semibold text-xs sm:text-sm text-white truncate">{cert.name}</h3>
                     <p className="text-xs text-gray-400">{cert.issuer} • {cert.year}</p>
                   </div>
-                  <button
-                    onClick={() => handleDeleteCertification(cert.id)}
-                    className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition flex-shrink-0"
-                  >
-                    <FaTrash />
-                  </button>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button
+                      onClick={() => openEdit("certification", cert)}
+                      className="p-2 text-gray-500 hover:text-purple-400 hover:bg-purple-950/40 rounded-lg transition"
+                      title="Edit certificate"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteCertification(cert.id)}
+                      className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                      title="Delete certificate"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -1707,6 +1830,236 @@ const Admin = () => {
             {isSaving ? <FaSpinner className="animate-spin" /> : <FaSave />}
             <span>{isSaving ? "Saving..." : "Save & Deploy"}</span>
           </button>
+        </div>
+      )}
+
+      {/* ======================= EDIT MODAL ======================= */}
+      {editItem && editType && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
+          onClick={(e) => { if (e.target === e.currentTarget) closeEdit(); }}
+        >
+          <div className="w-full max-w-lg bg-gray-900 border border-purple-800/60 rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-gray-800">
+              <h3 className="text-sm sm:text-base font-semibold text-purple-300 flex items-center gap-2">
+                <FaEdit /> Edit {editType.charAt(0).toUpperCase() + editType.slice(1)}
+              </h3>
+              <button onClick={closeEdit} className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition">
+                <FaTimes />
+              </button>
+            </div>
+
+            {/* Modal Body — fields depend on type */}
+            <div className="p-4 sm:p-5 space-y-3 text-xs">
+
+              {/* ---- PROJECT ---- */}
+              {editType === "project" && (
+                <>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Project Title *</label>
+                    <input type="text" value={editItem.title || ""} onChange={(e) => setEditItem({ ...editItem, title: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Category</label>
+                    <select value={editItem.category || "Web"} onChange={(e) => setEditItem({ ...editItem, category: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm">
+                      <option value="Web">Web Application</option>
+                      <option value="Mobile">Mobile Application</option>
+                      <option value="Portfolio">Portfolio / Showcase</option>
+                      <option value="Backend">Backend / API</option>
+                      <option value="AI">AI / Machine Learning</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Description</label>
+                    <textarea rows={3} value={editItem.description || ""} onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Live Demo URL</label>
+                    <input type="url" value={editItem.liveUrl || editItem.project_url || ""} onChange={(e) => setEditItem({ ...editItem, liveUrl: e.target.value, project_url: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-[11px]" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">GitHub Repo URL</label>
+                    <input type="url" value={editItem.githubUrl || editItem.github_url || ""} onChange={(e) => setEditItem({ ...editItem, githubUrl: e.target.value, github_url: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-[11px]" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Technologies (comma-separated)</label>
+                    <input type="text" value={editItem.technologies || ""} onChange={(e) => setEditItem({ ...editItem, technologies: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                  </div>
+                </>
+              )}
+
+              {/* ---- BLOG ---- */}
+              {editType === "blog" && (
+                <>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Article Title *</label>
+                    <input type="text" value={editItem.title || ""} onChange={(e) => setEditItem({ ...editItem, title: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Category</label>
+                    <input type="text" value={editItem.category || ""} onChange={(e) => setEditItem({ ...editItem, category: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Short Excerpt *</label>
+                    <textarea rows={2} value={editItem.excerpt || ""} onChange={(e) => setEditItem({ ...editItem, excerpt: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Article Content</label>
+                    <textarea rows={5} value={editItem.content || ""} onChange={(e) => setEditItem({ ...editItem, content: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-xs" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-gray-400 mb-1">Read (min)</label>
+                      <input type="number" value={editItem.reading_time || 4} onChange={(e) => setEditItem({ ...editItem, reading_time: e.target.value })}
+                        className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500" />
+                    </div>
+                    <div>
+                      <label className="block text-gray-400 mb-1">Publish Date</label>
+                      <input type="date" value={editItem.published_date || ""} onChange={(e) => setEditItem({ ...editItem, published_date: e.target.value })}
+                        className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* ---- SKILL ---- */}
+              {editType === "skill" && (
+                <>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Skill Name *</label>
+                    <input type="text" value={editItem.name || editItem.skill_name || ""} onChange={(e) => setEditItem({ ...editItem, name: e.target.value, skill_name: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Category</label>
+                    <select value={editItem.category || "Coding"} onChange={(e) => setEditItem({ ...editItem, category: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm">
+                      <option value="Coding">Coding / Frameworks</option>
+                      <option value="Languages">Languages</option>
+                      <option value="Design">Design / UI</option>
+                      <option value="Knowledge">Knowledge / Cloud</option>
+                      <option value="Tools">Tools & DevOps</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">
+                      Proficiency Level: {editItem.level || editItem.proficiency_level}%
+                    </label>
+                    <input type="range" min="50" max="100"
+                      value={editItem.level || editItem.proficiency_level || 85}
+                      onChange={(e) => setEditItem({ ...editItem, level: Number(e.target.value), proficiency_level: Number(e.target.value) })}
+                      className="w-full accent-purple-500 cursor-pointer h-2 bg-gray-700 rounded-lg" />
+                  </div>
+                </>
+              )}
+
+              {/* ---- EXPERIENCE ---- */}
+              {editType === "experience" && (
+                <>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Job Title *</label>
+                    <input type="text" value={editItem.title || editItem.job_title || ""} onChange={(e) => setEditItem({ ...editItem, title: e.target.value, job_title: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Company *</label>
+                    <input type="text" value={editItem.company || ""} onChange={(e) => setEditItem({ ...editItem, company: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Time Period</label>
+                    <input type="text" value={editItem.duration || editItem.time_period || ""} onChange={(e) => setEditItem({ ...editItem, duration: e.target.value, time_period: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Location</label>
+                    <input type="text" value={editItem.location || ""} onChange={(e) => setEditItem({ ...editItem, location: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Description</label>
+                    <textarea rows={3} value={editItem.description || ""} onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                  </div>
+                </>
+              )}
+
+              {/* ---- EDUCATION ---- */}
+              {editType === "education" && (
+                <>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Degree *</label>
+                    <input type="text" value={editItem.degree || ""} onChange={(e) => setEditItem({ ...editItem, degree: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Institution *</label>
+                    <input type="text" value={editItem.institution || ""} onChange={(e) => setEditItem({ ...editItem, institution: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Time Period</label>
+                    <input type="text" value={editItem.duration || editItem.time_period || ""} onChange={(e) => setEditItem({ ...editItem, duration: e.target.value, time_period: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Location</label>
+                    <input type="text" value={editItem.location || ""} onChange={(e) => setEditItem({ ...editItem, location: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Description</label>
+                    <textarea rows={3} value={editItem.description || ""} onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                  </div>
+                </>
+              )}
+
+              {/* ---- CERTIFICATION ---- */}
+              {editType === "certification" && (
+                <>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Certificate Name *</label>
+                    <input type="text" value={editItem.name || ""} onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Issuer Organization</label>
+                    <input type="text" value={editItem.issuer || ""} onChange={(e) => setEditItem({ ...editItem, issuer: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Year</label>
+                    <input type="text" value={editItem.year || ""} onChange={(e) => setEditItem({ ...editItem, year: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end gap-2 px-4 sm:px-5 pb-4 sm:pb-5 pt-2 border-t border-gray-800">
+              <button onClick={closeEdit}
+                className="px-4 py-2 text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-xl transition">
+                Cancel
+              </button>
+              <button onClick={handleSaveEdit}
+                className="px-5 py-2 text-xs sm:text-sm bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl flex items-center gap-2 transition shadow-lg shadow-purple-900/30">
+                <FaCheck /> Save Changes
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
