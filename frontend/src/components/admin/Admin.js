@@ -927,9 +927,9 @@ const Admin = () => {
         </div>
       )}
 
-      {/* Main Navigation Tabs - Horizontally Scrollable on Mobile */}
-      <div className="max-w-6xl mx-auto mt-4 sm:mt-6 overflow-x-auto scrollbar-none pb-2 border-b border-gray-800 -mx-3 px-3 sm:mx-0 sm:px-0">
-        <div className="flex gap-1.5 sm:gap-2 min-w-max text-xs sm:text-sm">
+      {/* Main Navigation Tabs */}
+      <div className="max-w-6xl mx-auto mt-6 border-b border-gray-800">
+        <nav className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-2">
           {[
             { id: "projects", label: "Projects", count: data.projects?.length || 0, icon: FaCode },
             { id: "blog", label: "Blog", count: data.blogPosts?.length || 0, icon: FaNewspaper },
@@ -945,23 +945,29 @@ const Admin = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium flex items-center gap-1.5 sm:gap-2 transition-all flex-shrink-0 ${
+                className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium flex items-center gap-2 transition-all flex-shrink-0 whitespace-nowrap ${
                   isActive
-                    ? "bg-purple-600 text-white shadow-lg shadow-purple-900/30"
-                    : "bg-gray-900/80 text-gray-400 hover:text-gray-200 hover:bg-gray-800"
+                    ? "bg-purple-600 text-white shadow-lg shadow-purple-900/40"
+                    : "bg-gray-900/90 text-gray-400 hover:text-gray-200 hover:bg-gray-800 border border-gray-800/80"
                 }`}
               >
                 <Icon className="text-xs sm:text-sm" />
                 <span>{tab.label}</span>
                 {tab.count !== undefined && (
-                  <span className="text-[10px] sm:text-[11px] px-1.5 py-0.2 rounded-full bg-black/40 text-gray-300">
+                  <span
+                    className={`text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                      isActive
+                        ? "bg-black/30 text-purple-100"
+                        : "bg-gray-800 text-gray-300 border border-gray-700/60"
+                    }`}
+                  >
                     {tab.count}
                   </span>
                 )}
               </button>
             );
           })}
-        </div>
+        </nav>
       </div>
 
       {/* Tab Contents */}
