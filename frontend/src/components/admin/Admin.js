@@ -18,9 +18,32 @@ import {
   FaUser,
   FaDownload,
   FaEye,
+  FaLock,
+  FaSignOutAlt,
+  FaShieldAlt,
 } from "react-icons/fa";
 
+// Cryptographic SHA-256 helper
+const hashPassword = async (str) => {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(str);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+};
+
 const Admin = () => {
+  // Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem("admin_authenticated") === "true";
+  });
+  const [hasPasswordSet, setHasPasswordSet] = useState(() => {
+    return !!localStorage.getItem("admin_pass_hash");
+  });
+  const [passwordInput, setPasswordInput] = useState("");
+  const [confirmPasswordInput, setConfirmPasswordInput] = useState("");
+  const [authError, setAuthError] = useState("");
+
   // Load stored data or fall back to portfolioData
   const [data, setData] = useState(() => {
     const cached = localStorage.getItem("admin_portfolio_data");
@@ -33,6 +56,7 @@ const Admin = () => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
   const [showJsonPreview, setShowJsonPreview] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   // GitHub Settings stored in localStorage
   const [githubSettings, setGithubSettings] = useState({
@@ -42,6 +66,69 @@ const Admin = () => {
     path: localStorage.getItem("gh_path") || "frontend/src/data/index.js",
     branch: localStorage.getItem("gh_branch") || "main",
   });
+
+  // ================= Password Handlers =================
+  const handleSetInitialPassword = async (e) => {
+    e.preventDefault();
+    if (!passwordInput || passwordInput.length < 4) {
+      setAuthError("Password must be at least 4 characters long.");
+      return;
+    }
+    if (passwordInput !== confirmPasswordInput) {
+      setAuthError("Passwords do not match. Please re-type.");
+      return;
+    }
+
+    const hash = await hashPassword(passwordInput);
+    localStorage.setItem("admin_pass_hash", hash);
+    sessionStorage.setItem("admin_authenticated", "true");
+    setHasPasswordSet(true);
+    setIsAuthenticated(true);
+    setPasswordInput("");
+    setConfirmPasswordInput("");
+    setAuthError("");
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const storedHash = localStorage.getItem("admin_pass_hash");
+    const inputHash = await hashPassword(passwordInput);
+
+    if (storedHash && inputHash === storedHash) {
+      sessionStorage.setItem("admin_authenticated", "true");
+      setIsAuthenticated(true);
+      setPasswordInput("");
+      setAuthError("");
+    } else {
+      setAuthError("Incorrect password. Access denied.");
+    }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("admin_authenticated");
+    setIsAuthenticated(false);
+    setPasswordInput("");
+    setStatusMsg({ type: "", text: "" });
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    if (!passwordInput || passwordInput.length < 4) {
+      setStatusMsg({ type: "error", text: "New password must be at least 4 characters long." });
+      return;
+    }
+    if (passwordInput !== confirmPasswordInput) {
+      setStatusMsg({ type: "error", text: "Passwords do not match." });
+      return;
+    }
+
+    const hash = await hashPassword(passwordInput);
+    localStorage.setItem("admin_pass_hash", hash);
+    setPasswordInput("");
+    setConfirmPasswordInput("");
+    setShowChangePassword(false);
+    setStatusMsg({ type: "success", text: "Admin password changed successfully!" });
+  };
 
   // Save changes locally to localStorage
   const updateData = (newData) => {
@@ -57,7 +144,6 @@ const Admin = () => {
   };
 
   // ================= Form States =================
-  // 1. New Project Form
   const [newProject, setNewProject] = useState({
     title: "",
     category: "Web",
@@ -67,7 +153,6 @@ const Admin = () => {
     technologies: "",
   });
 
-  // 2. New Blog Post Form
   const [newBlog, setNewBlog] = useState({
     title: "",
     slug: "",
@@ -78,14 +163,12 @@ const Admin = () => {
     published_date: new Date().toISOString().split("T")[0],
   });
 
-  // 3. New Skill Form
   const [newSkill, setNewSkill] = useState({
     name: "",
     category: "Coding",
     level: 90,
   });
 
-  // 4. New Experience Form
   const [newExp, setNewExp] = useState({
     title: "",
     company: "",
@@ -94,7 +177,6 @@ const Admin = () => {
     description: "",
   });
 
-  // 5. New Education Form
   const [newEdu, setNewEdu] = useState({
     degree: "",
     institution: "",
@@ -103,14 +185,12 @@ const Admin = () => {
     description: "",
   });
 
-  // 6. New Certification Form
   const [newCert, setNewCert] = useState({
     name: "",
     issuer: "",
     year: "2025",
   });
 
-  // 7. Profile Form
   const [profileForm, setProfileForm] = useState(data.profile || {});
 
   useEffect(() => {
@@ -402,6 +482,110 @@ const Admin = () => {
     URL.revokeObjectURL(url);
   };
 
+  // =========================================================
+  // RENDER LOCK SCREEN IF NOT AUTHENTICATED
+  // =========================================================
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#0a0c10] text-gray-100 flex items-center justify-center p-4 font-sans relative overflow-hidden">
+        {/* Glow background effects */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="w-full max-w-md bg-gray-900/90 border border-purple-900/50 p-6 sm:p-8 rounded-3xl shadow-2xl backdrop-blur-xl relative z-10">
+          <div className="flex flex-col items-center text-center mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white text-2xl shadow-lg shadow-purple-900/40 mb-4">
+              <FaLock />
+            </div>
+            <h1 className="text-xl sm:text-2xl font-bold text-white">
+              {hasPasswordSet ? "Admin Portal Access" : "Create Master Password"}
+            </h1>
+            <p className="text-xs text-gray-400 mt-1">
+              {hasPasswordSet
+                ? "Enter your secret Admin Password to access data management."
+                : "Welcome Eric! Set your private master password for the admin panel."}
+            </p>
+          </div>
+
+          {authError && (
+            <div className="mb-4 p-3 bg-red-950/60 border border-red-800 text-red-300 text-xs rounded-xl text-center">
+              {authError}
+            </div>
+          )}
+
+          {hasPasswordSet ? (
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Admin Password</label>
+                <input
+                  type="password"
+                  required
+                  autoFocus
+                  placeholder="••••••••••••"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-800/80 border border-gray-700 rounded-xl text-white text-sm outline-none focus:border-purple-500 transition"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2"
+              >
+                <FaKey /> Unlock Admin Panel
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleSetInitialPassword} className="space-y-3">
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">New Master Password *</label>
+                <input
+                  type="password"
+                  required
+                  placeholder="At least 4 characters"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-gray-800/80 border border-gray-700 rounded-xl text-white text-sm outline-none focus:border-purple-500 transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Confirm Password *</label>
+                <input
+                  type="password"
+                  required
+                  placeholder="Re-enter password"
+                  value={confirmPasswordInput}
+                  onChange={(e) => setConfirmPasswordInput(e.target.value)}
+                  className="w-full px-4 py-2.5 bg-gray-800/80 border border-gray-700 rounded-xl text-white text-sm outline-none focus:border-purple-500 transition"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-xl text-sm transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2 mt-2"
+              >
+                <FaShieldAlt /> Set Password & Enter
+              </button>
+            </form>
+          )}
+
+          <div className="mt-6 text-center">
+            <a
+              href="/"
+              className="text-xs text-gray-500 hover:text-purple-400 transition flex items-center justify-center gap-1.5"
+            >
+              <FaArrowLeft className="text-[10px]" /> Back to Public Website
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // =========================================================
+  // RENDER UNLOCKED ADMIN PANEL
+  // =========================================================
   return (
     <div className="min-h-screen bg-[#0f1117] text-gray-100 font-sans p-4 sm:p-8">
       {/* Top Header */}
@@ -413,14 +597,17 @@ const Admin = () => {
               className="p-2 rounded-xl bg-gray-800/80 hover:bg-gray-700 text-purple-400 hover:text-purple-300 transition-all flex items-center gap-2 text-sm"
               title="Return to Portfolio"
             >
-              <FaArrowLeft /> Back to Website
+              <FaArrowLeft /> Website
             </a>
             <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
               Portfolio Admin Panel
             </h1>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-950 border border-green-700/60 text-green-300 flex items-center gap-1">
+              <FaShieldAlt /> Authenticated
+            </span>
           </div>
           <p className="text-xs sm:text-sm text-gray-400 mt-1">
-            Add & manage content without databases. Saves directly to <code className="text-purple-300">src/data/index.js</code>.
+            Data updates save directly to <code className="text-purple-300">frontend/src/data/index.js</code>.
           </p>
         </div>
 
@@ -454,6 +641,14 @@ const Admin = () => {
           >
             {isSaving ? <FaSpinner className="animate-spin" /> : <FaSave />}
             {isSaving ? "Publishing..." : hasUnsavedChanges ? "Save & Deploy to Live Site *" : "Save & Deploy"}
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="p-2 text-xs sm:text-sm bg-gray-800 hover:bg-red-950/60 hover:text-red-300 rounded-xl border border-gray-700 hover:border-red-800 text-gray-400 transition"
+            title="Lock / Log Out"
+          >
+            <FaSignOutAlt />
           </button>
         </div>
       </div>
@@ -491,8 +686,55 @@ const Admin = () => {
             <h3 className="text-sm font-semibold flex items-center gap-2 text-purple-300">
               <FaGithub /> GitHub Repository Configuration
             </h3>
-            <span className="text-xs text-gray-400">Stored safely in your browser only</span>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowChangePassword(!showChangePassword)}
+                className="text-xs text-yellow-400 hover:underline flex items-center gap-1"
+              >
+                <FaLock /> Change Admin Password
+              </button>
+              <span className="text-xs text-gray-400">Stored safely in your browser</span>
+            </div>
           </div>
+
+          {showChangePassword && (
+            <form onSubmit={handleChangePassword} className="p-4 bg-gray-950/80 border border-gray-800 rounded-xl mb-4 space-y-3">
+              <h4 className="text-xs font-semibold text-gray-200">Change Master Password</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <input
+                  type="password"
+                  required
+                  placeholder="New Password"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                />
+                <input
+                  type="password"
+                  required
+                  placeholder="Confirm New Password"
+                  value={confirmPasswordInput}
+                  onChange={(e) => setConfirmPasswordInput(e.target.value)}
+                  className="px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500"
+                />
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  className="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-medium"
+                >
+                  Update Password
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowChangePassword(false)}
+                  className="px-3 py-1.5 bg-gray-800 text-gray-400 hover:text-white rounded-lg text-xs"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
             <div>
@@ -597,7 +839,6 @@ const Admin = () => {
         {/* ======================= TAB 1: PROJECTS ======================= */}
         {activeTab === "projects" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Add Project Form */}
             <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-5 rounded-2xl shadow-xl">
               <h2 className="text-base font-semibold flex items-center gap-2 mb-4 text-purple-300">
                 <FaPlus /> Add New Project
@@ -684,7 +925,6 @@ const Admin = () => {
               </form>
             </div>
 
-            {/* Existing Projects List */}
             <div className="lg:col-span-2 space-y-3">
               <h2 className="text-base font-semibold text-gray-300">
                 Current Projects ({data.projects?.length || 0})
@@ -1296,7 +1536,7 @@ const Admin = () => {
 
       {/* Footer Info */}
       <div className="max-w-6xl mx-auto mt-12 pt-6 border-t border-gray-800/80 text-center text-xs text-gray-500 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <span>Portfolio Admin Panel • Static Flat-File Architecture</span>
+        <span>Portfolio Admin Panel • Flat-File Architecture</span>
         <button
           onClick={() => setShowJsonPreview(!showJsonPreview)}
           className="text-purple-400 hover:underline flex items-center gap-1"
