@@ -378,6 +378,17 @@ function Sidenav({ onNavigate, profile: profileProp, appData = portfolioData }) 
         >
           © {new Date().getFullYear()} {profile?.copyright_name || profile?.copyrightName || profile?.full_name || 'Eric H Ofla'}. All rights reserved
         </p>
+
+        {/* Admin Portal Link */}
+        <a
+          href="#admin"
+          onClick={() => {
+            window.location.hash = "#admin";
+          }}
+          className="block text-center text-[11px] text-gray-500 hover:text-purple-400 mt-2 transition"
+        >
+          Admin Portal ⚙️
+        </a>
       </div>
     </div>
   );

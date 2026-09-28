@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { portfolioData } from "./data";
 import Home from "./Home";
+import Admin from "./components/admin/Admin";
 import "./App.css";
 
 function App() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+  const [route, setRoute] = useState(() => {
+    const path = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    return path === "/admin" || hash === "#admin" ? "admin" : "home";
+  });
 
   const toggleTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
@@ -18,6 +24,25 @@ function App() {
     root.classList.remove("dark", "light");
     root.classList.add(theme);
   }, [theme]);
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      setRoute(path === "/admin" || hash === "#admin" ? "admin" : "home");
+    };
+
+    window.addEventListener("popstate", handleLocationChange);
+    window.addEventListener("hashchange", handleLocationChange);
+    return () => {
+      window.removeEventListener("popstate", handleLocationChange);
+      window.removeEventListener("hashchange", handleLocationChange);
+    };
+  }, []);
+
+  if (route === "admin") {
+    return <Admin />;
+  }
 
   return (
     <div className="w-full lgl:h-screen font-bodyfont overflow-hidden text-textColor bg-bodyColor transition-colors duration-300 relative">
@@ -34,4 +59,3 @@ function App() {
 }
 
 export default App;
-
