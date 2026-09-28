@@ -205,19 +205,6 @@ export const portfolioData = {
   ],
   "projects": [
     {
-      "id": 1790618385117,
-      "title": "jj",
-      "category": "Web",
-      "description": "mj",
-      "image": "",
-      "image_url": "",
-      "project_url": "",
-      "liveUrl": "",
-      "github_url": "",
-      "githubUrl": "",
-      "technologies": []
-    },
-    {
       "id": 1,
       "title": "E-Commerce Shopping Platform",
       "category": "Web",
