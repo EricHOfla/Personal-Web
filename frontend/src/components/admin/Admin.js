@@ -18,6 +18,7 @@ import {
   FaUser,
   FaDownload,
   FaEye,
+  FaEyeSlash,
   FaLock,
   FaSignOutAlt,
   FaShieldAlt,
@@ -91,6 +92,7 @@ const Admin = () => {
   const [showConfig, setShowConfig] = useState(false);
   const [showJsonPreview, setShowJsonPreview] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [showTokenText, setShowTokenText] = useState(false);
 
   // GitHub Settings stored in localStorage
   const [githubSettings, setGithubSettings] = useState({
@@ -846,13 +848,23 @@ const Admin = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
             <div>
               <label className="block text-gray-400 mb-1">GitHub Personal Access Token</label>
-              <input
-                type="password"
-                placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-                value={githubSettings.token}
-                onChange={(e) => handleSettingsChange("token", e.target.value)}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 outline-none"
-              />
+              <div className="relative flex items-center">
+                <input
+                  type={showTokenText ? "text" : "password"}
+                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                  value={githubSettings.token}
+                  onChange={(e) => handleSettingsChange("token", e.target.value)}
+                  className="w-full pr-9 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 outline-none font-mono text-xs"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowTokenText(!showTokenText)}
+                  className="absolute right-2.5 p-1 text-gray-400 hover:text-purple-300 transition"
+                  title={showTokenText ? "Hide token" : "Show token"}
+                >
+                  {showTokenText ? <FaEyeSlash className="text-sm" /> : <FaEye className="text-sm" />}
+                </button>
+              </div>
               <a
                 href="https://github.com/settings/tokens/new?scopes=repo&description=Portfolio%20Admin%20Panel"
                 target="_blank"
