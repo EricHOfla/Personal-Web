@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 import { FaUser, FaEnvelope, FaBars, FaSun, FaMoon } from "react-icons/fa";
 import { IoIosPaper } from "react-icons/io";
@@ -16,16 +16,108 @@ import BlogDetail from "./components/blog/BlogDetail";
 import Contact from "./components/contact/Contact";
 import Sidenav from "./components/home/sidenav/Sidenav";
 
+const validTabs = ["about", "resume", "projects", "blog", "contact"];
+
+const parseLocation = () => {
+  const hash = (window.location.hash || "").replace("#", "").toLowerCase().trim();
+  if (hash.startsWith("blog/")) {
+    return { tab: "blog", slug: hash.replace("blog/", "") };
+  }
+  if (validTabs.includes(hash)) {
+    return { tab: hash, slug: null };
+  }
+  const saved = localStorage.getItem("portfolio_active_tab");
+  if (validTabs.includes(saved)) {
+    const savedSlug = saved === "blog" ? localStorage.getItem("portfolio_blog_slug") : null;
+    return { tab: saved, slug: savedSlug || null };
+  }
+  return { tab: "about", slug: null };
+};
+
 const Home = ({ profile, appData, theme, toggleTheme }) => {
-  const [about, setAbout] = useState(true);
-  const [resume, setResume] = useState(false);
-  const [projects, setProjects] = useState(false);
-  const [blog, setBlog] = useState(false);
-  const [contact, setContact] = useState(false);
+  const initial = parseLocation();
+  const [activeTab, setActiveTab] = useState(initial.tab);
+  const [selectedBlogSlug, setSelectedBlogSlug] = useState(initial.slug);
   const [sidenav, setSidenav] = useState(false);
-  const [selectedBlogSlug, setSelectedBlogSlug] = useState(null);
   const sidenavRef = useRef();
   const backdropRef = useRef();
+
+  const about = activeTab === "about";
+  const resume = activeTab === "resume";
+  const projects = activeTab === "projects";
+  const blog = activeTab === "blog";
+  const contact = activeTab === "contact";
+
+  const navigateTo = (tab, slug = null) => {
+    if (!validTabs.includes(tab)) return;
+    setActiveTab(tab);
+    localStorage.setItem("portfolio_active_tab", tab);
+
+    if (tab === "blog" && slug) {
+      setSelectedBlogSlug(slug);
+      localStorage.setItem("portfolio_blog_slug", slug);
+      if (window.location.hash !== `#blog/${slug}`) {
+        window.history.pushState(null, "", `#blog/${slug}`);
+      }
+    } else {
+      setSelectedBlogSlug(null);
+      localStorage.removeItem("portfolio_blog_slug");
+      if (window.location.hash !== `#${tab}`) {
+        window.history.pushState(null, "", `#${tab}`);
+      }
+    }
+
+    setSidenav(false);
+
+    // Scroll to section on mobile
+    setTimeout(() => {
+      const section = document.getElementById(`${tab}-section`);
+      if (section && window.innerWidth < 1024) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 50);
+  };
+
+  // Adapters for backwards-compatibility
+  const setAbout = (val) => { if (val) navigateTo("about"); };
+  const setResume = (val) => { if (val) navigateTo("resume"); };
+  const setProjects = (val) => { if (val) navigateTo("projects"); };
+  const setBlog = (val) => { if (val) navigateTo("blog"); };
+  const setContact = (val) => { if (val) navigateTo("contact"); };
+
+  // Listen to browser Back/Forward (popstate) and hash changes
+  useEffect(() => {
+    const handleHashSync = () => {
+      const { tab, slug } = parseLocation();
+      setActiveTab(tab);
+      setSelectedBlogSlug(slug);
+      localStorage.setItem("portfolio_active_tab", tab);
+      if (slug) {
+        localStorage.setItem("portfolio_blog_slug", slug);
+      } else {
+        localStorage.removeItem("portfolio_blog_slug");
+      }
+    };
+
+    window.addEventListener("hashchange", handleHashSync);
+    window.addEventListener("popstate", handleHashSync);
+
+    // If initial tab was not about, ensure mobile view scrolls to it
+    if (initial.tab !== "about") {
+      setTimeout(() => {
+        const section = document.getElementById(`${initial.tab}-section`);
+        if (section && window.innerWidth < 1024) {
+          section.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 250);
+    }
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashSync);
+      window.removeEventListener("popstate", handleHashSync);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   return (
@@ -68,13 +160,7 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
         <div className="w-full h-80 bg-bodyColor rounded-3xl flex flex-col items-center justify-between py-6 border border-surfaceBorder">
           {/* About Icon */}
           <span
-            onClick={() => {
-              setAbout(true);
-              setResume(false);
-              setProjects(false);
-              setBlog(false);
-              setContact(false);
-            }}
+            onClick={() => navigateTo("about")}
             className={`${about
               ? "text-designColor"
               : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
@@ -87,13 +173,7 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
           </span>
           {/* Resume Icon */}
           <span
-            onClick={() => {
-              setAbout(false);
-              setResume(true);
-              setProjects(false);
-              setBlog(false);
-              setContact(false);
-            }}
+            onClick={() => navigateTo("resume")}
             className={`${resume
               ? "text-designColor"
               : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
@@ -106,13 +186,7 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
           </span>
           {/* Project Icon */}
           <span
-            onClick={() => {
-              setAbout(false);
-              setResume(false);
-              setProjects(true);
-              setBlog(false);
-              setContact(false);
-            }}
+            onClick={() => navigateTo("projects")}
             className={`${projects
               ? "text-designColor"
               : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
@@ -125,14 +199,7 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
           </span>
           {/* Blog Icon */}
           <span
-            onClick={() => {
-              setAbout(false);
-              setResume(false);
-              setProjects(false);
-              setBlog(true);
-              setContact(false);
-              setSelectedBlogSlug(null);
-            }}
+            onClick={() => navigateTo("blog")}
             className={`${blog
               ? "text-designColor"
               : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
@@ -145,13 +212,7 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
           </span>
           {/* Contact Icon */}
           <span
-            onClick={() => {
-              setAbout(false);
-              setResume(false);
-              setProjects(false);
-              setBlog(false);
-              setContact(true);
-            }}
+            onClick={() => navigateTo("contact")}
             className={`${contact
               ? "text-designColor"
               : "w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
@@ -175,20 +236,7 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
             </a>
           ) : (
             <span
-              onClick={() => {
-                setAbout(false);
-                setResume(false);
-                setProjects(false);
-                setBlog(false);
-                setContact(true);
-                // Scroll to contact section on mobile
-                setTimeout(() => {
-                  const section = document.getElementById('contact-section');
-                  if (section) {
-                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }, 100);
-              }}
+              onClick={() => navigateTo("contact")}
               className="w-full h-6 text-textColor text-xl flex items-center justify-center hover:text-designColor duration-300 cursor-pointer relative group"
               title="Go to Contact"
             >
@@ -233,9 +281,9 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
             </article>
             <article id="blog-section">
               {selectedBlogSlug ? (
-                <BlogDetail slug={selectedBlogSlug} onBack={() => setSelectedBlogSlug(null)} />
+                <BlogDetail slug={selectedBlogSlug} onBack={() => navigateTo("blog")} />
               ) : (
-                <Blog appData={appData} onReadMore={(slug) => setSelectedBlogSlug(slug)} />
+                <Blog appData={appData} onReadMore={(slug) => navigateTo("blog", slug)} />
               )}
             </article>
             <article id="contact-section">
@@ -259,9 +307,9 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
 
             <div className={`w-full ${blog ? "block" : "hidden"}`}>
               {selectedBlogSlug ? (
-                <BlogDetail slug={selectedBlogSlug} onBack={() => setSelectedBlogSlug(null)} />
+                <BlogDetail slug={selectedBlogSlug} onBack={() => navigateTo("blog")} />
               ) : (
-                <Blog appData={appData} onReadMore={(slug) => setSelectedBlogSlug(slug)} />
+                <Blog appData={appData} onReadMore={(slug) => navigateTo("blog", slug)} />
               )}
             </div>
 
@@ -312,29 +360,7 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
               appData={appData}
               theme={theme}
               toggleTheme={toggleTheme}
-              onNavigate={(page) => {
-                // Set page state for desktop view
-                setAbout(page === 'about');
-                setResume(page === 'resume');
-                setProjects(page === 'projects');
-                setBlog(page === 'blog');
-                setContact(page === 'contact');
-                if (page !== 'blog') {
-                  setSelectedBlogSlug(null);
-                }
-
-                // Close the menu
-                setSidenav(false);
-
-                // On mobile, scroll to the section after a short delay
-                setTimeout(() => {
-                  const sectionId = `${page}-section`;
-                  const section = document.getElementById(sectionId);
-                  if (section) {
-                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }, 100);
-              }}
+              onNavigate={(page) => navigateTo(page)}
             />
           </div>
         </div>
@@ -351,101 +377,35 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
         </div>
 
         <div
-          onClick={() => {
-            setAbout(true);
-            setResume(false);
-            setProjects(false);
-            setBlog(false);
-            setContact(false);
-            // Scroll to section on mobile
-            setTimeout(() => {
-              const section = document.getElementById('about-section');
-              if (section) {
-                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
-            }, 100);
-          }}
+          onClick={() => navigateTo("about")}
           className={`mobile-nav-item ${about ? 'active' : ''}`}
         >
           <FaUser />
           <span>About</span>
         </div>
         <div
-          onClick={() => {
-            setAbout(false);
-            setResume(true);
-            setProjects(false);
-            setBlog(false);
-            setContact(false);
-            // Scroll to section on mobile
-            setTimeout(() => {
-              const section = document.getElementById('resume-section');
-              if (section) {
-                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
-            }, 100);
-          }}
+          onClick={() => navigateTo("resume")}
           className={`mobile-nav-item ${resume ? 'active' : ''}`}
         >
           <IoIosPaper />
           <span>Resume</span>
         </div>
         <div
-          onClick={() => {
-            setAbout(false);
-            setResume(false);
-            setProjects(true);
-            setBlog(false);
-            setContact(false);
-            // Scroll to section on mobile
-            setTimeout(() => {
-              const section = document.getElementById('projects-section');
-              if (section) {
-                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
-            }, 100);
-          }}
+          onClick={() => navigateTo("projects")}
           className={`mobile-nav-item ${projects ? 'active' : ''}`}
         >
           <MdWork />
           <span>Projects</span>
         </div>
         <div
-          onClick={() => {
-            setAbout(false);
-            setResume(false);
-            setProjects(false);
-            setBlog(true);
-            setContact(false);
-            setSelectedBlogSlug(null);
-            // Scroll to section on mobile
-            setTimeout(() => {
-              const section = document.getElementById('blog-section');
-              if (section) {
-                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
-            }, 100);
-          }}
+          onClick={() => navigateTo("blog")}
           className={`mobile-nav-item ${blog ? 'active' : ''}`}
         >
           <SiGooglechat />
           <span>Blog</span>
         </div>
         <div
-          onClick={() => {
-            setAbout(false);
-            setResume(false);
-            setProjects(false);
-            setBlog(false);
-            setContact(true);
-            // Scroll to section on mobile
-            setTimeout(() => {
-              const section = document.getElementById('contact-section');
-              if (section) {
-                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
-            }, 100);
-          }}
+          onClick={() => navigateTo("contact")}
           className={`mobile-nav-item ${contact ? 'active' : ''}`}
         >
           <FaEnvelope />
