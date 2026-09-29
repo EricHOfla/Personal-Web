@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaPaperPlane } from "react-icons/fa";
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaPaperPlane, FaWhatsapp } from "react-icons/fa";
 import { portfolioData } from "../../data";
 
 function Contact({ profile = portfolioData.profile }) {
@@ -11,23 +11,51 @@ function Contact({ profile = portfolioData.profile }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setStatus({ type: "", message: "" });
 
-    try {
-      const recipientEmail = profile?.email || portfolioData.profile.email || "ericofla1@gmail.com";
-      const subject = encodeURIComponent(formData.subject || "Contact from Portfolio");
-      const body = encodeURIComponent(`Hi ${profile?.firstName || "Eric"},\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})`);
-      
-      // Open user's default email client
-      window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+    const recipientEmail = profile?.email || portfolioData.profile.email || "ericofla1@gmail.com";
 
-      setStatus({ type: "success", message: "Thank you! Opening your email client to send the message directly." });
-      setFormData({ name: "", email: "", subject: "", message: "" });
+    try {
+      // Direct in-page submission to free FormSubmit service directly to user's email
+      const response = await fetch(`https://formsubmit.co/ajax/${recipientEmail}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          _subject: `[Portfolio Contact] ${formData.subject || "New Inquiry"}`,
+          message: formData.message,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success === "true" || data.success === true) {
+        setStatus({
+          type: "success",
+          message: "Thank you! Your message has been sent directly to Eric's inbox.",
+        });
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        throw new Error("Direct send fallback");
+      }
     } catch (err) {
-      setStatus({ type: "error", message: "Failed to process message. Please email directly." });
+      // Fallback: mailto
+      const subject = encodeURIComponent(formData.subject || "Contact from Portfolio");
+      const body = encodeURIComponent(
+        `Hi ${profile?.firstName || "Eric"},\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})`
+      );
+      window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+      setStatus({
+        type: "success",
+        message: "Opening your email app to send the message directly.",
+      });
+      setFormData({ name: "", email: "", subject: "", message: "" });
     } finally {
       setLoading(false);
     }
@@ -81,6 +109,28 @@ function Contact({ profile = portfolioData.profile }) {
               </p>
             </div>
           </div>
+
+          <a
+            href={`https://wa.me/250785263931?text=${encodeURIComponent("Hi Eric, I visited your portfolio and would like to connect.")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="glass-card p-4 sm:p-5 md:p-6 flex items-start gap-3 sm:gap-4 group hover:border-green-500/50 transition cursor-pointer"
+          >
+            <div className="p-2 sm:p-3 bg-green-500/10 rounded-lg text-green-400 group-hover:bg-green-500 group-hover:text-black transition flex-shrink-0">
+              <FaWhatsapp className="text-lg sm:text-xl" />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-titleColor mb-0.5 text-sm sm:text-base">WhatsApp</h3>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 font-semibold border border-green-500/30">
+                  Instant
+                </span>
+              </div>
+              <p className="text-textSecondary group-hover:text-green-400 transition text-xs sm:text-sm">
+                Chat directly: +250 785 263 931
+              </p>
+            </div>
+          </a>
         </div>
 
         <div className="lg:col-span-3">

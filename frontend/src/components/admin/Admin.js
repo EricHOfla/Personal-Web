@@ -29,6 +29,7 @@ import {
   FaTrophy,
   FaQuoteLeft,
   FaGlobe,
+  FaUpload,
 } from "react-icons/fa";
 
 // Cryptographic SHA-256 helper
@@ -774,6 +775,94 @@ const Admin = () => {
     URL.revokeObjectURL(url);
   };
 
+  // ================= Import Data Feature =================
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importText, setImportText] = useState("");
+  const [importError, setImportError] = useState("");
+
+  const processImportContent = (content) => {
+    setImportError("");
+    let clean = (content || "").trim();
+    if (!clean) {
+      setImportError("Please provide data to import.");
+      return;
+    }
+
+    if (clean.includes("portfolioData =")) {
+      const jsonStart = clean.indexOf("{");
+      const jsonEnd = clean.lastIndexOf("}");
+      if (jsonStart !== -1 && jsonEnd !== -1) {
+        clean = clean.substring(jsonStart, jsonEnd + 1);
+      }
+    }
+
+    let parsed = null;
+    try {
+      parsed = JSON.parse(clean);
+    } catch (e) {
+      try {
+        // eslint-disable-next-line no-new-func
+        parsed = new Function(`return (${clean})`)();
+      } catch (err2) {
+        setImportError("Invalid data format. Please provide valid JSON or JS exported file.");
+        return;
+      }
+    }
+
+    if (!parsed || typeof parsed !== "object") {
+      setImportError("Imported content must be a valid portfolio data object.");
+      return;
+    }
+
+    updateData({
+      ...data,
+      ...parsed,
+      profile: { ...(data.profile || {}), ...(parsed.profile || {}) },
+      projects: parsed.projects || data.projects || [],
+      skills: parsed.skills || data.skills || [],
+      blogPosts: parsed.blogPosts || data.blogPosts || [],
+      experiences: parsed.experiences || data.experiences || [],
+      education: parsed.education || data.education || [],
+      certifications: parsed.certifications || data.certifications || [],
+      socialLinks: parsed.socialLinks || data.socialLinks || [],
+      services: parsed.services || data.services || [],
+      funFacts: parsed.funFacts || data.funFacts || [],
+      testimonials: parsed.testimonials || data.testimonials || [],
+      languages: parsed.languages || data.languages || [],
+    });
+
+    setShowImportModal(false);
+    setImportText("");
+    setStatusMsg({ type: "success", text: "Portfolio data successfully imported!" });
+  };
+
+  const handleImportFile = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        processImportContent(event.target.result);
+      } catch (err) {
+        setImportError("Failed to parse file: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  // Warn user before closing window if there are unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = "You have unsaved changes. Did you remember to Save & Deploy?";
+        return e.returnValue;
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
   // =========================================================
   // RENDER LOCK SCREEN IF NOT AUTHENTICATED
   // =========================================================
@@ -974,6 +1063,15 @@ const Admin = () => {
           </button>
 
           <button
+            onClick={() => setShowImportModal(true)}
+            className="px-3 py-2 text-xs sm:text-sm bg-gray-800/90 hover:bg-gray-700 rounded-xl border border-gray-700 flex items-center justify-center gap-1.5 transition"
+            title="Import or restore portfolio data"
+          >
+            <FaUpload className="text-xs text-purple-400" />
+            <span>Import</span>
+          </button>
+
+          <button
             onClick={handleSaveToGitHub}
             disabled={isSaving}
             className={`col-span-2 xs:col-auto px-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-xl font-medium flex items-center justify-center gap-2 shadow-lg transition-all ${
@@ -1152,8 +1250,38 @@ const Admin = () => {
         </div>
       )}
 
+      {/* Quick Stats & Health Dashboard Banner */}
+      <div className="max-w-6xl mx-auto mt-4 sm:mt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
+        <div className="bg-gray-900/80 border border-gray-800 p-3 rounded-2xl flex flex-col justify-between">
+          <span className="text-[11px] text-gray-400 font-medium">Projects</span>
+          <span className="text-xl font-bold text-purple-300 mt-1">{data.projects?.length || 0}</span>
+        </div>
+        <div className="bg-gray-900/80 border border-gray-800 p-3 rounded-2xl flex flex-col justify-between">
+          <span className="text-[11px] text-gray-400 font-medium">Articles</span>
+          <span className="text-xl font-bold text-purple-300 mt-1">{data.blogPosts?.length || 0}</span>
+        </div>
+        <div className="bg-gray-900/80 border border-gray-800 p-3 rounded-2xl flex flex-col justify-between">
+          <span className="text-[11px] text-gray-400 font-medium">Skills</span>
+          <span className="text-xl font-bold text-purple-300 mt-1">{data.skills?.length || 0}</span>
+        </div>
+        <div className="bg-gray-900/80 border border-gray-800 p-3 rounded-2xl flex flex-col justify-between">
+          <span className="text-[11px] text-gray-400 font-medium">Experience</span>
+          <span className="text-xl font-bold text-purple-300 mt-1">{data.experiences?.length || 0}</span>
+        </div>
+        <div className="bg-gray-900/80 border border-gray-800 p-3 rounded-2xl flex flex-col justify-between">
+          <span className="text-[11px] text-gray-400 font-medium">Testimonials</span>
+          <span className="text-xl font-bold text-purple-300 mt-1">{data.testimonials?.length || 0}</span>
+        </div>
+        <div className="bg-gray-900/80 border border-gray-800 p-3 rounded-2xl flex flex-col justify-between">
+          <span className="text-[11px] text-gray-400 font-medium">GitHub Sync</span>
+          <span className="text-xs font-semibold text-green-400 mt-1 truncate" title={githubSettings.repo}>
+            {githubSettings.branch || "main"} • Connected
+          </span>
+        </div>
+      </div>
+
       {/* Main Navigation Tabs */}
-      <div className="max-w-6xl mx-auto mt-6 border-b border-gray-800">
+      <div className="max-w-6xl mx-auto mt-5 sm:mt-6 border-b border-gray-800">
         <nav className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-2">
           {[
             { id: "projects", label: "Projects", count: data.projects?.length || 0, icon: FaCode },
@@ -2916,6 +3044,81 @@ const Admin = () => {
               <button onClick={handleSaveEdit}
                 className="px-5 py-2 text-xs sm:text-sm bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl flex items-center gap-2 transition shadow-lg shadow-purple-900/30">
                 <FaCheck /> Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ======================= IMPORT DATA MODAL ======================= */}
+      {showImportModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowImportModal(false); }}
+        >
+          <div className="w-full max-w-lg bg-gray-900 border border-purple-800/60 rounded-2xl shadow-2xl p-5 sm:p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-800">
+              <h3 className="text-sm sm:text-base font-semibold text-purple-300 flex items-center gap-2">
+                <FaUpload /> Import & Restore Portfolio Data
+              </h3>
+              <button
+                onClick={() => setShowImportModal(false)}
+                className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition"
+              >
+                <FaTimes />
+              </button>
+            </div>
+
+            {importError && (
+              <div className="p-3 bg-red-950/60 border border-red-800 text-red-300 text-xs rounded-xl">
+                {importError}
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                Upload Backup File (.js or .json)
+              </label>
+              <input
+                type="file"
+                accept=".js,.json"
+                onChange={handleImportFile}
+                className="w-full text-xs text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-500 cursor-pointer"
+              />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-[1px] bg-gray-800" />
+              <span className="text-[11px] text-gray-500 uppercase">or paste code / JSON</span>
+              <div className="flex-1 h-[1px] bg-gray-800" />
+            </div>
+
+            <div>
+              <textarea
+                rows={5}
+                placeholder="Paste portfolioData code or JSON here..."
+                value={importText}
+                onChange={(e) => setImportText(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-white outline-none focus:border-purple-500 font-mono text-[11px]"
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-800">
+              <button
+                onClick={() => {
+                  setShowImportModal(false);
+                  setImportError("");
+                  setImportText("");
+                }}
+                className="px-4 py-2 text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => processImportContent(importText)}
+                className="px-5 py-2 text-xs sm:text-sm bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl flex items-center gap-1.5 transition shadow-lg shadow-purple-900/30"
+              >
+                <FaCheck /> Process Import
               </button>
             </div>
           </div>
