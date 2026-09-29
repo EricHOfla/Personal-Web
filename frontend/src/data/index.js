@@ -158,8 +158,8 @@ export const portfolioData = {
       "title": "Backend Engineer ",
       "company": "ASEITY",
       "location": "Remote",
-      "time_period": "2026 - Present",
-      "duration": "2026 - Present",
+      "time_period": "2026 - NOW",
+      "duration": "2026 - NOW",
       "description": "Designed and developed secured API"
     },
     {
@@ -178,8 +178,8 @@ export const portfolioData = {
       "title": "Software Developer",
       "company": "EROH Tech Solutions",
       "location": "Kigali, Rwanda",
-      "time_period": "2023 - now",
-      "duration": "2023 - now",
+      "time_period": "2023 - NOW",
+      "duration": "2023 - NOW",
       "description": "Designed and developed full-stack web and mobile applications using React, Django, and modern cloud architectures."
     },
     {
