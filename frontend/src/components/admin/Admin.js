@@ -24,6 +24,11 @@ import {
   FaShieldAlt,
   FaEdit,
   FaTimes,
+  FaShareAlt,
+  FaToolbox,
+  FaTrophy,
+  FaQuoteLeft,
+  FaGlobe,
 } from "react-icons/fa";
 
 // Cryptographic SHA-256 helper
@@ -217,6 +222,7 @@ const Admin = () => {
     title: "",
     category: "Web",
     description: "",
+    imageUrl: "",
     liveUrl: "",
     githubUrl: "",
     technologies: "",
@@ -260,6 +266,36 @@ const Admin = () => {
     year: "2025",
   });
 
+  const [newSocial, setNewSocial] = useState({
+    platform: "LinkedIn",
+    name: "LinkedIn",
+    url: "",
+  });
+
+  const [newService, setNewService] = useState({
+    title: "",
+    description: "",
+    icon: "web",
+  });
+
+  const [newFunFact, setNewFunFact] = useState({
+    description: "",
+    value: 0,
+    icon: "trophy",
+  });
+
+  const [newTestimonial, setNewTestimonial] = useState({
+    name: "",
+    role: "",
+    company: "",
+    message: "",
+  });
+
+  const [newLanguage, setNewLanguage] = useState({
+    name: "",
+    level: "Professional",
+  });
+
   const [profileForm, setProfileForm] = useState(data.profile || {});
 
   // ================= Edit Modal State =================
@@ -289,9 +325,16 @@ const Admin = () => {
 
     if (editType === "project") {
       const techArray = editItem.technologies
-        ? editItem.technologies.split(",").map((t) => t.trim()).filter(Boolean)
+        ? (Array.isArray(editItem.technologies) ? editItem.technologies : editItem.technologies.split(",").map((t) => t.trim()).filter(Boolean))
         : [];
-      const updated = { ...editItem, technologies: techArray, project_url: editItem.liveUrl, github_url: editItem.githubUrl };
+      const updated = {
+        ...editItem,
+        technologies: techArray,
+        image: editItem.imageUrl || editItem.image_url || editItem.image || "",
+        image_url: editItem.imageUrl || editItem.image_url || editItem.image || "",
+        project_url: editItem.liveUrl,
+        github_url: editItem.githubUrl,
+      };
       updateData({ ...data, projects: data.projects.map((p) => (p.id === updated.id ? updated : p)) });
     } else if (editType === "blog") {
       const updated = { ...editItem };
@@ -319,6 +362,22 @@ const Admin = () => {
       updateData({ ...data, education: data.education.map((e) => (e.id === updated.id ? updated : e)) });
     } else if (editType === "certification") {
       updateData({ ...data, certifications: data.certifications.map((c) => (c.id === editItem.id ? { ...editItem } : c)) });
+    } else if (editType === "social") {
+      const updated = {
+        ...editItem,
+        name: editItem.name || editItem.platform,
+        icon: (editItem.platform || "globe").toLowerCase(),
+      };
+      updateData({ ...data, socialLinks: (data.socialLinks || []).map((s) => (s.id === editItem.id ? updated : s)) });
+    } else if (editType === "service") {
+      updateData({ ...data, services: (data.services || []).map((s) => (s.id === editItem.id ? { ...editItem } : s)) });
+    } else if (editType === "funfact") {
+      const updated = { ...editItem, value: Number(editItem.value) || 0 };
+      updateData({ ...data, funFacts: (data.funFacts || []).map((f) => (f.id === editItem.id ? updated : f)) });
+    } else if (editType === "testimonial") {
+      updateData({ ...data, testimonials: (data.testimonials || []).map((t) => (t.id === editItem.id ? { ...editItem } : t)) });
+    } else if (editType === "language") {
+      updateData({ ...data, languages: (data.languages || []).map((l) => (l.id === editItem.id ? { ...editItem } : l)) });
     }
 
     setStatusMsg({ type: "success", text: `Updated successfully!` });
@@ -342,8 +401,8 @@ const Admin = () => {
       title: newProject.title,
       category: newProject.category,
       description: newProject.description,
-      image: "",
-      image_url: "",
+      image: newProject.imageUrl || "",
+      image_url: newProject.imageUrl || "",
       project_url: newProject.liveUrl,
       liveUrl: newProject.liveUrl,
       github_url: newProject.githubUrl,
@@ -360,6 +419,7 @@ const Admin = () => {
       title: "",
       category: "Web",
       description: "",
+      imageUrl: "",
       liveUrl: "",
       githubUrl: "",
       technologies: "",
@@ -547,6 +607,106 @@ const Admin = () => {
       ...data,
       certifications: (data.certifications || []).filter((c) => c.id !== id),
     });
+  };
+
+  // Social Links
+  const handleAddSocial = (e) => {
+    e.preventDefault();
+    if (!newSocial.platform || !newSocial.url) return;
+    const item = {
+      id: Date.now(),
+      platform: newSocial.platform,
+      name: newSocial.name || newSocial.platform,
+      url: newSocial.url,
+      icon: (newSocial.platform || "globe").toLowerCase(),
+    };
+    updateData({ ...data, socialLinks: [...(data.socialLinks || []), item] });
+    setNewSocial({ platform: "LinkedIn", name: "LinkedIn", url: "" });
+    setStatusMsg({ type: "success", text: `Added social link for "${item.platform}"!` });
+  };
+
+  const handleDeleteSocial = (id) => {
+    if (!window.confirm("Delete this social link?")) return;
+    updateData({ ...data, socialLinks: (data.socialLinks || []).filter((s) => s.id !== id) });
+  };
+
+  // Services
+  const handleAddService = (e) => {
+    e.preventDefault();
+    if (!newService.title) return;
+    const item = {
+      id: Date.now(),
+      title: newService.title,
+      description: newService.description,
+      icon: newService.icon || "web",
+    };
+    updateData({ ...data, services: [...(data.services || []), item] });
+    setNewService({ title: "", description: "", icon: "web" });
+    setStatusMsg({ type: "success", text: `Added service "${item.title}"!` });
+  };
+
+  const handleDeleteService = (id) => {
+    if (!window.confirm("Delete this service?")) return;
+    updateData({ ...data, services: (data.services || []).filter((s) => s.id !== id) });
+  };
+
+  // Fun Facts
+  const handleAddFunFact = (e) => {
+    e.preventDefault();
+    if (!newFunFact.description) return;
+    const item = {
+      id: Date.now(),
+      description: newFunFact.description,
+      value: Number(newFunFact.value) || 0,
+      icon: newFunFact.icon || "trophy",
+    };
+    updateData({ ...data, funFacts: [...(data.funFacts || []), item] });
+    setNewFunFact({ description: "", value: 0, icon: "trophy" });
+    setStatusMsg({ type: "success", text: `Added fun fact "${item.description}"!` });
+  };
+
+  const handleDeleteFunFact = (id) => {
+    updateData({ ...data, funFacts: (data.funFacts || []).filter((f) => f.id !== id) });
+  };
+
+  // Testimonials
+  const handleAddTestimonial = (e) => {
+    e.preventDefault();
+    if (!newTestimonial.name || !newTestimonial.message) return;
+    const item = {
+      id: Date.now(),
+      name: newTestimonial.name,
+      role: newTestimonial.role,
+      company: newTestimonial.company,
+      message: newTestimonial.message,
+      image: "",
+    };
+    updateData({ ...data, testimonials: [...(data.testimonials || []), item] });
+    setNewTestimonial({ name: "", role: "", company: "", message: "" });
+    setStatusMsg({ type: "success", text: `Added testimonial from "${item.name}"!` });
+  };
+
+  const handleDeleteTestimonial = (id) => {
+    if (!window.confirm("Delete this testimonial?")) return;
+    updateData({ ...data, testimonials: (data.testimonials || []).filter((t) => t.id !== id) });
+  };
+
+  // Languages
+  const handleAddLanguage = (e) => {
+    e.preventDefault();
+    if (!newLanguage.name) return;
+    const item = {
+      id: Date.now(),
+      name: newLanguage.name,
+      level: newLanguage.level || "Professional",
+    };
+    updateData({ ...data, languages: [...(data.languages || []), item] });
+    setNewLanguage({ name: "", level: "Professional" });
+    setStatusMsg({ type: "success", text: `Added language "${item.name}"!` });
+  };
+
+  const handleDeleteLanguage = (id) => {
+    updateData({ ...data, languages: (data.languages || []).filter((l) => l.id !== id) });
   };
 
   const handleSaveProfile = (e) => {
@@ -1002,6 +1162,11 @@ const Admin = () => {
             { id: "experience", label: "Experience", count: data.experiences?.length || 0, icon: FaBriefcase },
             { id: "education", label: "Education", count: data.education?.length || 0, icon: FaGraduationCap },
             { id: "certifications", label: "Certificates", count: data.certifications?.length || 0, icon: FaCertificate },
+            { id: "social", label: "Social", count: data.socialLinks?.length || 0, icon: FaShareAlt },
+            { id: "services", label: "Services", count: data.services?.length || 0, icon: FaToolbox },
+            { id: "funfacts", label: "Fun Facts", count: data.funFacts?.length || 0, icon: FaTrophy },
+            { id: "testimonials", label: "Testimonials", count: data.testimonials?.length || 0, icon: FaQuoteLeft },
+            { id: "languages", label: "Languages", count: data.languages?.length || 0, icon: FaGlobe },
             { id: "profile", label: "Profile", icon: FaUser },
           ].map((tab) => {
             const Icon = tab.icon;
@@ -1103,6 +1268,17 @@ const Admin = () => {
                     placeholder="https://github.com/EricHOfla/my-app"
                     value={newProject.githubUrl}
                     onChange={(e) => setNewProject({ ...newProject, githubUrl: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-[11px]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-400 mb-1">Image URL (optional)</label>
+                  <input
+                    type="url"
+                    placeholder="https://images.unsplash.com/... or /project-thumb.png"
+                    value={newProject.imageUrl}
+                    onChange={(e) => setNewProject({ ...newProject, imageUrl: e.target.value })}
                     className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-[11px]"
                   />
                 </div>
@@ -1719,9 +1895,443 @@ const Admin = () => {
           </div>
         )}
 
-        {/* ======================= TAB 7: PROFILE ======================= */}
+        {/* ======================= TAB 7: SOCIAL LINKS ======================= */}
+        {activeTab === "social" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xl">
+              <h2 className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-3 sm:mb-4 text-purple-300">
+                <FaPlus /> Add Social Link
+              </h2>
+              <form onSubmit={handleAddSocial} className="space-y-3 text-xs">
+                <div>
+                  <label className="block text-gray-400 mb-1">Platform *</label>
+                  <select
+                    value={newSocial.platform}
+                    onChange={(e) => setNewSocial({ ...newSocial, platform: e.target.value, name: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  >
+                    <option value="LinkedIn">LinkedIn</option>
+                    <option value="Github">GitHub</option>
+                    <option value="Twitter">Twitter / X</option>
+                    <option value="Instagram">Instagram</option>
+                    <option value="YouTube">YouTube</option>
+                    <option value="Facebook">Facebook</option>
+                    <option value="Website">Personal Website</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Display Label</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. LinkedIn"
+                    value={newSocial.name}
+                    onChange={(e) => setNewSocial({ ...newSocial, name: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">URL *</label>
+                  <input
+                    type="url"
+                    required
+                    placeholder="https://..."
+                    value={newSocial.url}
+                    onChange={(e) => setNewSocial({ ...newSocial, url: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-[11px]"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full py-2.5 sm:py-3 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm"
+                >
+                  <FaPlus /> Add Social Link
+                </button>
+              </form>
+            </div>
+            <div className="lg:col-span-2 space-y-2.5 sm:space-y-3">
+              <h2 className="text-sm sm:text-base font-semibold text-gray-300">
+                Social Profiles ({data.socialLinks?.length || 0})
+              </h2>
+              {data.socialLinks?.map((link) => (
+                <div
+                  key={link.id}
+                  className="p-3.5 sm:p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-center justify-between gap-3"
+                >
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-xs sm:text-sm text-white">{link.name || link.platform}</h3>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs text-purple-400 hover:underline truncate block"
+                    >
+                      {link.url}
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button
+                      onClick={() => openEdit("social", link)}
+                      className="p-2 text-gray-500 hover:text-purple-400 hover:bg-purple-950/40 rounded-lg transition"
+                      title="Edit"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteSocial(link.id)}
+                      className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                      title="Delete"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ======================= TAB 8: SERVICES ======================= */}
+        {activeTab === "services" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xl">
+              <h2 className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-3 sm:mb-4 text-purple-300">
+                <FaPlus /> Add Service
+              </h2>
+              <form onSubmit={handleAddService} className="space-y-3 text-xs">
+                <div>
+                  <label className="block text-gray-400 mb-1">Service Title *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Mobile Application Development"
+                    value={newService.title}
+                    onChange={(e) => setNewService({ ...newService, title: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Description</label>
+                  <textarea
+                    rows={3}
+                    placeholder="What this service involves..."
+                    value={newService.description}
+                    onChange={(e) => setNewService({ ...newService, description: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Icon Type</label>
+                  <select
+                    value={newService.icon}
+                    onChange={(e) => setNewService({ ...newService, icon: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  >
+                    <option value="web">Web Development</option>
+                    <option value="mobile">Mobile Application</option>
+                    <option value="design">UI/UX Design</option>
+                    <option value="cloud">Cloud & DevOps</option>
+                    <option value="api">Backend & API</option>
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full py-2.5 sm:py-3 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm"
+                >
+                  <FaPlus /> Add Service
+                </button>
+              </form>
+            </div>
+            <div className="lg:col-span-2 space-y-2.5 sm:space-y-3">
+              <h2 className="text-sm sm:text-base font-semibold text-gray-300">Services ({data.services?.length || 0})</h2>
+              {data.services?.map((svc) => (
+                <div
+                  key={svc.id}
+                  className="p-3.5 sm:p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-start justify-between gap-3"
+                >
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-xs sm:text-sm text-white">{svc.title}</h3>
+                    <p className="text-xs text-gray-400 mt-1 line-clamp-2">{svc.description}</p>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-purple-300 mt-1 inline-block">
+                      {svc.icon}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button
+                      onClick={() => openEdit("service", svc)}
+                      className="p-2 text-gray-500 hover:text-purple-400 hover:bg-purple-950/40 rounded-lg transition"
+                      title="Edit"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteService(svc.id)}
+                      className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                      title="Delete"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ======================= TAB 9: FUN FACTS ======================= */}
+        {activeTab === "funfacts" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xl">
+              <h2 className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-3 sm:mb-4 text-purple-300">
+                <FaPlus /> Add Fun Fact
+              </h2>
+              <form onSubmit={handleAddFunFact} className="space-y-3 text-xs">
+                <div>
+                  <label className="block text-gray-400 mb-1">Description *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Finished Projects"
+                    value={newFunFact.description}
+                    onChange={(e) => setNewFunFact({ ...newFunFact, description: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Value (number)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={newFunFact.value}
+                    onChange={(e) => setNewFunFact({ ...newFunFact, value: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full py-2.5 sm:py-3 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm"
+                >
+                  <FaPlus /> Add Fun Fact
+                </button>
+              </form>
+            </div>
+            <div className="lg:col-span-2">
+              <h2 className="text-sm sm:text-base font-semibold text-gray-300 mb-3">
+                Fun Facts ({data.funFacts?.length || 0})
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {data.funFacts?.map((fact) => (
+                  <div
+                    key={fact.id}
+                    className="p-3.5 sm:p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-center justify-between gap-3"
+                  >
+                    <div>
+                      <p className="text-xl sm:text-2xl font-bold text-purple-300">
+                        {Number(fact.value)?.toLocaleString()}
+                      </p>
+                      <p className="text-xs text-gray-400">{fact.description}</p>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <button
+                        onClick={() => openEdit("funfact", fact)}
+                        className="p-2 text-gray-500 hover:text-purple-400 hover:bg-purple-950/40 rounded-lg transition"
+                        title="Edit"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteFunFact(fact.id)}
+                        className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                        title="Delete"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ======================= TAB 10: TESTIMONIALS ======================= */}
+        {activeTab === "testimonials" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xl">
+              <h2 className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-3 sm:mb-4 text-purple-300">
+                <FaPlus /> Add Testimonial
+              </h2>
+              <form onSubmit={handleAddTestimonial} className="space-y-3 text-xs">
+                <div>
+                  <label className="block text-gray-400 mb-1">Client Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Full Name"
+                    value={newTestimonial.name}
+                    onChange={(e) => setNewTestimonial({ ...newTestimonial, name: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Role / Job Title</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Product Manager"
+                    value={newTestimonial.role}
+                    onChange={(e) => setNewTestimonial({ ...newTestimonial, role: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Company</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. TechCorp"
+                    value={newTestimonial.company}
+                    onChange={(e) => setNewTestimonial({ ...newTestimonial, company: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Feedback / Message *</label>
+                  <textarea
+                    rows={4}
+                    required
+                    placeholder="Client's review..."
+                    value={newTestimonial.message}
+                    onChange={(e) => setNewTestimonial({ ...newTestimonial, message: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="w-full py-2.5 sm:py-3 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm"
+                >
+                  <FaPlus /> Add Testimonial
+                </button>
+              </form>
+            </div>
+            <div className="lg:col-span-2 space-y-2.5 sm:space-y-3">
+              <h2 className="text-sm sm:text-base font-semibold text-gray-300">
+                Testimonials ({data.testimonials?.length || 0})
+              </h2>
+              {data.testimonials?.map((t) => (
+                <div
+                  key={t.id}
+                  className="p-3.5 sm:p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-start justify-between gap-3"
+                >
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-xs sm:text-sm text-white">{t.name}</h3>
+                    <p className="text-[11px] text-purple-300">
+                      {t.role}
+                      {t.company ? ` @ ${t.company}` : ""}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1 line-clamp-3">"{t.message}"</p>
+                  </div>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <button
+                      onClick={() => openEdit("testimonial", t)}
+                      className="p-2 text-gray-500 hover:text-purple-400 hover:bg-purple-950/40 rounded-lg transition"
+                      title="Edit"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTestimonial(t.id)}
+                      className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                      title="Delete"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ======================= TAB 11: LANGUAGES ======================= */}
+        {activeTab === "languages" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-1 bg-gray-900/90 border border-gray-800 p-4 sm:p-5 rounded-2xl shadow-xl">
+              <h2 className="text-sm sm:text-base font-semibold flex items-center gap-2 mb-3 sm:mb-4 text-purple-300">
+                <FaPlus /> Add Language
+              </h2>
+              <form onSubmit={handleAddLanguage} className="space-y-3 text-xs">
+                <div>
+                  <label className="block text-gray-400 mb-1">Language Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. French"
+                    value={newLanguage.name}
+                    onChange={(e) => setNewLanguage({ ...newLanguage, name: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Proficiency Level</label>
+                  <select
+                    value={newLanguage.level}
+                    onChange={(e) => setNewLanguage({ ...newLanguage, level: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  >
+                    <option value="Native">Native</option>
+                    <option value="Professional">Professional</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Basic">Basic</option>
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full py-2.5 sm:py-3 mt-2 bg-purple-600 hover:bg-purple-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 text-xs sm:text-sm"
+                >
+                  <FaPlus /> Add Language
+                </button>
+              </form>
+            </div>
+            <div className="lg:col-span-2">
+              <h2 className="text-sm sm:text-base font-semibold text-gray-300 mb-3">
+                Languages ({data.languages?.length || 0})
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {data.languages?.map((lang) => (
+                  <div
+                    key={lang.id}
+                    className="p-3.5 sm:p-4 bg-gray-900/70 border border-gray-800 rounded-2xl flex items-center justify-between gap-3"
+                  >
+                    <div>
+                      <h3 className="font-semibold text-xs sm:text-sm text-white">{lang.name}</h3>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-900/50 text-purple-300 border border-purple-800/50">
+                        {lang.level}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <button
+                        onClick={() => openEdit("language", lang)}
+                        className="p-2 text-gray-500 hover:text-purple-400 hover:bg-purple-950/40 rounded-lg transition"
+                        title="Edit"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteLanguage(lang.id)}
+                        className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/40 rounded-lg transition"
+                        title="Delete"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ======================= TAB 12: PROFILE ======================= */}
         {activeTab === "profile" && (
-          <div className="max-w-2xl bg-gray-900/90 border border-gray-800 p-4 sm:p-6 rounded-2xl shadow-xl">
+          <div className="max-w-3xl bg-gray-900/90 border border-gray-800 p-4 sm:p-6 rounded-2xl shadow-xl">
             <h2 className="text-sm sm:text-base font-semibold text-purple-300 mb-3 sm:mb-4 flex items-center gap-2">
               <FaUser /> Edit Profile & Bio
             </h2>
@@ -1749,6 +2359,31 @@ const Admin = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
+                  <label className="block text-gray-400 mb-1">Subtitle / Tagline</label>
+                  <input
+                    type="text"
+                    placeholder="Full Stack Developer"
+                    value={profileForm.subtitle || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, subtitle: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Freelance / Availability Status</label>
+                  <select
+                    value={profileForm.freelanceStatus || profileForm.freelance_status || "Available"}
+                    onChange={(e) => setProfileForm({ ...profileForm, freelanceStatus: e.target.value, freelance_status: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  >
+                    <option value="Available">Available (Open to Work)</option>
+                    <option value="Busy">Busy</option>
+                    <option value="Not Available">Not Available</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
                   <label className="block text-gray-400 mb-1">Email</label>
                   <input
                     type="email"
@@ -1768,14 +2403,59 @@ const Admin = () => {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-gray-400 mb-1">Location</label>
-                <input
-                  type="text"
-                  value={profileForm.location || profileForm.address || ""}
-                  onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value, address: e.target.value })}
-                  className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-gray-400 mb-1">Location</label>
+                  <input
+                    type="text"
+                    value={profileForm.location || profileForm.address || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value, address: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Qualification</label>
+                  <input
+                    type="text"
+                    placeholder="Bachelor Degree"
+                    value={profileForm.qualification || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, qualification: e.target.value })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">Years of Experience</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={profileForm.yearsOfExperience || 3}
+                    onChange={(e) => setProfileForm({ ...profileForm, yearsOfExperience: Number(e.target.value) })}
+                    className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-gray-400 mb-1">Profile Image Path / URL</label>
+                  <input
+                    type="text"
+                    placeholder="/bannerImg.png or https://..."
+                    value={profileForm.profileImage || profileForm.profile_image || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, profileImage: e.target.value, profile_image: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-[11px]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 mb-1">CV / Resume File Path</label>
+                  <input
+                    type="text"
+                    placeholder="/Eric_H_Resume.pdf"
+                    value={profileForm.cvUrl || profileForm.cv_file || ""}
+                    onChange={(e) => setProfileForm({ ...profileForm, cvUrl: e.target.value, cv_file: e.target.value })}
+                    className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-[11px]"
+                  />
+                </div>
               </div>
 
               <div>
@@ -1885,6 +2565,12 @@ const Admin = () => {
                   <div>
                     <label className="block text-gray-400 mb-1">GitHub Repo URL</label>
                     <input type="url" value={editItem.githubUrl || editItem.github_url || ""} onChange={(e) => setEditItem({ ...editItem, githubUrl: e.target.value, github_url: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-[11px]" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Image URL</label>
+                    <input type="url" value={editItem.imageUrl || editItem.image_url || editItem.image || ""} onChange={(e) => setEditItem({ ...editItem, imageUrl: e.target.value, image_url: e.target.value, image: e.target.value })}
+                      placeholder="https://... or /bannerImg.png"
                       className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-[11px]" />
                   </div>
                   <div>
@@ -2043,6 +2729,179 @@ const Admin = () => {
                     <label className="block text-gray-400 mb-1">Year</label>
                     <input type="text" value={editItem.year || ""} onChange={(e) => setEditItem({ ...editItem, year: e.target.value })}
                       className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs" />
+                  </div>
+                </>
+              )}
+
+              {/* ---- SOCIAL ---- */}
+              {editType === "social" && (
+                <>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Platform *</label>
+                    <select
+                      value={editItem.platform || "LinkedIn"}
+                      onChange={(e) => setEditItem({ ...editItem, platform: e.target.value, name: editItem.name || e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                    >
+                      <option value="LinkedIn">LinkedIn</option>
+                      <option value="Github">GitHub</option>
+                      <option value="Twitter">Twitter / X</option>
+                      <option value="Instagram">Instagram</option>
+                      <option value="YouTube">YouTube</option>
+                      <option value="Facebook">Facebook</option>
+                      <option value="Website">Personal Website</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Display Label</label>
+                    <input
+                      type="text"
+                      value={editItem.name || ""}
+                      onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">URL *</label>
+                    <input
+                      type="url"
+                      value={editItem.url || ""}
+                      onChange={(e) => setEditItem({ ...editItem, url: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 font-mono text-[11px]"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* ---- SERVICE ---- */}
+              {editType === "service" && (
+                <>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Service Title *</label>
+                    <input
+                      type="text"
+                      value={editItem.title || ""}
+                      onChange={(e) => setEditItem({ ...editItem, title: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Description</label>
+                    <textarea
+                      rows={3}
+                      value={editItem.description || ""}
+                      onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Icon Type</label>
+                    <select
+                      value={editItem.icon || "web"}
+                      onChange={(e) => setEditItem({ ...editItem, icon: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                    >
+                      <option value="web">Web Development</option>
+                      <option value="mobile">Mobile Application</option>
+                      <option value="design">UI/UX Design</option>
+                      <option value="cloud">Cloud & DevOps</option>
+                      <option value="api">Backend & API</option>
+                    </select>
+                  </div>
+                </>
+              )}
+
+              {/* ---- FUN FACT ---- */}
+              {editType === "funfact" && (
+                <>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Description *</label>
+                    <input
+                      type="text"
+                      value={editItem.description || ""}
+                      onChange={(e) => setEditItem({ ...editItem, description: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Value (number)</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={editItem.value || 0}
+                      onChange={(e) => setEditItem({ ...editItem, value: Number(e.target.value) })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* ---- TESTIMONIAL ---- */}
+              {editType === "testimonial" && (
+                <>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Client Name *</label>
+                    <input
+                      type="text"
+                      value={editItem.name || ""}
+                      onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Role / Job Title</label>
+                    <input
+                      type="text"
+                      value={editItem.role || ""}
+                      onChange={(e) => setEditItem({ ...editItem, role: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Company</label>
+                    <input
+                      type="text"
+                      value={editItem.company || ""}
+                      onChange={(e) => setEditItem({ ...editItem, company: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Feedback / Message *</label>
+                    <textarea
+                      rows={4}
+                      value={editItem.message || ""}
+                      onChange={(e) => setEditItem({ ...editItem, message: e.target.value })}
+                      className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* ---- LANGUAGE ---- */}
+              {editType === "language" && (
+                <>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Language Name *</label>
+                    <input
+                      type="text"
+                      value={editItem.name || ""}
+                      onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-400 mb-1">Proficiency Level</label>
+                    <select
+                      value={editItem.level || "Professional"}
+                      onChange={(e) => setEditItem({ ...editItem, level: e.target.value })}
+                      className="w-full px-3 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none focus:border-purple-500 text-xs sm:text-sm"
+                    >
+                      <option value="Native">Native</option>
+                      <option value="Professional">Professional</option>
+                      <option value="Intermediate">Intermediate</option>
+                      <option value="Basic">Basic</option>
+                    </select>
                   </div>
                 </>
               )}

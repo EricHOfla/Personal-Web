@@ -192,15 +192,6 @@ export const portfolioData = {
       "time_period": "2023 - Now",
       "duration": "2023 - Now",
       "description": "Comprehensive coursework in Software Development, Database Management, Cybersecurity, Web Applications, and Mobile Application Development."
-    },
-    {
-      "id": 2,
-      "degree": "A0 in Software Engineering",
-      "institution": "University of Lay Adventists of Kigali (UNILAK)",
-      "location": "Rwanda",
-      "time_period": "2023 - Now",
-      "duration": "2023 - Now",
-      "description": "Comprehensive coursework in Software Development, Database Management, Cybersecurity, Web Applications, and Mobile Application Development."
     }
   ],
   "projects": [

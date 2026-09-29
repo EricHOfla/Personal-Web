@@ -18,14 +18,23 @@ const iconMap = {
   website: FiGlobe,
 };
 
-const Left = ({ profile = portfolioData.profile, setAbout, setResume, setProjects, setBlog, setContact }) => {
-  const socialLinks = portfolioData.socialLinks || [];
+const Left = ({
+  profile = portfolioData.profile,
+  appData,
+  socialLinks: propsSocialLinks,
+  setAbout,
+  setResume,
+  setProjects,
+  setBlog,
+  setContact,
+}) => {
+  const socialLinks = propsSocialLinks || appData?.socialLinks || portfolioData.socialLinks || [];
 
   const [text] = useTypewriter({
     words: [
       profile?.title || "Software Engineer",
-      "Full Stack Developer",
-      "Available for work",
+      profile?.subtitle || "Full Stack Developer",
+      profile?.freelanceStatus === "Available" ? "Available for Work" : (profile?.freelanceStatus || "Software Engineer"),
     ],
     loop: true,
     typeSpeed: 30,
@@ -66,6 +75,13 @@ const Left = ({ profile = portfolioData.profile, setAbout, setResume, setProject
             {text}
             <Cursor cursorBlinking={false} cursorStyle="" />
           </p>
+
+          {(profile?.freelanceStatus === "Available" || profile?.freelance_status === "Available") && (
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-medium rounded-full mt-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              Open to Work
+            </div>
+          )}
 
           {/* Social icons */}
           <div className="flex justify-center flex-wrap gap-2 sm:gap-3 mt-2">

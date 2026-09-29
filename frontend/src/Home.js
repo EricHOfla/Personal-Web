@@ -208,6 +208,8 @@ const Home = ({ profile, appData, theme, toggleTheme }) => {
         <aside className="w-full lgl:w-5/12 h-full">
           <Left
             profile={profile}
+            appData={appData}
+            socialLinks={appData?.socialLinks}
             setAbout={setAbout}
             setResume={setResume}
             setProjects={setProjects}

@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import Education from "./Education";
 import Skills from "./Skills";
-import { FaGraduationCap, FaCode, FaBriefcase } from "react-icons/fa";
+import { FaGraduationCap, FaCode, FaBriefcase, FaGlobe } from "react-icons/fa";
 import { portfolioData } from "../../data";
 
 const Resume = ({ appData = portfolioData }) => {
   const [activeTab, setActiveTab] = useState("education");
 
-
   const tabs = [
     { id: "education", label: "Education", icon: FaGraduationCap },
     { id: "skills", label: "Skills", icon: FaCode },
     { id: "experience", label: "Experience", icon: FaBriefcase },
+    { id: "languages", label: "Languages", icon: FaGlobe },
   ];
 
   return (
@@ -48,6 +48,31 @@ const Resume = ({ appData = portfolioData }) => {
         {activeTab === "education" && <Education mode="education" appData={appData} />}
         {activeTab === "skills" && <Skills appData={appData} />}
         {activeTab === "experience" && <Education mode="experience" appData={appData} />}
+        {activeTab === "languages" && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-2">
+            {(appData?.languages || portfolioData.languages || []).map((lang) => (
+              <div key={lang.id || lang.name} className="glass-card p-4 sm:p-5 text-center">
+                <p className="font-semibold text-titleColor text-base mb-1">{lang.name}</p>
+                <p className="text-xs text-designColor font-medium mb-3">{lang.level}</p>
+                <div className="w-full bg-surfaceBorder/60 h-1.5 rounded-full overflow-hidden">
+                  <div
+                    className="bg-designColor h-full rounded-full transition-all duration-500"
+                    style={{
+                      width:
+                        lang.level === "Native"
+                          ? "100%"
+                          : lang.level === "Professional"
+                          ? "85%"
+                          : lang.level === "Intermediate"
+                          ? "65%"
+                          : "45%",
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
