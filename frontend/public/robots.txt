@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://eroh.tech/sitemap.xml
+# Sitemap location
+Sitemap: https://oflah.vercel.app/sitemap.xml
+
+# Block admin panel from being indexed
+Disallow: /#admin
