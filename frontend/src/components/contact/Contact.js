@@ -3,7 +3,7 @@ import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaPaperPlane, FaWhatsapp } from "r
 import { portfolioData } from "../../data";
 
 function Contact({ profile = portfolioData.profile }) {
-  const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
   const [status, setStatus] = useState({ type: "", message: "" });
   const [loading, setLoading] = useState(false);
 
@@ -19,7 +19,7 @@ function Contact({ profile = portfolioData.profile }) {
     const recipientEmail = profile?.email || portfolioData.profile.email || "ericofla1@gmail.com";
 
     try {
-      // Direct in-page submission to free FormSubmit service directly to user's email
+      // Direct in-page submission with professional FormSubmit box template and direct reply-to
       const response = await fetch(`https://formsubmit.co/ajax/${recipientEmail}`, {
         method: "POST",
         headers: {
@@ -27,10 +27,25 @@ function Contact({ profile = portfolioData.profile }) {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          _subject: `[Portfolio Contact] ${formData.subject || "New Inquiry"}`,
-          message: formData.message,
+          _template: "box",
+          _captcha: "false",
+          _replyto: formData.email,
+          _subject: `💼 Portfolio Inquiry: ${formData.subject || "New Message"} — from ${formData.name}`,
+          _autoresponse: `Hello ${formData.name},\n\nThank you for reaching out via my portfolio website. I have received your message regarding "${formData.subject || "your inquiry"}" and will get back to you shortly.\n\nBest regards,\nEric HABUMUGISHA (Oflah)\nFull Stack Developer & Software Engineer\nWhatsApp: +250 785 263 931\nWebsite: https://oflah.vercel.app`,
+          "Sender Name": formData.name,
+          "Sender Email": formData.email,
+          "Phone / WhatsApp": formData.phone?.trim() ? formData.phone : "Not provided",
+          "Subject": formData.subject,
+          "Message": formData.message,
+          "Source": "Oflah Portfolio (https://oflah.vercel.app/#contact)",
+          "Sent At": new Date().toLocaleString("en-US", {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
         }),
       });
 
@@ -40,22 +55,35 @@ function Contact({ profile = portfolioData.profile }) {
           type: "success",
           message: "Thank you! Your message has been sent directly to Eric's inbox.",
         });
-        setFormData({ name: "", email: "", subject: "", message: "" });
+        setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
       } else {
         throw new Error("Direct send fallback");
       }
     } catch (err) {
-      // Fallback: mailto
-      const subject = encodeURIComponent(formData.subject || "Contact from Portfolio");
-      const body = encodeURIComponent(
-        `Hi ${profile?.firstName || "Eric"},\n\n${formData.message}\n\nFrom: ${formData.name} (${formData.email})`
+      // Fallback: styled mailto format
+      const mailtoSubject = encodeURIComponent(`[Portfolio] ${formData.subject || "Contact from Portfolio"} - ${formData.name}`);
+      const mailtoBody = encodeURIComponent(
+        `===================================================\n` +
+        `       NEW MESSAGE VIA OFLAH PORTFOLIO             \n` +
+        `===================================================\n\n` +
+        `👤 Sender: ${formData.name}\n` +
+        `📧 Email:  ${formData.email}\n` +
+        `📱 Phone:  ${formData.phone || "Not provided"}\n` +
+        `📌 Subject: ${formData.subject}\n` +
+        `🕒 Date:   ${new Date().toLocaleString()}\n\n` +
+        `---------------------------------------------------\n` +
+        `💬 MESSAGE:\n` +
+        `---------------------------------------------------\n` +
+        `${formData.message}\n\n` +
+        `===================================================\n` +
+        `Sent via https://oflah.vercel.app/#contact\n`
       );
-      window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:${recipientEmail}?subject=${mailtoSubject}&body=${mailtoBody}`;
       setStatus({
         type: "success",
         message: "Opening your email app to send the message directly.",
       });
-      setFormData({ name: "", email: "", subject: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
     } finally {
       setLoading(false);
     }
@@ -137,7 +165,7 @@ function Contact({ profile = portfolioData.profile }) {
           <form onSubmit={handleSubmit} className="glass-card p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-5 md:space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-textSecondary mb-1.5 sm:mb-2">Your Name</label>
+                <label className="block text-xs sm:text-sm font-medium text-textSecondary mb-1.5 sm:mb-2">Your Name *</label>
                 <input
                   type="text"
                   name="name"
@@ -145,11 +173,11 @@ function Contact({ profile = portfolioData.profile }) {
                   onChange={handleChange}
                   required
                   className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-surface border border-surfaceBorder rounded-lg text-titleColor focus:border-designColor focus:outline-none transition text-sm sm:text-base"
-                  placeholder="Eric H Oflã"
+                  placeholder="e.g. John Doe"
                 />
               </div>
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-textSecondary mb-1.5 sm:mb-2">Your Email</label>
+                <label className="block text-xs sm:text-sm font-medium text-textSecondary mb-1.5 sm:mb-2">Your Email *</label>
                 <input
                   type="email"
                   name="email"
@@ -157,22 +185,37 @@ function Contact({ profile = portfolioData.profile }) {
                   onChange={handleChange}
                   required
                   className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-surface border border-surfaceBorder rounded-lg text-titleColor focus:border-designColor focus:outline-none transition text-sm sm:text-base"
-                  placeholder="ofla@gmail.com"
+                  placeholder="e.g. john@example.com"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-textSecondary mb-1.5 sm:mb-2">Subject</label>
-              <input
-                type="text"
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                required
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-surface border border-surfaceBorder rounded-lg text-titleColor focus:border-designColor focus:outline-none transition text-sm sm:text-base"
-                placeholder="Project Inquiry"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 md:gap-6">
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-textSecondary mb-1.5 sm:mb-2">
+                  Phone / WhatsApp <span className="text-[11px] text-gray-500 font-normal">(Optional)</span>
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-surface border border-surfaceBorder rounded-lg text-titleColor focus:border-designColor focus:outline-none transition text-sm sm:text-base"
+                  placeholder="+250 780 000 000"
+                />
+              </div>
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-textSecondary mb-1.5 sm:mb-2">Subject *</label>
+                <input
+                  type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-surface border border-surfaceBorder rounded-lg text-titleColor focus:border-designColor focus:outline-none transition text-sm sm:text-base"
+                  placeholder="e.g. Project Inquiry"
+                />
+              </div>
             </div>
 
             <div>
