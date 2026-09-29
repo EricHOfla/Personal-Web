@@ -1,10 +1,20 @@
 import React, { useState } from "react";
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaPaperPlane, FaWhatsapp } from "react-icons/fa";
+import {
+  FaEnvelope,
+  FaPhone,
+  FaMapMarkerAlt,
+  FaPaperPlane,
+  FaWhatsapp,
+  FaSpinner,
+  FaCheckCircle,
+  FaExclamationTriangle,
+  FaExternalLinkAlt,
+} from "react-icons/fa";
 import { portfolioData } from "../../data";
 
 function Contact({ profile = portfolioData.profile }) {
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
-  const [status, setStatus] = useState({ type: "", message: "" });
+  const [status, setStatus] = useState({ type: "", message: "", fallback: null });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -14,14 +24,20 @@ function Contact({ profile = portfolioData.profile }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setStatus({ type: "", message: "" });
+    setStatus({ type: "", message: "", fallback: null });
 
     const recipientEmail = profile?.email || portfolioData.profile.email || "ericofla1@gmail.com";
 
+    // Set an 8-second timeout so it never hangs indefinitely
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
     try {
       // Direct in-page submission with professional FormSubmit box template and direct reply-to
+      // Note: _autoresponse is omitted because sending 2 synchronous SMTP emails caused 15s delays
       const response = await fetch(`https://formsubmit.co/ajax/${recipientEmail}`, {
         method: "POST",
+        signal: controller.signal,
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -31,7 +47,6 @@ function Contact({ profile = portfolioData.profile }) {
           _captcha: "false",
           _replyto: formData.email,
           _subject: `💼 Portfolio Inquiry: ${formData.subject || "New Message"} — from ${formData.name}`,
-          _autoresponse: `Hello ${formData.name},\n\nThank you for reaching out via my portfolio website. I have received your message regarding "${formData.subject || "your inquiry"}" and will get back to you shortly.\n\nBest regards,\nEric HABUMUGISHA (Oflah)\nFull Stack Developer & Software Engineer\nWhatsApp: +250 785 263 931\nWebsite: https://oflah.vercel.app`,
           "Sender Name": formData.name,
           "Sender Email": formData.email,
           "Phone / WhatsApp": formData.phone?.trim() ? formData.phone : "Not provided",
@@ -49,41 +64,44 @@ function Contact({ profile = portfolioData.profile }) {
         }),
       });
 
+      clearTimeout(timeoutId);
+
       const data = await response.json();
       if (data.success === "true" || data.success === true) {
         setStatus({
           type: "success",
-          message: "Thank you! Your message has been sent directly to Eric's inbox.",
+          message: `Thank you, ${formData.name}! Your message was successfully sent directly to Eric's inbox.`,
         });
         setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
       } else {
-        throw new Error("Direct send fallback");
+        throw new Error(data.message || "Submission failed");
       }
     } catch (err) {
-      // Fallback: styled mailto format
-      const mailtoSubject = encodeURIComponent(`[Portfolio] ${formData.subject || "Contact from Portfolio"} - ${formData.name}`);
-      const mailtoBody = encodeURIComponent(
-        `===================================================\n` +
-        `       NEW MESSAGE VIA OFLAH PORTFOLIO             \n` +
-        `===================================================\n\n` +
-        `👤 Sender: ${formData.name}\n` +
-        `📧 Email:  ${formData.email}\n` +
-        `📱 Phone:  ${formData.phone || "Not provided"}\n` +
-        `📌 Subject: ${formData.subject}\n` +
-        `🕒 Date:   ${new Date().toLocaleString()}\n\n` +
-        `---------------------------------------------------\n` +
-        `💬 MESSAGE:\n` +
-        `---------------------------------------------------\n` +
-        `${formData.message}\n\n` +
-        `===================================================\n` +
-        `Sent via https://oflah.vercel.app/#contact\n`
-      );
-      window.location.href = `mailto:${recipientEmail}?subject=${mailtoSubject}&body=${mailtoBody}`;
+      clearTimeout(timeoutId);
+
+      // Prepared fallback URLs for computer & mobile
+      const mailSubject = `[Portfolio] ${formData.subject || "Contact from Portfolio"} - ${formData.name}`;
+      const mailBody =
+        `Hi Eric,\n\n${formData.message}\n\n` +
+        `---\n` +
+        `Sender: ${formData.name}\n` +
+        `Email: ${formData.email}\n` +
+        `Phone: ${formData.phone || "Not provided"}\n` +
+        `Sent via https://oflah.vercel.app`;
+
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipientEmail)}&su=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+      const mailtoUrl = `mailto:${recipientEmail}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+      const whatsappUrl = `https://wa.me/250785263931?text=${encodeURIComponent(`Hi Eric, my name is ${formData.name} (${formData.email}).\n\nSubject: ${formData.subject}\n\n${formData.message}`)}`;
+
       setStatus({
-        type: "success",
-        message: "Opening your email app to send the message directly.",
+        type: "fallback",
+        message: "Notice: An adblocker or network delay blocked direct delivery. Send your message instantly using one of the options below:",
+        fallback: {
+          gmailUrl,
+          mailtoUrl,
+          whatsappUrl,
+        },
       });
-      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
     } finally {
       setLoading(false);
     }
@@ -233,23 +251,68 @@ function Contact({ profile = portfolioData.profile }) {
 
             {status.message && (
               <div
-                className={`p-3 sm:p-4 rounded-lg text-xs sm:text-sm ${status.type === "success"
-                  ? "bg-green-500/10 border border-green-500/30 text-green-400"
-                  : "bg-red-500/10 border border-red-500/30 text-red-400"
-                  }`}
+                className={`p-4 rounded-xl text-xs sm:text-sm ${
+                  status.type === "success"
+                    ? "bg-green-500/10 border border-green-500/30 text-green-300"
+                    : status.type === "fallback"
+                    ? "bg-amber-500/10 border border-amber-500/30 text-amber-200"
+                    : "bg-red-500/10 border border-red-500/30 text-red-300"
+                }`}
               >
-                {status.message}
+                <div className="flex items-start gap-2.5">
+                  {status.type === "success" ? (
+                    <FaCheckCircle className="text-green-400 text-lg flex-shrink-0 mt-0.5" />
+                  ) : (
+                    <FaExclamationTriangle className="text-amber-400 text-lg flex-shrink-0 mt-0.5" />
+                  )}
+                  <div className="flex-1 space-y-2">
+                    <p className="font-medium leading-relaxed">{status.message}</p>
+
+                    {status.fallback && (
+                      <div className="pt-2 flex flex-wrap gap-2">
+                        <a
+                          href={status.fallback.gmailUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-medium text-xs transition shadow-md"
+                        >
+                          <FaEnvelope /> Open in Gmail <FaExternalLinkAlt className="text-[10px]" />
+                        </a>
+                        <a
+                          href={status.fallback.whatsappUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-500 text-white font-medium text-xs transition shadow-md"
+                        >
+                          <FaWhatsapp /> Send via WhatsApp <FaExternalLinkAlt className="text-[10px]" />
+                        </a>
+                        <a
+                          href={status.fallback.mailtoUrl}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 font-medium text-xs transition border border-gray-700"
+                        >
+                          Mail Client
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="button-primary w-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {loading ? "Sending..." : (
+              {loading ? (
                 <>
-                  Send Message <FaPaperPlane />
+                  <FaSpinner className="animate-spin text-base" />
+                  <span>Sending message...</span>
+                </>
+              ) : (
+                <>
+                  <span>Send Message</span>
+                  <FaPaperPlane />
                 </>
               )}
             </button>
