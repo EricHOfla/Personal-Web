@@ -153,14 +153,24 @@ export const portfolioData = {
   ],
   "experiences": [
     {
+      "id": 1790678181112,
+      "job_title": "Backend Engineer ",
+      "title": "Backend Engineer ",
+      "company": "ASEITY",
+      "location": "Remote",
+      "time_period": "2026 - Present",
+      "duration": "2026 - Present",
+      "description": "Designed and developed secured API"
+    },
+    {
       "id": 1,
-      "job_title": "Teacher",
-      "title": "Teacher",
-      "company": "GT Bank",
-      "location": "Rwanda",
-      "time_period": "2021 - now",
-      "duration": "2021 - now",
-      "description": "Delivered technology and system training sessions, helping teams adopt digital workflows."
+      "job_title": "IT Support",
+      "title": "IT Support",
+      "company": "NESA",
+      "location": "Kigali, Rwanda",
+      "time_period": "2026 - NOW",
+      "duration": "2026 - NOW",
+      "description": "Provide Support to the NESA Systems "
     },
     {
       "id": 2,
@@ -178,8 +188,8 @@ export const portfolioData = {
       "title": "Software Trainer & IT Support",
       "company": "N@tcom",
       "location": "Kigali, Rwanda",
-      "time_period": "2023 - 2026",
-      "duration": "2023 - 2026",
+      "time_period": "2023 - 2025",
+      "duration": "2023 - 2025",
       "description": "IT Support & Internship Supervisor, guiding emerging developers and managing technical infrastructure."
     }
   ],
