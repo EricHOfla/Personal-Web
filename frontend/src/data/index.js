@@ -196,21 +196,6 @@ export const portfolioData = {
   ],
   "projects": [
     {
-      "id": 1790634182134,
-      "title": "NPC Rwanda",
-      "category": "Web",
-      "description": "NPC Rwanda is the official website of the National Paralympic Committee of Rwanda. It provides information about the committee, Paralympic sports, athletes, sporting events, news, and activities. The website aims to promote inclusivity, support athletes with disabilities, and share updates on the development of Paralympic sports in Rwanda.",
-      "image": "",
-      "image_url": "",
-      "project_url": "https://npcrwanda.org/",
-      "liveUrl": "https://npcrwanda.org/",
-      "github_url": "",
-      "githubUrl": "",
-      "technologies": [
-        "Next Js"
-      ]
-    },
-    {
       "id": 1,
       "title": "E-Commerce Shopping Platform",
       "category": "Web",
