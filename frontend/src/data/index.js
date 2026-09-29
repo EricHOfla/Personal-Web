@@ -260,6 +260,12 @@ export const portfolioData = {
       "id": 2,
       "title": "Web Hosting & Cloud Setup",
       "description": "Reliable domain configurations, server deployments, CI/CD automation, and cloud hosting setups.",
+      "icon": "cloud"
+    },
+    {
+      "id": 1790677784480,
+      "title": "Mobile Application Development ",
+      "description": "We create professional, high-performance Mobile application that are intuitive and easy to navigate for individuals and businesses",
       "icon": "mobile"
     }
   ],
